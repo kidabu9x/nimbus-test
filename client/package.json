@@ -13,10 +13,8 @@
     "build": "node build/build.js"
   },
   "dependencies": {
-    "axios": "^0.18.0",
-    "vue": "^2.5.2",
-    "vue-router": "^3.0.1",
     "autoprefixer": "^7.1.2",
+    "axios": "^0.18.0",
     "babel-core": "^6.22.1",
     "babel-helper-vue-jsx-merge-props": "^2.0.3",
     "babel-jest": "^21.0.2",
@@ -54,17 +52,23 @@
     "shelljs": "^0.7.6",
     "uglifyjs-webpack-plugin": "^1.1.1",
     "url-loader": "^0.5.8",
+    "vue": "^2.5.2",
     "vue-jest": "^1.0.2",
     "vue-loader": "^13.3.0",
+    "vue-material": "^1.0.0-beta-10.2",
+    "vue-router": "^3.0.1",
     "vue-style-loader": "^3.0.1",
     "vue-template-compiler": "^2.5.2",
-    "webpack": "^3.6.0",
+    "vue-toasted": "^1.1.24",
+    "vuejs-dialog": "^0.9.0",
     "webpack-bundle-analyzer": "^2.9.0",
     "webpack-dev-server": "^2.9.1",
     "webpack-merge": "^4.1.0"
   },
   "devDependencies": {
-    
+    "node-sass": "^4.9.2",
+    "sass-loader": "^7.0.3",
+    "webpack": "^3.12.0"
   },
   "engines": {
     "node": ">= 6.0.0",
