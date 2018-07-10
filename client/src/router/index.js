@@ -3,7 +3,7 @@ import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
 
 // Admin component
-import HandleTest from '@/components/admin/HandleTest'
+import Questions from '@/components/admin/Questions'
 
 Vue.use(Router)
 
@@ -16,9 +16,9 @@ export default new Router({
       component: HelloWorld
     },
     {
-      path: '/admin/test',
-      name: 'admin/test',
-      component: HandleTest
+      path: '/admin/questions',
+      name: 'admin/questions',
+      component: Questions
     },
   ]
 })

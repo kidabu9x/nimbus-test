@@ -14,8 +14,8 @@ export default {
 @import "~vue-material/dist/theme/engine"; // Import the theme engine
 
 @include md-register-theme("default", (
-  primary: #1abc9c,
-  accent: #2c3e50
+  primary: md-get-palette-color(blue, A200), // The primary color of your application
+  accent: md-get-palette-color(red, A200) // The accent or secondary color
 ));
 
 @import "~vue-material/dist/theme/all"; // Apply the theme
@@ -26,5 +26,10 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+.md-dialog {
+  -webkit-font-smoothing: antialiased;
+  -webkit-filter: blur(0.00001px);
+  filter: blur(0.00001px);
 }
 </style>

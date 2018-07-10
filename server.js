@@ -4,21 +4,23 @@ const cors = require('cors')
 const morgan = require('morgan')
 const path = require('path')
 
+const mongoose = require('mongoose')
+const db = require('./config.json').database
+
 const app = express()
 app.use(morgan('combined'))
 app.use(bodyParser.json())
 app.use(cors())
 
-app.get('/questions', (req, res) => {
-  res.send(
-    [
-      {
-        title: "Hello World!",
-        description: "Hi there! How are you?"
-      }
-    ]
-  )
-})
+// Connect to Mongo
+mongoose
+  .connect(db)
+  .then(() => console.log('MongoDB Connected...'))
+  .catch(err => console.log(err));
+
+// Routes
+const questions = require('./routes/api/questions')
+app.use('/api/questions', questions)
 
 // Serve static assets if in production
 if (process.env.NODE_ENV === 'production') {
