@@ -32,10 +32,15 @@ router.post('/', (req, res) => {
 // @desc    Update A Question
 // @access  Public
 router.put('/:id', (req, res) => {
-  console.log(req.params)
   Question.findById(req.params.id)
     .then(question => {
-      question = req.body
+      question.module      = req.body.module,
+      question.type        = req.body.type,
+      question.form        = req.body.form,
+      question.content     = req.body.content,
+      question.answers     = req.body.answers,
+      question.description = req.body.description,
+      question.definitely_appear = req.body.definitely_appear
       question.save()
         .then(() => res.json({success: true}))
         .catch(err => res.json({success: false}))

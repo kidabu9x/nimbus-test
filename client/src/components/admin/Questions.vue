@@ -15,6 +15,14 @@
             <md-icon>question_answer</md-icon>
             <span class="md-list-item-text">Questions</span>
           </md-list-item>
+          <md-list-item>
+            <md-icon>computer</md-icon>
+            <span class="md-list-item-text">Class</span>
+          </md-list-item>
+          <md-list-item>
+            <md-icon>how_to_reg</md-icon>
+            <span class="md-list-item-text">Employees</span>
+          </md-list-item>
         </md-list>
       </md-app-drawer>
 
