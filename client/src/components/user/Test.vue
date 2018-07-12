@@ -10,12 +10,14 @@
         </div>
         <div v-else class="md-layout md-gutter">
             <div class="md-layout-item md-size-25" style="position: relative;">
-                <h3 style="position: fixed; top: 30%; text-align: center; display: block; margin-left: 10px;">
-                    {{username}}
-                </h3>
-                <h3 v-if="isSubmited" style="position: fixed; top: 30%; text-align: center; display: block; margin-left: 10px;">
-                    Số câu trả lời đúng: <span style="color: #e74c3c">{{totalCorrect}}</span>
-                </h3>
+                <div style="position: fixed; top: 30%; text-align: center; display: block; margin-left: 10px;">
+                    <h3 style="text-align: left;">Học viên : {{username}}</h3>
+                    <p style="text-align: left;">Lớp: IC3 riêng 2</p>
+                    <p style="text-align: left;">Giảng viên: <a href="https://www.facebook.com/nhat.luu.5" target="_blank">Nhất đẹp trai </a></p>
+                    <h3 v-if="isSubmited" style="text-align: left;">
+                        Số câu trả lời đúng: <span style="color: #e74c3c">{{totalCorrect}} / {{testQuests.length}}</span>
+                    </h3>
+                </div>
             </div>
             <div class="md-layout-item md-size-50">
                 <div class="md-layout md-gutter">
@@ -78,10 +80,10 @@
       <md-content style="padding: 25px; width: 400px;">
         <md-field>
           <label>Nhập tên của bạn vào đây nhé ^^</label>
-          <md-input v-model="username"></md-input>
+          <md-input v-model="inputName"></md-input>
         </md-field>
       </md-content>
-      <md-dialog-actions v-if="username">
+      <md-dialog-actions v-if="inputName">
         <md-button class="md-primary" @click="beginTest">Test nào !</md-button>
       </md-dialog-actions>
     </md-dialog>
@@ -108,12 +110,14 @@ export default {
       totalCorrect: 0,
       showExpandImage: false,
       currentImage: null,
+      inputName: null,
       username: null,
       showInputName: true
     }
   },
   methods: {
     beginTest () {
+        this.username = this.inputName
         this.showInputName = false
         this.fetchingQuest = true
         this.getAllQuestions()
