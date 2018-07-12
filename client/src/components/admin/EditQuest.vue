@@ -75,6 +75,20 @@
         </div>
       </div>
 
+      <!-- Type: Theory or practice -->
+      <div class="md-layout-item md-size-100">
+        <div class="md-layout md-gutter">
+          <div class="md-layout-item md-size-30">
+            <h5>Question Image</h5>
+          </div>
+          <div class="md-layout-item md-size-70">
+            <md-field>
+              <md-textarea v-model="editedQuest.image" required></md-textarea>
+            </md-field>
+          </div>
+        </div>
+      </div>
+
       <!-- Answers -->
       <div class="md-layout-item md-size-100">
         <md-divider></md-divider>

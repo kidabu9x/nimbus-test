@@ -5,6 +5,9 @@ import HelloWorld from '@/components/HelloWorld'
 // Admin component
 import Questions from '@/components/admin/Questions'
 
+// User component
+import Test from '@/components/user/Test'
+
 Vue.use(Router)
 
 export default new Router({
@@ -20,5 +23,10 @@ export default new Router({
       name: 'admin/questions',
       component: Questions
     },
+    {
+      path: '/test',
+      name: 'test',
+      component: Test
+    }
   ]
 })

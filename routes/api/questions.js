@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-// Item Model
+// Question Model
 const Question = require('../../models/Question');
 
 // @route   GET api/items
@@ -21,6 +21,7 @@ router.post('/', (req, res) => {
     type        : req.body.type,
     form        : req.body.form,
     content     : req.body.content,
+    image       : req.body.image,
     answers     : req.body.answers,
     description : req.body.description,
     definitely_appear: req.body.definitely_appear
@@ -38,6 +39,7 @@ router.put('/:id', (req, res) => {
       question.type        = req.body.type,
       question.form        = req.body.form,
       question.content     = req.body.content,
+      question.image       = req.body.image,
       question.answers     = req.body.answers,
       question.description = req.body.description,
       question.definitely_appear = req.body.definitely_appear

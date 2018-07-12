@@ -1,0 +1,209 @@
+<template>
+  <div class="test md-scrollbar">
+    <div class="loading" v-if="fetchingQuest">
+        <breeding-rhombus-spinner
+            :animation-duration="2000"
+            :size="65"
+            color="#e74c3c"
+        />
+    </div>
+    <div v-else class="md-layout md-gutter">
+        <div class="md-layout-item md-size-25" style="position: relative;">
+            <h3 v-if="isSubmited" style="position: fixed; top: 30%; text-align: center; display: block; margin-left: 10px;">
+                Your correct answers: <span style="color: #e74c3c">{{totalCorrect}}</span>
+            </h3>
+        </div>
+        <div class="md-layout-item md-size-50">
+            <div class="md-layout md-gutter">
+                <div class="md-layout-item md-size-100">
+                    <md-card v-for="(question, index) in testQuests" :key="question._id" :class="getClass(question)">
+                        <md-card-header>
+                            <div class="md-title">
+                                <h4 style="font-weight: 500;">
+                                    {{index + 1}}. <span class='paragraph'>{{question.content}}</span>
+                                </h4>
+                            </div>
+                            <div v-if="question.image" @click="expandImage(question.image)" class="question-image">
+                                <img :src="question.image">
+                            </div>
+                        </md-card-header>
+
+                        <md-card-content>
+                            <div v-for="answer in question.answers" :key="answer.label" style="font-size: 18px;" class="md-layout md-gutter">
+                                <div class="md-layout-item md-size-100">
+                                    <md-checkbox v-model="answer.is_correct" :class="{'checkbox-correct': answer.is_match}">
+                                        {{answer.label}}. <span class="paragraph">{{answer.content}}</span>
+                                    </md-checkbox>
+                                </div>
+                            </div>
+                            <p class='paragraph' style="color: #e74c3c;" v-if="isSubmited && question.description">
+                                {{question.description}}
+                            </p>
+                        </md-card-content>
+                    </md-card>
+                </div>
+                <div class="md-layout-item md-size-100">
+                    <div v-if="!isSubmitting && !isSubmited">
+                        <md-button style="margin-left: 40%;" class="md-raised md-accent" @click="submitResult">Submit</md-button>
+                    </div>
+                    <div v-if="isSubmitting && !isSubmited">
+                        <hollow-dots-spinner
+                            :animation-duration="1000"
+                            :dot-size="15"
+                            :dots-num="3"
+                            color="#e74c3c"
+                            style="margin-left: 40%;"
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="md-layout-item md-size-25"></div>
+    </div>
+    <md-dialog :md-active.sync="showExpandImage" v-if="currentImage" style="width: 100%;">
+      <md-content>
+          <img :src="currentImage" style="width: 100%;">
+      </md-content>
+      <md-dialog-actions>
+        <md-button class="md-primary" @click="showExpandImage = false">Close</md-button>
+      </md-dialog-actions>
+    </md-dialog>
+  </div>
+</template>
+
+<script>
+// Api
+import QuestAction from '@/api/QuestionApi'
+
+// Components
+import 'epic-spinners/dist/lib/epic-spinners.min.css'
+import {BreedingRhombusSpinner, HollowDotsSpinner } from 'epic-spinners/dist/lib/epic-spinners.min.js'
+
+export default {
+  name: 'Test',
+  data () {
+    return {
+      fetchingQuest: true,
+      origninQuests: [],
+      testQuests: [],
+      isSubmited: false,
+      isSubmitting: false,
+      totalCorrect: 0,
+      showExpandImage: false,
+      currentImage: null
+    }
+  },
+  mounted: function () {
+    this.getAllQuestions();
+  },
+  methods: {
+    async getAllQuestions () {
+      const response = await QuestAction.fetchQuestions()
+      this.origninQuests = response.data
+      this.testQuests = JSON.parse(JSON.stringify(response.data))
+      this.setResultToFalse()
+      this.fetchingQuest = false
+    },
+    setResultToFalse () {
+      this.testQuests.forEach(quest => {
+        quest.is_match = false
+        quest.answers.forEach(answer => {
+          answer.is_match = false
+          answer.is_correct = false
+        })
+      })
+    },
+    submitResult () {
+      this.isSubmitting = true
+      for (let i = 0; i < this.testQuests.length; i ++) {
+          let count = 0
+          for (let j = 0; j < this.testQuests[i].answers.length; j++) {
+            if (this.testQuests[i].answers[j].is_correct == this.origninQuests[i].answers[j].is_correct) {
+              this.testQuests[i].answers[j].is_match = true
+              count += 1
+            } else {
+              this.testQuests[i].answers[j].is_match = false
+              this.testQuests[i].answers[j].is_correct = this.origninQuests[i].answers[j].is_correct
+           }
+          }
+          if (count == this.testQuests[i].answers.length) {
+            this.testQuests[i].is_match = true
+            this.totalCorrect += 1
+          }
+          if (i == this.testQuests.length - 1) {
+            this.isSubmitting = false
+            this.isSubmited = true
+          }
+      }
+    },
+    getClass (question) {
+        if (this.isSubmited) {
+            return {
+                'is-correct'    : question.is_match,
+                'is-uncorrect'  : !question.is_match
+            }
+        } else {
+            return {}
+        }
+    },
+    expandImage (imgUrl) {
+        this.currentImage = imgUrl
+        this.showExpandImage = true
+    }
+  },
+  components: {
+    BreedingRhombusSpinner,
+    HollowDotsSpinner
+  }
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style>
+h1, h2 {
+  font-weight: normal;
+}
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+li {
+  display: inline-block;
+  margin: 0 10px;
+}
+a {
+  color: #42b983;
+}
+
+.loading {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  margin-top: -100px;
+}
+.paragraph {
+  white-space: pre-wrap;
+}
+.md-checkbox .md-checkbox-label {
+    height: auto;
+}
+.md-card.md-theme-default {
+    margin-top: 5px;
+}
+
+.is-correct {
+    border: 2px solid #27ae60;
+}
+.is-uncorrect {
+    border: 2px solid #c0392b;
+}
+
+.md-checkbox.md-theme-default.md-checked.checkbox-correct .md-checkbox-container {
+    background-color: #27ae60;
+    border-color: #27ae60;
+}
+
+.question-image {
+    cursor: zoom-in;
+}
+</style>

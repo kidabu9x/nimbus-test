@@ -111,7 +111,10 @@
 </template>
 
 <script>
+// Api
 import QuestAction from '@/api/QuestionApi'
+
+// Components
 import NewQuest from '@/components/admin/NewQuest'
 import EditQuest from '@/components/admin/EditQuest'
 

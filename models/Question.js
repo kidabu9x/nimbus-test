@@ -16,6 +16,10 @@ var QuestionSchema = new Schema({
   content: {
     type: String
   },
+  image: {
+    type: String,
+    default: null
+  },
   answers: {
     type: Array,
     default: []
