@@ -1,71 +1,88 @@
 <template>
   <div class="test md-scrollbar">
-    <div class="loading" v-if="fetchingQuest">
-        <breeding-rhombus-spinner
-            :animation-duration="2000"
-            :size="65"
-            color="#e74c3c"
-        />
-    </div>
-    <div v-else class="md-layout md-gutter">
-        <div class="md-layout-item md-size-25" style="position: relative;">
-            <h3 v-if="isSubmited" style="position: fixed; top: 30%; text-align: center; display: block; margin-left: 10px;">
-                Your correct answers: <span style="color: #e74c3c">{{totalCorrect}}</span>
-            </h3>
+    <div v-if="username">
+        <div class="loading" v-if="fetchingQuest">
+            <breeding-rhombus-spinner
+                :animation-duration="2000"
+                :size="65"
+                color="#e74c3c"
+            />
         </div>
-        <div class="md-layout-item md-size-50">
-            <div class="md-layout md-gutter">
-                <div class="md-layout-item md-size-100">
-                    <md-card v-for="(question, index) in testQuests" :key="question._id" :class="getClass(question)">
-                        <md-card-header>
-                            <div class="md-title">
-                                <h4 style="font-weight: 500;">
-                                    {{index + 1}}. <span class='paragraph'>{{question.content}}</span>
-                                </h4>
-                            </div>
-                            <div v-if="question.image" @click="expandImage(question.image)" class="question-image">
-                                <img :src="question.image">
-                            </div>
-                        </md-card-header>
-
-                        <md-card-content>
-                            <div v-for="answer in question.answers" :key="answer.label" style="font-size: 18px;" class="md-layout md-gutter">
-                                <div class="md-layout-item md-size-100">
-                                    <md-checkbox v-model="answer.is_correct" :class="{'checkbox-correct': answer.is_match}">
-                                        {{answer.label}}. <span class="paragraph">{{answer.content}}</span>
-                                    </md-checkbox>
+        <div v-else class="md-layout md-gutter">
+            <div class="md-layout-item md-size-25" style="position: relative;">
+                <h3 style="position: fixed; top: 30%; text-align: center; display: block; margin-left: 10px;">
+                    {{username}}
+                </h3>
+                <h3 v-if="isSubmited" style="position: fixed; top: 30%; text-align: center; display: block; margin-left: 10px;">
+                    Số câu trả lời đúng: <span style="color: #e74c3c">{{totalCorrect}}</span>
+                </h3>
+            </div>
+            <div class="md-layout-item md-size-50">
+                <div class="md-layout md-gutter">
+                    <div class="md-layout-item md-size-100">
+                        <md-card v-for="(question, index) in testQuests" :key="question._id" :class="getClass(question)">
+                            <md-card-header>
+                                <div class="md-title">
+                                    <h4 style="font-weight: 500;">
+                                        {{index + 1}}. <span class='paragraph'>{{question.content}}</span>
+                                    </h4>
                                 </div>
-                            </div>
-                            <p class='paragraph' style="color: #e74c3c;" v-if="isSubmited && question.description">
-                                {{question.description}}
-                            </p>
-                        </md-card-content>
-                    </md-card>
-                </div>
-                <div class="md-layout-item md-size-100">
-                    <div v-if="!isSubmitting && !isSubmited">
-                        <md-button style="margin-left: 40%;" class="md-raised md-accent" @click="submitResult">Submit</md-button>
+                                <div v-if="question.image" @click="expandImage(question.image)" class="question-image">
+                                    <img :src="question.image">
+                                </div>
+                            </md-card-header>
+
+                            <md-card-content>
+                                <div v-for="answer in question.answers" :key="answer.label" style="font-size: 18px;" class="md-layout md-gutter">
+                                    <div class="md-layout-item md-size-100">
+                                        <md-checkbox v-model="answer.is_correct" :class="{'checkbox-correct': answer.is_match}">
+                                            {{answer.label}}. <span class="paragraph">{{answer.content}}</span>
+                                        </md-checkbox>
+                                    </div>
+                                </div>
+                                <p class='paragraph' style="color: #e74c3c;" v-if="isSubmited && question.description">
+                                    {{question.description}}
+                                </p>
+                            </md-card-content>
+                        </md-card>
                     </div>
-                    <div v-if="isSubmitting && !isSubmited">
-                        <hollow-dots-spinner
-                            :animation-duration="1000"
-                            :dot-size="15"
-                            :dots-num="3"
-                            color="#e74c3c"
-                            style="margin-left: 40%;"
-                        />
+                    <div class="md-layout-item md-size-100">
+                        <div v-if="!isSubmitting && !isSubmited">
+                            <md-button style="margin-left: 40%;" class="md-raised md-accent" @click="submitResult">Submit</md-button>
+                        </div>
+                        <div v-if="isSubmitting && !isSubmited">
+                            <hollow-dots-spinner
+                                :animation-duration="1000"
+                                :dot-size="15"
+                                :dots-num="3"
+                                color="#e74c3c"
+                                style="margin-left: 40%;"
+                            />
+                        </div>
                     </div>
                 </div>
             </div>
+            <div class="md-layout-item md-size-25"></div>
         </div>
-        <div class="md-layout-item md-size-25"></div>
     </div>
+    
     <md-dialog :md-active.sync="showExpandImage" v-if="currentImage" style="width: 100%;">
       <md-content>
           <img :src="currentImage" style="width: 100%;">
       </md-content>
       <md-dialog-actions>
         <md-button class="md-primary" @click="showExpandImage = false">Close</md-button>
+      </md-dialog-actions>
+    </md-dialog>
+    <md-dialog :md-active.sync="showInputName" :md-click-outside-to-close="false">
+      <md-content style="padding: 25px; width: 400px;">
+        <md-field>
+          <label>Nhập tên của bạn vào đây nhé ^^</label>
+          <md-input v-model="username"></md-input>
+        </md-field>
+      </md-content>
+      <md-dialog-actions v-if="username">
+        <md-button class="md-primary" @click="beginTest">Test nào !</md-button>
       </md-dialog-actions>
     </md-dialog>
   </div>
@@ -83,20 +100,24 @@ export default {
   name: 'Test',
   data () {
     return {
-      fetchingQuest: true,
+      fetchingQuest: false,
       origninQuests: [],
       testQuests: [],
       isSubmited: false,
       isSubmitting: false,
       totalCorrect: 0,
       showExpandImage: false,
-      currentImage: null
+      currentImage: null,
+      username: null,
+      showInputName: true
     }
   },
-  mounted: function () {
-    this.getAllQuestions();
-  },
   methods: {
+    beginTest () {
+        this.showInputName = false
+        this.fetchingQuest = true
+        this.getAllQuestions()
+    },
     async getAllQuestions () {
       const response = await QuestAction.fetchQuestions()
       this.origninQuests = response.data
