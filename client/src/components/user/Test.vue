@@ -12,8 +12,8 @@
             <div class="md-layout-item md-size-25" style="position: relative;">
                 <div style="position: fixed; top: 30%; text-align: center; display: block; margin-left: 10px;">
                     <h3 style="text-align: left;">Học viên : {{username}}</h3>
-                    <p style="text-align: left;">Lớp: IC3 riêng 2</p>
-                    <p style="text-align: left;">Giảng viên: <a href="https://www.facebook.com/nhat.luu.5" target="_blank">Nhất đẹp trai </a></p>
+                    <!-- <p style="text-align: left;">Lớp: IC3 riêng 2</p>
+                    <p style="text-align: left;">Giảng viên: <a href="https://www.facebook.com/nhat.luu.5" target="_blank">Nhất đẹp trai </a></p> -->
                     <h3 v-if="isSubmited" style="text-align: left;">
                         Số câu trả lời đúng: <span style="color: #e74c3c">{{totalCorrect}} / {{testQuests.length}}</span>
                     </h3>
