@@ -76,23 +76,42 @@
         <md-button class="md-primary" @click="showExpandImage = false">Close</md-button>
       </md-dialog-actions>
     </md-dialog>
-    <md-dialog :md-active.sync="showInputName" :md-click-outside-to-close="false">
-      <md-content style="padding: 25px; width: 400px;">
-        <md-field>
-          <label>Nhập tên của bạn vào đây nhé ^^</label>
-          <md-input v-model="inputName"></md-input>
-        </md-field>
+
+    <md-dialog :md-active.sync="showStepper" :md-click-outside-to-close="false">
+      <md-content style="padding: 25px; width: 600px;">
+        <md-steppers :md-active-step.sync="stepActive" md-linear>
+            <md-step id="firstStep" md-label="Nhập tên" :md-done.sync="firstStep">
+                <md-field>
+                    <label>Nhập tên của bạn vào đây nhé ^^</label>
+                    <md-input v-model="inputName"></md-input>
+                </md-field>
+                <md-button style="float: right;" v-if="inputName" class="md-raised md-primary" @click="setDone('firstStep', 'secondStep')">Continue</md-button>
+            </md-step>
+
+            <md-step id="secondStep" md-label="Chọn đề" :md-done.sync="secondStep">
+                <div class="md-layout md-gutter">
+                    <div class="md-layout-item">
+                        <md-button class="md-raised md-primary" @click="beginTest">Module 1</md-button>
+                    </div>
+                    <div class="md-layout-item">
+                        <md-button class="md-raised md-primary" disabled>Module 3</md-button>
+                    </div>
+                    <div class="md-layout-item">
+                        <md-button class="md-raised md-primary" disabled>Tổng hợp</md-button>
+                    </div>
+                </div>
+            </md-step>
+
+        </md-steppers>
       </md-content>
-      <md-dialog-actions v-if="inputName">
-        <md-button class="md-primary" @click="beginTest">Test nào !</md-button>
-      </md-dialog-actions>
+      
     </md-dialog>
   </div>
 </template>
 
 <script>
 // Api
-import QuestAction from '@/api/QuestionApi'
+import TestApi from '@/api/TestApi'
 
 // Components
 import 'epic-spinners/dist/lib/epic-spinners.min.css'
@@ -112,18 +131,21 @@ export default {
       currentImage: null,
       inputName: null,
       username: null,
-      showInputName: true
+      showStepper: true,
+      firstStep: false,
+      secondStep: false,
+      stepActive: 'firstStep',
     }
   },
   methods: {
     beginTest () {
         this.username = this.inputName
-        this.showInputName = false
+        this.showStepper = false
         this.fetchingQuest = true
         this.getAllQuestions()
     },
     async getAllQuestions () {
-      const response = await QuestAction.fetchQuestions()
+      const response = await TestApi.fetchTest()
       this.origninQuests = response.data
       this.testQuests = JSON.parse(JSON.stringify(response.data))
       this.setResultToFalse()
@@ -174,6 +196,13 @@ export default {
     expandImage (imgUrl) {
         this.currentImage = imgUrl
         this.showExpandImage = true
+    },
+    setDone (id, index) {
+        this[id] = true
+
+        if (index) {
+            this.stepActive = index
+        }
     }
   },
   components: {

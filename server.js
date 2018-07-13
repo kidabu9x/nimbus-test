@@ -21,6 +21,8 @@ mongoose
 // Routes
 const questions = require('./routes/api/questions')
 app.use('/api/questions', questions)
+const test = require('./routes/api/test')
+app.use('/api/test', test)
 
 // Serve static assets if in production
 if (process.env.NODE_ENV === 'production') {
