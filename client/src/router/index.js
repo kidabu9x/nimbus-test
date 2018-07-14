@@ -1,11 +1,12 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
 
 // Admin component
+import Admin from '@/components/admin/Admin'
 import Questions from '@/components/admin/Questions'
 
 // User component
+import User from '@/components/user/User'
 import Test from '@/components/user/Test'
 
 Vue.use(Router)
@@ -16,17 +17,25 @@ export default new Router({
     {
       path: '/',
       name: 'HelloWorld',
-      component: HelloWorld
+      component: User,
+      children: [
+        {
+          path: 'test',
+          component: Test
+        }
+      ]
     },
     {
-      path: '/admin/questions',
-      name: 'admin/questions',
-      component: Questions
-    },
-    {
-      path: '/test',
-      name: 'test',
-      component: Test
+      path: '/admin',
+      name: 'admin',
+      component: Admin,
+      children: [
+        {
+          path: 'questions',
+          component: Questions,
+        }
+      ]
     }
+    
   ]
 })
