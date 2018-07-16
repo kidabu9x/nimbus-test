@@ -96,9 +96,7 @@
                     <div class="md-layout-item">
                         <md-button class="md-raised md-primary" disabled>Module 3</md-button>
                     </div>
-                    <div class="md-layout-item">
-                        <md-button class="md-raised md-primary" disabled>Tổng hợp</md-button>
-                    </div>
+                    
                 </div>
             </md-step>
 
@@ -146,6 +144,7 @@ export default {
     },
     async getAllQuestions () {
       const response = await TestApi.fetchTest()
+      console.log(response)
       this.origninQuests = response.data
       this.testQuests = JSON.parse(JSON.stringify(response.data))
       this.setResultToFalse()
