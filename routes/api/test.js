@@ -5,16 +5,55 @@ const router = express.Router();
 const Question = require('../../models/Question');
 
 // @route   GET api/items
-// @desc    Get All Questions
+// @desc    Get Questions From MODULE 1
 // @access  Public
-router.get('/:module', (req, res) => {
+router.get('/1', (req, res) => {
   Question.find(
       {
-        module: Number(req.params.module),
+        module: 1
+      }
+    )
+    .then(questions => {
+      let totalQuests = Math.floor(Math.random() * 2) + 38;
+      let response = questions.filter(q => q.definitely_appear);
+      let pending = questions.filter(q => !q.definitely_appear);
+      let forms = [];
+      for (let question of pending) {
+        if (response.length < totalQuests) {
+          if ((forms.length == 0 || !forms.some(form => form.form == question.form)) && question.form != 1) {
+            forms.push({
+              form: question.form,
+              count: 1
+            })
+            response.push(question)
+          } else {
+            forms.forEach(form => {
+              if (form.form == question.form && form.count < 2) {
+                response.push(question)
+                form.count ++
+              }
+            })
+          }
+        }
+      }
+
+      res.json(response)
+    });
+});
+
+// @route   GET api/items
+// @desc    Get Questions From MODULE 3
+// @access  Public
+router.get('/3', (req, res) => {
+  Question.find(
+      {
+        module: 3,
         definitely_appear: true
       }
     )
-    .then(questions => res.json(questions));
+    .then(questions => {
+      res.json(questions);
+    });
 });
 
 // @route   POST api/items

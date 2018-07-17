@@ -139,12 +139,14 @@ export default {
     beginTest (module) {
         this.username = this.inputName
         this.showStepper = false
-        this.fetchingQuest = true
+        
         this.module = module
         this.getAllQuestions(module)
     },
     async getAllQuestions () {
+      this.fetchingQuest = true
       const response = await TestApi.fetchTest(this.module)
+      console.log(response.data)
       this.origninQuests = response.data
       this.testQuests = JSON.parse(JSON.stringify(response.data))
       this.setResultToFalse()
