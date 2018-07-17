@@ -7,10 +7,10 @@ const Question = require('../../models/Question');
 // @route   GET api/items
 // @desc    Get All Questions
 // @access  Public
-router.get('/', (req, res) => {
+router.get('/:module', (req, res) => {
   Question.find(
       {
-        module: 1,
+        module: Number(req.params.module),
         definitely_appear: true
       }
     )

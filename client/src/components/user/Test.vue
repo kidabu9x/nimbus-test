@@ -12,8 +12,7 @@
             <div class="md-layout-item md-size-25" style="position: relative;">
                 <div style="position: fixed; top: 30%; text-align: center; display: block; margin-left: 10px;">
                     <h3 style="text-align: left;">Học viên : {{username}}</h3>
-                    <!-- <p style="text-align: left;">Lớp: IC3 riêng 2</p>
-                    <p style="text-align: left;">Giảng viên: <a href="https://www.facebook.com/nhat.luu.5" target="_blank">Nhất đẹp trai </a></p> -->
+                    <h3 style="text-align: left;">Module : {{module}}</h3>
                     <h3 v-if="isSubmited" style="text-align: left;">
                         Số câu trả lời đúng: <span style="color: #e74c3c">{{totalCorrect}} / {{testQuests.length}}</span>
                     </h3>
@@ -91,10 +90,10 @@
             <md-step id="secondStep" md-label="Chọn đề" :md-done.sync="secondStep">
                 <div class="md-layout md-gutter">
                     <div class="md-layout-item">
-                        <md-button class="md-raised md-primary" @click="beginTest">Module 1</md-button>
+                        <md-button class="md-raised md-primary" @click="beginTest(1)">Module 1</md-button>
                     </div>
                     <div class="md-layout-item">
-                        <md-button class="md-raised md-primary" disabled>Module 3</md-button>
+                        <md-button class="md-raised md-primary" @click="beginTest(3)">Module 3</md-button>
                     </div>
                     
                 </div>
@@ -132,19 +131,20 @@ export default {
       showStepper: true,
       firstStep: false,
       secondStep: false,
+      module: null,
       stepActive: 'firstStep',
     }
   },
   methods: {
-    beginTest () {
+    beginTest (module) {
         this.username = this.inputName
         this.showStepper = false
         this.fetchingQuest = true
-        this.getAllQuestions()
+        this.module = module
+        this.getAllQuestions(module)
     },
     async getAllQuestions () {
-      const response = await TestApi.fetchTest()
-      console.log(response)
+      const response = await TestApi.fetchTest(this.module)
       this.origninQuests = response.data
       this.testQuests = JSON.parse(JSON.stringify(response.data))
       this.setResultToFalse()
