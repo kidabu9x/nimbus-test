@@ -58,7 +58,7 @@
             <div class="md-layout md-gutter">
                 <div class="md-layout md-gutter">
                     <div class="md-layout-item md-size-30">
-                        <h5>Time</h5>
+                        <h5>Time(minutes)</h5>
                     </div>
                     <div class="md-layout-item md-size-70">
                         <md-field>
@@ -107,7 +107,6 @@ export default {
   methods: {
     async createNewTestClass () {
         let response = await TestClassApi.createNewTestClass(this.newTest);
-        console.log(response)
         this.$emit('reload-test');
         this.$emit('close-modal');
     },

@@ -21,8 +21,10 @@ mongoose
 // Routes
 const questions = require('./routes/api/questions')
 app.use('/api/questions', questions)
-const test = require('./routes/api/test')
-app.use('/api/test', test)
+
+// User
+const testUser = require('./routes/api/user/testClass')
+app.use('/api/test-class', testUser)
 
 // Admin
 const testAdmin = require('./routes/api/admin/testClass')

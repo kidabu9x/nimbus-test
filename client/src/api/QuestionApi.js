@@ -12,5 +12,8 @@ export default {
     },
     deleteQuestion (questionId) {
       return Api().delete('/api/questions/' + questionId)
+    },
+    createExam (module) {
+      return Api().get(`/api/questions/${module}`)
     }
 }

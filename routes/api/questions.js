@@ -12,6 +12,55 @@ router.get('/', (req, res) => {
     .then(questions => res.json(questions));
 });
 
+// @route   GET api/questions/:module
+// @desc    Create an examl
+// @access  Public
+router.get('/:module', (req, res) => {
+  let module = req.params.module;
+  if (module == 1) {
+    Question.find(
+      {
+        module: 1
+      }
+    )
+    .then(questions => {
+      let totalQuests = Math.floor(Math.random() * 2) + 38;
+      let response = questions.filter(q => q.definitely_appear);
+      let pending = questions.filter(q => !q.definitely_appear);
+      let forms = [];
+      for (let question of pending) {
+        if (response.length < totalQuests) {
+          if ((forms.length == 0 || !forms.some(form => form.form == question.form)) && question.form != 1) {
+            forms.push({
+              form: question.form,
+              count: 1
+            })
+            response.push(question)
+          } else {
+            forms.forEach(form => {
+              if (form.form == question.form && form.count < 2) {
+                response.push(question)
+                form.count ++
+              }
+            })
+          }
+        }
+      }
+      res.json(response)
+    });
+  } else if (module == 3) {
+    Question.find(
+      {
+        module: 3,
+        definitely_appear: true
+      }
+    )
+    .then(questions => {
+      res.json(questions);
+    });
+  }
+});
+
 // @route   POST api/items
 // @desc    Create A Question
 // @access  Public

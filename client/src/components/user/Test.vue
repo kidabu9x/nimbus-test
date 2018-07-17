@@ -1,7 +1,7 @@
 <template>
   <div class="test md-scrollbar">
     <div v-if="username">
-        <div class="loading" v-if="fetchingQuest">
+        <div class="loading" v-if="creatingExam">
             <breeding-rhombus-spinner
                 :animation-duration="2000"
                 :size="65"
@@ -11,10 +11,15 @@
         <div v-else class="md-layout md-gutter">
             <div class="md-layout-item md-size-25" style="position: relative;">
                 <div style="position: fixed; top: 30%; text-align: center; display: block; margin-left: 10px;">
+                    <h3 style="text-align: left;">Lớp : {{settings.name}}</h3>
                     <h3 style="text-align: left;">Học viên : {{username}}</h3>
-                    <h3 style="text-align: left;">Module : {{module}}</h3>
+                    <h3 style="text-align: left;">Module : {{settings.module}}</h3>
                     <h3 v-if="isSubmited" style="text-align: left;">
                         Số câu trả lời đúng: <span style="color: #e74c3c">{{totalCorrect}} / {{testQuests.length}}</span>
+                        
+                    </h3>
+                    <h3 v-if="isSubmited" style="text-align: left;">
+                        Tổng số điểm: <span style="color: #e74c3c">{{totalCorrect*pointPerQuest}}/1000</span>
                     </h3>
                 </div>
             </div>
@@ -63,7 +68,16 @@
                     </div>
                 </div>
             </div>
-            <div class="md-layout-item md-size-25"></div>
+            <div class="md-layout-item md-size-25" style="position: relative;">
+                <div style="position: fixed; bottom: 5%;">
+                    <countdown :time="settings.time*60*1000" :auto-start="false" ref="countdown" @countdownend="submitResult">
+                        <template slot-scope="props">
+                            Time Remaining：{{ props.minutes }} : {{ props.seconds }}
+                        </template>
+                    </countdown>
+
+                </div>
+            </div>
         </div>
     </div>
     
@@ -84,7 +98,7 @@
                     <label>Nhập tên của bạn vào đây nhé ^^</label>
                     <md-input v-model="inputName"></md-input>
                 </md-field>
-                <md-button style="float: right;" v-if="inputName" class="md-raised md-primary" @click="setDone('firstStep', 'secondStep')">Continue</md-button>
+                <md-button style="float: right;" v-if="inputName" class="md-raised md-primary" @click="setDone('firstStep', 'secondStep')">Tiếp tục</md-button>
             </md-step>
 
             <md-step id="secondStep" md-label="Nhập code" :md-done.sync="secondStep">
@@ -97,8 +111,8 @@
                         </md-field>
                     </div>
                     <div class="md-layout-item">
-                        <md-button v-if="code && code.length == 9" class="md-raised md-primary" style="margin: auto; display: block; margin-top: 20px;" @click="beginTest()">
-                            Test nàoo !!!
+                        <md-button v-if="code && code.length == 9" class="md-raised md-primary" style="margin: auto; display: block; margin-top: 20px;" @click="checkCode()">
+                            Kiểm tra code
                         </md-button>
                     </div>
                 </div>
@@ -113,21 +127,24 @@
 
 <script>
 // Api
-import TestApi from '@/api/TestApi'
+import TestApi from '@/api/user/TestClassApi';
+import QuestionApi from '@/api/QuestionApi';
 
 // Components
-import 'epic-spinners/dist/lib/epic-spinners.min.css'
-import {BreedingRhombusSpinner, HollowDotsSpinner } from 'epic-spinners/dist/lib/epic-spinners.min.js'
+import 'epic-spinners/dist/lib/epic-spinners.min.css';
+import {BreedingRhombusSpinner, HollowDotsSpinner } from 'epic-spinners/dist/lib/epic-spinners.min.js';
+import VueCountdown from '@xkeshi/vue-countdown';
 
 export default {
   name: 'Test',
   data () {
     return {
-      fetchingQuest: false,
+      creatingExam: false,
       origninQuests: [],
       testQuests: [],
       isSubmited: false,
       isSubmitting: false,
+      pointPerQuest: 0,
       totalCorrect: 0,
       showExpandImage: false,
       currentImage: null,
@@ -136,26 +153,38 @@ export default {
       showStepper: true,
       firstStep: false,
       secondStep: false,
-      module: null,
       code: null,
       stepActive: 'firstStep',
+      settings: null
     }
   },
   methods: {
-    beginTest (module) {
+    async checkCode() {
+        const response = await TestApi.checkCode(this.code);
+        if (response.data.error) {
+            this.noticeError(response.data.error);
+        } else {
+            this.noticeSuccess('Test nào !!!');
+            this.settings = response.data;
+            this.beginTest();
+        }
+    },
+    beginTest () {
         this.username = this.inputName
         this.showStepper = false
-        
-        this.module = module
-        this.getAllQuestions(module)
+        this.creatingExam = true
+        this.createExam()
     },
-    async getAllQuestions () {
-      this.fetchingQuest = true
-      const response = await TestApi.fetchTest(this.module)
-      this.origninQuests = response.data
-      this.testQuests = JSON.parse(JSON.stringify(response.data))
-      this.setResultToFalse()
-      this.fetchingQuest = false
+    async createExam () {
+      const response = await QuestionApi.createExam(this.settings.module);
+      this.pointPerQuest = Math.floor(1000 / response.data.length);
+      this.origninQuests = response.data;
+      this.testQuests = JSON.parse(JSON.stringify(response.data));
+      this.setResultToFalse();
+      this.creatingExam = false;
+      setTimeout(() => {
+          this.$refs.countdown.start();
+      }, 5*1000);
     },
     setResultToFalse () {
       this.testQuests.forEach(quest => {
@@ -166,28 +195,28 @@ export default {
         })
       })
     },
-    submitResult () {
+    async submitResult () {
       this.isSubmitting = true
+      this.$refs.countdown.stop();
       for (let i = 0; i < this.testQuests.length; i ++) {
-          let count = 0
+          let count = 0;
           for (let j = 0; j < this.testQuests[i].answers.length; j++) {
             if (this.testQuests[i].answers[j].is_correct == this.origninQuests[i].answers[j].is_correct) {
-              this.testQuests[i].answers[j].is_match = true
-              count += 1
+              this.testQuests[i].answers[j].is_match = true;
+              count += 1;
             } else {
-              this.testQuests[i].answers[j].is_match = false
-              this.testQuests[i].answers[j].is_correct = this.origninQuests[i].answers[j].is_correct
+              this.testQuests[i].answers[j].is_match = false;
+              this.testQuests[i].answers[j].is_correct = this.origninQuests[i].answers[j].is_correct;
            }
           }
           if (count == this.testQuests[i].answers.length) {
-            this.testQuests[i].is_match = true
-            this.totalCorrect += 1
-          }
-          if (i == this.testQuests.length - 1) {
-            this.isSubmitting = false
-            this.isSubmited = true
+            this.testQuests[i].is_match = true;
+            this.totalCorrect += 1;
           }
       }
+      let response = await TestApi.createNewAnswer(this.settings.handle, this.username, this.totalCorrect, this.pointPerQuest, this.testQuests, this.origninQuests);
+      this.isSubmitting = false;
+      this.isSubmited = true;
     },
     getClass (question) {
         if (this.isSubmited) {
@@ -209,11 +238,28 @@ export default {
         if (index) {
             this.stepActive = index
         }
+    },
+    noticeError (msg) {
+        this.$toasted.show(msg, {
+            theme: "bubble", 
+            position: "top-right", 
+            duration : 5000,
+            type: 'error'
+        });
+    },
+    noticeSuccess (msg) {
+        this.$toasted.show(msg, {
+            theme: "bubble", 
+            position: "top-right", 
+            duration : 5000,
+            type: 'success'
+        });
     }
   },
   components: {
     BreedingRhombusSpinner,
-    HollowDotsSpinner
+    HollowDotsSpinner,
+    countdown: VueCountdown
   }
 }
 </script>
