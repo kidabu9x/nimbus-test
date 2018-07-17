@@ -11,6 +11,7 @@ import router from './router'
 Vue.config.productionTip = false
 Vue.use(VueMaterial)
 Vue.use(Toasted)
+Vue.use(require('vue-moment'))
 
 /* eslint-disable no-new */
 new Vue({

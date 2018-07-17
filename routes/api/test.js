@@ -36,7 +36,6 @@ router.get('/1', (req, res) => {
           }
         }
       }
-
       res.json(response)
     });
 });

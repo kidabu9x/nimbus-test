@@ -2,7 +2,7 @@
   <div class="page-container">
     <md-app md-waterfall md-mode="fixed" class="md-scrollbar">
       <md-app-toolbar class="md-primary">
-        <span class="md-title">Questions</span>
+        <span class="md-title">Admin</span>
       </md-app-toolbar>
 
       <md-app-drawer md-permanent="full">
@@ -11,9 +11,13 @@
         </md-toolbar>
 
         <md-list>
-          <md-list-item>
+          <md-list-item href="/admin/questions">
             <md-icon>question_answer</md-icon>
             <span class="md-list-item-text">Questions</span>
+          </md-list-item>
+          <md-list-item href="/admin/tests">
+            <md-icon>assignment</md-icon>
+            <span class="md-list-item-text">Test Class</span>
           </md-list-item>
           <md-list-item>
             <md-icon>library_books</md-icon>
@@ -44,4 +48,7 @@ export default {
 </script>
 
 <style lang="scss">
+.md-list-item {
+  cursor: pointer;
+}
 </style>

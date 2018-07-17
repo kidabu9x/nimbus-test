@@ -87,15 +87,20 @@
                 <md-button style="float: right;" v-if="inputName" class="md-raised md-primary" @click="setDone('firstStep', 'secondStep')">Continue</md-button>
             </md-step>
 
-            <md-step id="secondStep" md-label="Chọn đề" :md-done.sync="secondStep">
+            <md-step id="secondStep" md-label="Nhập code" :md-done.sync="secondStep">
                 <div class="md-layout md-gutter">
                     <div class="md-layout-item">
-                        <md-button class="md-raised md-primary" @click="beginTest(1)">Module 1</md-button>
+                        <md-field>
+                            <label>Code</label>
+                            <md-input v-model="code"></md-input>
+                            <span class="md-helper-text">*Gồm 9 ký tự.</span>
+                        </md-field>
                     </div>
                     <div class="md-layout-item">
-                        <md-button class="md-raised md-primary" @click="beginTest(3)">Module 3</md-button>
+                        <md-button v-if="code && code.length == 9" class="md-raised md-primary" style="margin: auto; display: block; margin-top: 20px;" @click="beginTest()">
+                            Test nàoo !!!
+                        </md-button>
                     </div>
-                    
                 </div>
             </md-step>
 
@@ -132,6 +137,7 @@ export default {
       firstStep: false,
       secondStep: false,
       module: null,
+      code: null,
       stepActive: 'firstStep',
     }
   },
@@ -146,7 +152,6 @@ export default {
     async getAllQuestions () {
       this.fetchingQuest = true
       const response = await TestApi.fetchTest(this.module)
-      console.log(response.data)
       this.origninQuests = response.data
       this.testQuests = JSON.parse(JSON.stringify(response.data))
       this.setResultToFalse()

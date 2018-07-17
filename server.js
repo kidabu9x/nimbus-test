@@ -24,6 +24,10 @@ app.use('/api/questions', questions)
 const test = require('./routes/api/test')
 app.use('/api/test', test)
 
+// Admin
+const testAdmin = require('./routes/api/admin/testClass')
+app.use('/api/admin/test-class', testAdmin)
+
 // Serve static assets if in production
 if (process.env.NODE_ENV === 'production') {
   // Set static folder
