@@ -86,7 +86,7 @@
           <img :src="currentImage" style="width: 100%;">
       </md-content>
       <md-dialog-actions>
-        <md-button class="md-primary" @click="showExpandImage = false">Close</md-button>
+        <md-button class="md-primary" @click="showExpandImage = false">Đóng</md-button>
       </md-dialog-actions>
     </md-dialog>
 

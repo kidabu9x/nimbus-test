@@ -8,7 +8,7 @@
                     </div>
                     <div class="md-layout-item md-size-70">
                         <md-field>
-                            <md-select v-model="newTest.teacher_name">
+                            <md-select v-model="newTest.teacher_name" placeholder="Teacher">
                                 <md-option value="Huy Nguyễn">Huy Nguyễn</md-option>
                                 <md-option value="Huy Đỗ">Huy Đỗ</md-option>
                                 <md-option value="Quân">Quân</md-option>

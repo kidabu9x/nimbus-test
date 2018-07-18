@@ -31,23 +31,19 @@ router.post('/', (req, res) => {
 // @route   UPDATE api/items
 // @desc    Update A Question
 // @access  Public
-// router.put('/:id', (req, res) => {
-//   Question.findById(req.params.id)
-//     .then(question => {
-//       question.module      = req.body.module,
-//       question.type        = req.body.type,
-//       question.form        = req.body.form,
-//       question.content     = req.body.content,
-//       question.image       = req.body.image,
-//       question.answers     = req.body.answers,
-//       question.description = req.body.description,
-//       question.definitely_appear = req.body.definitely_appear
-//       question.save()
-//         .then(() => res.json({success: true}))
-//         .catch(err => res.json({success: false}))
-//     })
-//     .catch(err => res.status(404).json({ success: false }));
-// });
+router.put('/:key', (req, res) => {
+  TestClass.findOne({
+    handle: req.params.key
+  })
+    .then(test => {
+      test.active = !test.active;
+      let msg = test.active ? `Active '${test.name}' success !!!` : `Deactive '${test.name}' success !!!`;
+      test.save()
+        .then(() => res.json({msg: msg}))
+        .catch(err => console.log(err))
+    })
+    .catch(err => res.status(404).json({key : req.params.key}));
+});
 
 // @route   DELETE api/items/:id
 // @desc    Delete A Question

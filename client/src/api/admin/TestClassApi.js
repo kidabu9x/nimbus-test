@@ -7,7 +7,7 @@ export default {
     createNewTestClass (newTest) {
         return Api().post(`/api/admin/test-class`, newTest);
     },
-    createExamFromTest(keyClass) {
-        return Api().get(`/api/test-class/${keyClass}`);
+    updateStatus(handle) {
+        return Api().put(`/api/admin/test-class/${handle}`);
     }
 }
