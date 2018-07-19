@@ -197,7 +197,7 @@ export default {
     },
     async submitResult () {
       this.isSubmitting = true
-      this.$refs.countdown.stop();
+    //   this.$refs.countdown.stop();
       for (let i = 0; i < this.testQuests.length; i ++) {
           let count = 0;
           for (let j = 0; j < this.testQuests[i].answers.length; j++) {
@@ -214,7 +214,7 @@ export default {
             this.totalCorrect += 1;
           }
       }
-      let response = await TestApi.createNewAnswer(this.settings.handle, this.username, this.totalCorrect, this.pointPerQuest, this.testQuests, this.origninQuests);
+    //   let response = await TestApi.createNewAnswer(this.settings.handle, this.username, this.totalCorrect, this.testQuests);
       this.isSubmitting = false;
       this.isSubmited = true;
     },

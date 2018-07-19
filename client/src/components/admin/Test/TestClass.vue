@@ -48,7 +48,10 @@
                     <span style="color: #ff5252;">{{ item.handle }}</span>
                 </md-table-cell>
                 <md-table-cell md-label="Module">{{ item.module }}</md-table-cell>
-                <md-table-cell md-label="Students">{{ item.number_of_students }}</md-table-cell>
+                <md-table-cell md-label="Students">
+                    <span v-if="item.results.length == item.number_of_students" style="color: rgb(255, 82, 82);">{{ item.results.length }} /{{ item.number_of_students }}</span>
+                    <span v-else>{{ item.results.length }} /{{ item.number_of_students }}</span>
+                </md-table-cell>
                 <md-table-cell md-label="Time">{{ item.time }}</md-table-cell>
                 <md-table-cell md-label="Actions">
                     <md-switch v-model="item.active" @change="updateStatus(item.handle)">

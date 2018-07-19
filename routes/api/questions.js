@@ -28,18 +28,27 @@ router.get('/:module', (req, res) => {
       let response = questions.filter(q => q.definitely_appear);
       let pending = questions.filter(q => !q.definitely_appear);
       let forms = [];
-      for (let question of pending) {
-        if (response.length < totalQuests) {
-          if ((forms.length == 0 || !forms.some(form => form.form == question.form)) && question.form != 1) {
+
+      function getRandomQuest() {
+        return pending[Math.round(Math.random() * (pending.length - 1))];
+      }
+      
+      function questExists(quest) {
+        return response.indexOf(quest) > -1;
+      }
+      while (response.length < totalQuests) {
+        let randQuest = getRandomQuest();
+        if (!questExists(randQuest) && randQuest.form != 1) {
+          if (forms.length == 0 || !forms.some(form => form.form == randQuest.form)) {
             forms.push({
-              form: question.form,
+              form: randQuest.form,
               count: 1
             })
-            response.push(question)
+            response.push(randQuest)
           } else {
             forms.forEach(form => {
-              if (form.form == question.form && form.count < 2) {
-                response.push(question)
+              if (form.form == randQuest.form && form.count < 2) {
+                response.push(randQuest)
                 form.count ++
               }
             })
