@@ -55,7 +55,15 @@ router.get('/:module', (req, res) => {
           }
         }
       }
-      res.json(response)
+      function shuffleArr(a) {
+        for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+      }
+      shuffleArr(response);
+      res.json(response);
     });
   } else if (module == 3) {
     Question.find(
@@ -65,6 +73,14 @@ router.get('/:module', (req, res) => {
       }
     )
     .then(questions => {
+      function shuffleArr(a) {
+        for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+      }
+      shuffleArr(questions);
       res.json(questions);
     });
   }
