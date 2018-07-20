@@ -9,6 +9,7 @@
                     <div class="md-layout-item md-size-70">
                         <md-field>
                             <md-select v-model="newTest.teacher_name" placeholder="Teacher">
+                                <md-option value="Dương Đẹp Trai">Dương Đẹp Trai</md-option>
                                 <md-option value="Huy Nguyễn">Huy Nguyễn</md-option>
                                 <md-option value="Huy Đỗ">Huy Đỗ</md-option>
                                 <md-option value="Quân">Quân</md-option>
@@ -89,7 +90,7 @@
 </template>
 <script>
 // Api
-import TestClassApi from "@/api/admin/TestClassApi";
+import TestApi from "@/api/TestApi";
 
 export default {
   name: "test",
@@ -106,10 +107,27 @@ export default {
   },
   methods: {
     async createNewTestClass () {
-        let response = await TestClassApi.createNewTestClass(this.newTest);
+        let response = await TestApi.createNewTestClass(this.newTest);
+        this.noticeSuccess(`Create '${response.data.name}' success`);
         this.$emit('reload-test');
         this.$emit('close-modal');
     },
+    noticeError (msg) {
+        this.$toasted.show(msg, {
+            theme: "bubble", 
+            position: "top-right", 
+            duration : 5000,
+            type: 'error'
+        });
+    },
+    noticeSuccess (msg) {
+        this.$toasted.show(msg, {
+            theme: "bubble", 
+            position: "top-right", 
+            duration : 5000,
+            type: 'success'
+        });
+    }
   },
   components: {
   }

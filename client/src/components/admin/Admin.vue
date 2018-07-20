@@ -17,7 +17,7 @@
           </md-list-item>
           <md-list-item href="/admin/tests">
             <md-icon>assignment</md-icon>
-            <span class="md-list-item-text">Test Class</span>
+            <span class="md-list-item-text">Test</span>
           </md-list-item>
           <md-list-item>
             <md-icon>library_books</md-icon>

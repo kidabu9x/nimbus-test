@@ -127,7 +127,7 @@
 
 <script>
 // Api
-import TestApi from '@/api/user/TestClassApi';
+import TestApi from '@/api/TestApi';
 import QuestionApi from '@/api/QuestionApi';
 
 // Components

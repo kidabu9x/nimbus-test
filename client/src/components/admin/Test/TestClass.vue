@@ -9,7 +9,7 @@
         </md-empty-state>
     </div>
     <div v-else class="all-tests">
-        <md-table v-model="filteredList" md-card>
+        <md-table v-model="filteredList" md-card md-fixed-header>
             <md-table-toolbar>
                 <div class="md-toolbar-section-start">
                     <div class="md-layout md-gutter">
@@ -47,30 +47,40 @@
                 <md-table-cell md-label="Code">
                     <span style="color: #ff5252;">{{ item.handle }}</span>
                 </md-table-cell>
-                <md-table-cell md-label="Module">{{ item.module }}</md-table-cell>
+                <md-table-cell md-label="Module">
+                    <div>
+                        <md-radio v-model="item.module" :value='1' @change="updateTest(item.handle, {module: 1})">Module 1</md-radio>
+                    </div>
+                    <div>
+                        <md-radio v-model="item.module" :value='3' @change="updateTest(item.handle, {module: 3})">Module 3</md-radio>
+                    </div>
+                </md-table-cell>
                 <md-table-cell md-label="Students">
-                    <span v-if="item.results.length == item.number_of_students" style="color: rgb(255, 82, 82);">{{ item.results.length }} /{{ item.number_of_students }}</span>
-                    <span v-else>{{ item.results.length }} /{{ item.number_of_students }}</span>
+                    <span v-if="item.results.length == item.number_of_students" style="color: rgb(255, 82, 82);">{{ item.results.length }}/{{ item.number_of_students }}</span>
+                    <span v-else>{{ item.results.length }}/{{ item.number_of_students }}</span>
                 </md-table-cell>
                 <md-table-cell md-label="Time">{{ item.time }}</md-table-cell>
                 <md-table-cell md-label="Actions">
-                    <md-switch v-model="item.active" @change="updateStatus(item.handle)">
-                        <span v-if="item.active" style="color: #ff5252;">Active</span>
-                        <span v-else>Inactive</span>
-                    </md-switch>
-                    <md-button class="md-primary">
-                        <md-icon>list_alt</md-icon>
-                        Results
-                    </md-button>
+                    <div>
+                        <md-switch v-model="item.active" @change="updateTest(item.handle, {active: item.active})">
+                            <span v-if="item.active" style="color: #ff5252;">Active</span>
+                            <span v-else>Inactive</span>
+                        </md-switch>
+                    </div>
+                    <div>
+                        <md-button style="font-weight: inherit; text-transform: none; margin-left: 0;">
+                            <md-icon>list_alt</md-icon>
+                            See results
+                        </md-button>
+                    </div>
                 </md-table-cell>
             </md-table-row>
-            
         </md-table>
     </div>
     <md-dialog :md-active.sync="openTestModal">
       <md-dialog-title>New Test</md-dialog-title>
       <md-content>
-        <test-new-class ref="newClass" @reload-test="fetchTestClass" @close-modal="openTestModal = false"></test-new-class>
+        <new-test ref="newClass" @reload-test="fetchTestClass" @close-modal="openTestModal = false"></new-test>
       </md-content>
       <md-dialog-actions>
         <md-button class="md-primary" @click="openTestModal = false">Close</md-button>
@@ -81,10 +91,10 @@
 </template>
 <script>
 // Api
-import TestClassApi from "@/api/admin/TestClassApi";
+import TestApi from "@/api/TestApi";
 
 // Components
-import TestNewClass from "@/components/admin/Test/TestNewClass";
+import NewTest from "@/components/admin/Test/NewTest";
 
 export default {
   name: "test",
@@ -122,11 +132,11 @@ export default {
         this.$refs.newClass.createNewTestClass();
     },
     async fetchTestClass () {
-        let response = await TestClassApi.fetchTestClass();
+        let response = await TestApi.fetchTestClass();
         this.testClass = response.data;
     },
-    async updateStatus(handle){
-        let response = await TestClassApi.updateStatus(handle);
+    async updateTest(handle, updateField){
+        let response = await TestApi.updateTest(handle, updateField);
         this.noticeSuccess(response.data.msg)
     },
     noticeError (msg) {
@@ -147,7 +157,7 @@ export default {
     }
   },
   components: {
-      TestNewClass
+    NewTest
   }
 };
 </script>
