@@ -15,5 +15,8 @@ export default {
     },
     createExam (module) {
       return Api().get(`/api/questions/${module}`)
+    },
+    checkQuest (quest) {
+      return Api().post(`/api/questions/${quest._id}`, quest);
     }
 }

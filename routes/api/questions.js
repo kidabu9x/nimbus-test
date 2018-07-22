@@ -4,7 +4,7 @@ const router = express.Router();
 // Question Model
 const Question = require('../../models/Question');
 
-// @route   GET api/items
+// @route   GET api/questions
 // @desc    Get All Questions
 // @access  Public
 router.get('/', (req, res) => {
@@ -63,6 +63,14 @@ router.get('/:module', (req, res) => {
         return a;
       }
       shuffleArr(response);
+      response = response.map(quest => {
+        quest['is_match'] = false;
+        quest.answers.map(answer => {
+          answer.is_correct = false;
+          answer.user_choice = false;
+        })
+        return quest;
+      })
       res.json(response);
     });
   } else if (module == 3) {
@@ -81,12 +89,19 @@ router.get('/:module', (req, res) => {
         return a;
       }
       shuffleArr(questions);
-      res.json(questions);
+      res.json(questions.map(quest => {
+        quest['is_match'] = false;
+        quest.answers.map(answer => {
+          answer.is_correct = false;
+          answer.user_choice = false;
+        })
+        return quest;
+      }));
     });
   }
 });
 
-// @route   POST api/items
+// @route   POST api/questions
 // @desc    Create A Question
 // @access  Public
 router.post('/', (req, res) => {
@@ -103,7 +118,26 @@ router.post('/', (req, res) => {
   newQuest.save().then(question => res.json(question));
 });
 
-// @route   UPDATE api/items
+// @route   POST api/questions/:id
+// @desc    Check A Question
+// @access  Public
+router.post('/:id', (req, res) => {
+  Question.findById(req.params.id)
+    .then(question => {
+      let checkQuest = req.body;
+      let count = 0;
+      for (let i = 0; i < checkQuest.answers.length; i++) {
+        if (checkQuest.answers[i].user_choice == question.answers[i].is_correct) {
+          count ++;
+        }
+          checkQuest.answers[i].is_correct = question.answers[i].is_correct;
+      }
+      checkQuest.is_match = count == question.answers.length ? true : false;
+      res.json(checkQuest);
+    })
+});
+
+// @route   UPDATE api/questions
 // @desc    Update A Question
 // @access  Public
 router.put('/:id', (req, res) => {
@@ -124,7 +158,7 @@ router.put('/:id', (req, res) => {
     .catch(err => res.status(404).json({ success: false }));
 });
 
-// @route   DELETE api/items/:id
+// @route   DELETE api/questions/:id
 // @desc    Delete A Question
 // @access  Public
 router.delete('/:id', (req, res) => {
