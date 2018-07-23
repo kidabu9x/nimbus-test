@@ -20,7 +20,7 @@
                     <h3 v-if="isSubmited" style="text-align: left;">
                         Tổng số điểm: <span style="color: #e74c3c">{{totalCorrect*pointPerQuest}}/1000</span>
                     </h3>
-                    <div v-if="isSubmitting && !isSubmited">
+                    <div v-if="isSubmitting">
                         <hollow-dots-spinner
                             :animation-duration="1000"
                             :dot-size="15"
@@ -232,11 +232,12 @@ export default {
             if (index == self.testQuests.length - 1) {
                 self.textNotices.sort(function (a,b) {
                     return Number(a.order) - Number(b.order);
-                })
+                });
+                self.isSubmitting = false;
+                TestApi.updateNewAnswer(self.code, self.username, self.settings.module, self.totalCorrect, self.testQuests);
             }
           }
       })
-      self.isSubmitting = false;
       self.isSubmited = true;
     },
     getClass (question) {
@@ -251,7 +252,6 @@ export default {
     },
     scrollToQuest(refName) {
         var element = this.$refs[refName];
-        console.log(this.$refs[refName]);
         element.scrollTop = element.scrollHeight;
     },
     expandImage (imgUrl) {

@@ -15,6 +15,14 @@ router.get('/admin', (req, res) => {
         .then(tests => res.json(tests));
 });
 
+// @route   GET api/test/admin
+// @desc    Get All Tests
+// @access  Public
+router.get('/admin/:handle', (req, res) => {
+    Test.findOne({ handle : req.params.handle})
+        .then(test => res.json(test));
+});
+
 // @route   POST  api/test/admin
 // @desc    Create A Test
 // @access  Public
@@ -79,7 +87,7 @@ router.get('/:code', (req, res) => {
 // @desc    Create A Question
 // @access  Public
 router.post('/', (req, res) => {
-  const newTestClass = new TestClass({
+  const newTestClass = new Test({
     handle              : shortId.generate(),
     teacher_name        : req.body.teacher_name,
     name                : req.body.name,
@@ -94,7 +102,7 @@ router.post('/', (req, res) => {
 // @desc    Create new answer from student to results
 // @access  Public
 router.put('/:code', (req, res) => {
-    TestClass.findOne({
+    Test.findOne({
         handle: req.params.code
     })
     .then(question => {
