@@ -4,7 +4,8 @@ import Vue from 'vue'
 import App from './App'
 import VueMaterial from 'vue-material'
 import 'vue-material/dist/vue-material.min.css'
-import Toasted from 'vue-toasted';
+import Toasted from 'vue-toasted'
+import VueScrollTo from 'vue-scrollto'
 
 import router from './router'
 
@@ -12,6 +13,7 @@ Vue.config.productionTip = false
 Vue.use(VueMaterial)
 Vue.use(Toasted)
 Vue.use(require('vue-moment'))
+Vue.use(VueScrollTo)
 
 /* eslint-disable no-new */
 new Vue({

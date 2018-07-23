@@ -16,17 +16,32 @@
                     <h3 style="text-align: left;">Module : {{settings.module}}</h3>
                     <h3 v-if="isSubmited" style="text-align: left;">
                         Số câu trả lời đúng: <span style="color: #e74c3c">{{totalCorrect}} / {{testQuests.length}}</span>
-                        
                     </h3>
                     <h3 v-if="isSubmited" style="text-align: left;">
                         Tổng số điểm: <span style="color: #e74c3c">{{totalCorrect*pointPerQuest}}/1000</span>
                     </h3>
+                    <div v-if="isSubmitting && !isSubmited">
+                        <hollow-dots-spinner
+                            :animation-duration="1000"
+                            :dot-size="15"
+                            :dots-num="3"
+                            color="#e74c3c"
+                            style="margin-left: 40%;"
+                        />
+                    </div>
+                </div>
+                <div style="position: fixed; bottom: 5%;">
+                    <countdown :time="settings.time*60*1000" :auto-start="false" ref="countdown" @countdownend="submitResult">
+                        <template slot-scope="props">
+                            Time Remaining：{{ props.minutes }} : {{ props.seconds }}
+                        </template>
+                    </countdown>
                 </div>
             </div>
             <div class="md-layout-item md-size-50">
                 <div class="md-layout md-gutter">
                     <div class="md-layout-item md-size-100">
-                        <md-card v-for="(question, index) in testQuests" :key="question._id" :class="getClass(question)">
+                        <md-card v-for="(question, index) in testQuests" :key="question._id" :class="getClass(question)" :id="question._id">
                             <md-card-header>
                                 <div class="md-title">
                                     <h4 style="font-weight: 500;">
@@ -41,9 +56,23 @@
                             <md-card-content>
                                 <div v-for="answer in question.answers" :key="answer.label" style="font-size: 18px;" class="md-layout md-gutter">
                                     <div class="md-layout-item md-size-100">
-                                        <md-checkbox v-model="answer.is_correct" :class="{'checkbox-correct': answer.is_match}">
+                                        <md-checkbox v-if="!isSubmited" v-model="answer.user_choice">
                                             {{answer.label}}. <span class="paragraph">{{answer.content}}</span>
                                         </md-checkbox>
+                                        <div v-else>
+                                            <md-checkbox v-if="answer.user_choice == answer.is_correct" v-model="answer.user_choice" class="checkbox-correct">
+                                                {{answer.label}}. <span class="paragraph">{{answer.content}}</span>
+                                            </md-checkbox>
+                                            <md-checkbox v-else-if="answer.user_choice && !answer.is_correct" v-model="answer.user_choice">
+                                                {{answer.label}}. <span class="paragraph">{{answer.content}}</span>
+                                            </md-checkbox>
+                                            <md-checkbox v-else-if="!answer.user_choice && answer.is_correct" v-model="answer.is_correct" class="checkbox-correct">
+                                                {{answer.label}}. <span class="paragraph">{{answer.content}}</span>
+                                            </md-checkbox>
+                                            <md-checkbox v-else v-model="answer.user_choice">
+                                                {{answer.label}}. <span class="paragraph">{{answer.content}}</span>
+                                            </md-checkbox>
+                                        </div>
                                     </div>
                                 </div>
                                 <p class='paragraph' style="color: #e74c3c;" v-if="isSubmited && question.description">
@@ -56,26 +85,16 @@
                         <div v-if="!isSubmitting && !isSubmited">
                             <md-button style="margin-left: 40%;" class="md-raised md-accent" @click="submitResult">Submit</md-button>
                         </div>
-                        <div v-if="isSubmitting && !isSubmited">
-                            <hollow-dots-spinner
-                                :animation-duration="1000"
-                                :dot-size="15"
-                                :dots-num="3"
-                                color="#e74c3c"
-                                style="margin-left: 40%;"
-                            />
-                        </div>
                     </div>
                 </div>
             </div>
             <div class="md-layout-item md-size-25" style="position: relative;">
-                <div style="position: fixed; bottom: 5%;">
-                    <countdown :time="settings.time*60*1000" :auto-start="false" ref="countdown" @countdownend="submitResult">
-                        <template slot-scope="props">
-                            Time Remaining：{{ props.minutes }} : {{ props.seconds }}
-                        </template>
-                    </countdown>
-
+                <div style="position: fixed; top: 5%;" v-if="textNotices.length  > 0 && isSubmited">
+                    <div style="height: 635px; overflow: scroll; width: 150px;">
+                        <p v-for="notice in textNotices" :key="notice.msg" style="display: block;cursor: pointer;">
+                            <a v-scroll-to="`#${notice.id}`" :style="{color: notice.status ? '#27ae60' : '#ff5252'}">{{notice.msg}}</a>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -140,7 +159,6 @@ export default {
   data () {
     return {
       creatingExam: false,
-      origninQuests: [],
       testQuests: [],
       isSubmited: false,
       isSubmitting: false,
@@ -155,7 +173,8 @@ export default {
       secondStep: false,
       code: null,
       stepActive: 'firstStep',
-      settings: null
+      settings: null,
+      textNotices : [],
     }
   },
   methods: {
@@ -178,45 +197,47 @@ export default {
     async createExam () {
       const response = await QuestionApi.createExam(this.settings.module);
       this.pointPerQuest = Math.floor(1000 / response.data.length);
-      this.origninQuests = response.data;
-      this.testQuests = JSON.parse(JSON.stringify(response.data));
-      this.setResultToFalse();
+      this.testQuests = response.data;
       this.creatingExam = false;
       setTimeout(() => {
           this.$refs.countdown.start();
       }, 5*1000);
     },
-    setResultToFalse () {
-      this.testQuests.forEach(quest => {
-        quest.is_match = false
-        quest.answers.forEach(answer => {
-          answer.is_match = false
-          answer.is_correct = false
-        })
-      })
-    },
     async submitResult () {
-      this.isSubmitting = true
-    //   this.$refs.countdown.stop();
-      for (let i = 0; i < this.testQuests.length; i ++) {
-          let count = 0;
-          for (let j = 0; j < this.testQuests[i].answers.length; j++) {
-            if (this.testQuests[i].answers[j].is_correct == this.origninQuests[i].answers[j].is_correct) {
-              this.testQuests[i].answers[j].is_match = true;
-              count += 1;
+      this.isSubmitting = true;
+      let self = this;
+      this.testQuests.forEach((quest, index, arr) => {
+          checkQuest(quest);
+          async function checkQuest(quest) {
+            let response = await QuestionApi.checkQuest(quest);
+            quest.is_match = response.data.is_match;
+            quest.answers = response.data.answers;
+            if (quest.is_match) {
+              self.totalCorrect += 1;
+              self.textNotices.push({
+                order: index,
+                status: true,
+                msg: `Câu ${index + 1} : Đúng `,
+                id: quest._id
+              })
             } else {
-              this.testQuests[i].answers[j].is_match = false;
-              this.testQuests[i].answers[j].is_correct = this.origninQuests[i].answers[j].is_correct;
-           }
+              self.textNotices.push({
+                order: index,
+                status: false,
+                msg: `Câu ${index + 1} : Sai `,
+                id: quest._id
+              })
+            }
+            arr[index] = quest;
+            if (index == self.testQuests.length - 1) {
+                self.textNotices.sort(function (a,b) {
+                    return Number(a.order) - Number(b.order);
+                })
+            }
           }
-          if (count == this.testQuests[i].answers.length) {
-            this.testQuests[i].is_match = true;
-            this.totalCorrect += 1;
-          }
-      }
-    //   let response = await TestApi.createNewAnswer(this.settings.handle, this.username, this.totalCorrect, this.testQuests);
-      this.isSubmitting = false;
-      this.isSubmited = true;
+      })
+      self.isSubmitting = false;
+      self.isSubmited = true;
     },
     getClass (question) {
         if (this.isSubmited) {
@@ -228,13 +249,17 @@ export default {
             return {}
         }
     },
+    scrollToQuest(refName) {
+        var element = this.$refs[refName];
+        console.log(this.$refs[refName]);
+        element.scrollTop = element.scrollHeight;
+    },
     expandImage (imgUrl) {
         this.currentImage = imgUrl
         this.showExpandImage = true
     },
     setDone (id, index) {
         this[id] = true
-
         if (index) {
             this.stepActive = index
         }
