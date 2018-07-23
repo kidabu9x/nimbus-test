@@ -41,7 +41,7 @@
             <div class="md-layout-item md-size-50">
                 <div class="md-layout md-gutter">
                     <div class="md-layout-item md-size-100">
-                        <md-card v-for="(question, index) in testQuests" :key="question._id" :class="getClass(question)" :id="question._id">
+                        <md-card v-for="(question, index) in testQuests" :key="question._id" :class="getClass(question)" :id="`q_${question._id}`">
                             <md-card-header>
                                 <div class="md-title">
                                     <h4 style="font-weight: 500;">
@@ -92,7 +92,7 @@
                 <div style="position: fixed; top: 5%;" v-if="textNotices.length  > 0 && isSubmited">
                     <div style="height: 635px; overflow: scroll; width: 150px;">
                         <p v-for="notice in textNotices" :key="notice.msg" style="display: block;cursor: pointer;">
-                            <a v-scroll-to="`#${notice.id}`" :style="{color: notice.status ? '#27ae60' : '#ff5252'}">{{notice.msg}}</a>
+                            <a v-scroll-to="`#q_${notice.id}`" :style="{color: notice.status ? '#27ae60' : '#ff5252'}">{{notice.msg}}</a>
                         </p>
                     </div>
                 </div>
