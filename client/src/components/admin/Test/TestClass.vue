@@ -101,7 +101,7 @@
                     <md-table-cell md-label="Module">{{ item.module }}</md-table-cell>
                     <md-table-cell md-label="Total correct"><span style="color: #ff5252;">{{ item.total_correct}}</span>/{{item.answers.length }}</md-table-cell>
                     <md-table-cell md-label="Score">
-                        <span style="color: #ff5252;">{{ (Math.floor(1000/item.answers.length))*Number(item.total_correct) }}</span>
+                        <span style="color: #ff5252;">{{ Math.floor((1000/item.answers.length)*Number(item.total_correct)) }}</span>
                     </md-table-cell>
                     
                     <md-table-cell md-label="Actions">
