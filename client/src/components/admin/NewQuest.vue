@@ -105,9 +105,7 @@
       </div>
       <div class="md-layout-item md-size-100" v-for="answer in newQuest.answers" :key="answer.lable">
         <div class="md-layout md-gutter">
-          <div class="md-layout-item md-size-10">
-
-          </div>
+          <div class="md-layout-item md-size-10"></div>
           <div class="md-layout-item md-size-20">
             <md-checkbox class="md-primary" v-model="answer.is_correct">
               {{answer.label}}.
@@ -119,6 +117,9 @@
             </md-field>
           </div>
         </div>
+      </div>
+      <div class="md-layout-item md-size-100">
+        <md-button class="md-primary" @click="addMoreAns()" style="float: right; text-transform: none;">Add answer</md-button>
       </div>
 
       <!-- Description -->
@@ -183,7 +184,8 @@ export default {
           }
         ],
         description: null
-      }
+      },
+      currentLabel : 'D'
     }
   },
   methods: {
@@ -197,6 +199,17 @@ export default {
           this.closeModalAndReloadQuests()
         }
       }
+    },
+    addMoreAns() {
+      function incrementChar(c) {
+        return String.fromCharCode(c.charCodeAt(0) + 1)
+      }
+      this.currentLabel = incrementChar(this.currentLabel).toUpperCase();
+      this.newQuest.answers.push({
+        label     : this.currentLabel,
+        content   : null,
+        is_correct: false
+      });
     },
     checkQuest (quest) {
       if (!quest.content) {
