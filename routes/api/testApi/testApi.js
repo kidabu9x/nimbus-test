@@ -11,7 +11,22 @@ const Test = require('../../../models/TestClass');
 // @desc    Get All Tests
 // @access  Public
 router.get('/admin', (req, res) => {
-    Test.find()
+    Test.aggregate([
+        {
+            $project: {
+                _id                 : 1,
+                active              : 1,
+                handle              : 1,
+                teacher_name        : 1,
+                name                : 1,
+                module              : 1,
+                time                : 1,
+                number_of_students  : 1,
+                total_results       : {$size: "$results"},
+                createdAt           : 1
+            }
+        }
+    ])
         .then(tests => res.json(tests));
 });
 

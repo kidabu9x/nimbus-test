@@ -57,8 +57,8 @@
                         </div>
                     </md-table-cell>
                     <md-table-cell md-label="Students">
-                        <span v-if="item.results.length == item.number_of_students" style="color: rgb(255, 82, 82);">{{ item.results.length }}/{{ item.number_of_students }}</span>
-                        <span v-else>{{ item.results.length }}/{{ item.number_of_students }}</span>
+                        <span v-if="item.total_results == item.number_of_students" style="color: rgb(255, 82, 82);">{{ item.total_results }}/{{ item.number_of_students }}</span>
+                        <span v-else>{{ item.total_results }}/{{ item.number_of_students }}</span>
                     </md-table-cell>
                     <md-table-cell md-label="Time">{{ item.time }}</md-table-cell>
                     <md-table-cell md-label="Actions">
