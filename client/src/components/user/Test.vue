@@ -9,7 +9,7 @@
             />
         </div>
         <div v-else>
-            <md-toolbar md-elevation="1" style="position: fixed; background-color: #26c6da;">
+            <md-toolbar md-elevation="1" style="position: fixed; background-color: #26c6da; min-height: 40px;">
                 <div class="md-layout md-gutter" style="width: 100%;">
                     <div class="md-layout-item">
                         <h3 class="md-title" style="color: #fff;">{{settings.name}} - Module {{settings.module}}</h3>
@@ -35,7 +35,7 @@
                             Số câu trả lời đúng: <span style="color: #66bb6a">{{totalCorrect}}</span>/{{testQuests.length}}
                         </h3>
                         <h3 v-if="isSubmited" style="text-align: left;">
-                            Tổng số điểm: <span style="color: #66bb6a">{{Math.floor(totalCorrect*pointPerQuest)}}</span>/1000
+                            Tổng số điểm: <span style="color: #66bb6a">{{Math.floor(totalCorrect*(1000/testQuests.length))}}</span>/1000
                         </h3>
                         <div v-if="isSubmitting">
                             <hollow-dots-spinner
@@ -51,21 +51,20 @@
                 <div class="md-layout-item md-size-50">
                     <div class="md-layout md-gutter">
                         <div class="md-layout-item md-size-100">
-                            <md-card v-for="(question, index) in testQuests" :key="question._id" :id="`q_${question._id}`">
-                                <md-card-header :class="{'is-testing': !isSubmited, 'is-correct': (question.is_match && isSubmited), 'is-uncorrect': (!question.is_match && isSubmited)}">
-                                    <p>Câu {{index + 1}}</p>
+                            <md-card>
+                                <md-card-header :class="{'is-testing': !isSubmited, 'is-correct': (currenQuest.is_match && isSubmited), 'is-uncorrect': (!currenQuest.is_match && isSubmited)}">
+                                    <p>Câu 1/{{testQuests.length}}</p>
                                 </md-card-header>
-
                                 <md-card-content>
                                     <div class="md-title">
                                         <h4 style="font-weight: 500;">
-                                            <span class='paragraph'>{{question.content}}</span>
+                                            <span class='paragraph'>{{currenQuest.content}}</span>
                                         </h4>
                                     </div>
-                                    <div v-if="question.image" @click="expandImage(question.image)" class="question-image">
-                                        <img :src="question.image">
+                                    <div v-if="currenQuest.image" @click="expandImage(currenQuest.image)" class="question-image">
+                                        <img :src="currenQuest.image">
                                     </div>
-                                    <div v-for="answer in question.answers" :key="answer.label" style="font-size: 18px;" class="md-layout md-gutter">
+                                    <div v-for="answer in currenQuest.answers" :key="answer.label" style="font-size: 18px;" class="md-layout md-gutter">
                                         <div class="md-layout-item md-size-100">
                                             <md-checkbox v-if="!isSubmited" v-model="answer.user_choice">
                                                 {{answer.label}}. <span class="paragraph">{{answer.content}}</span>
@@ -86,16 +85,20 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <p class='paragraph' style="color: #e74c3c;" v-if="isSubmited && question.description">
-                                        {{question.description}}
+                                    <p class='paragraph' style="color: #e74c3c;" v-if="isSubmited && currenQuest.description">
+                                        {{currenQuest.description}}
                                     </p>
                                 </md-card-content>
-                            </md-card>
+                            </md-card>                            
                         </div>
-                        <div class="md-layout-item md-size-100">
-                            <div v-if="!isSubmitting && !isSubmited">
-                                <md-button style="margin-left: 40%;" class="md-raised md-accent" @click="submitResult">Submit</md-button>
+                        <div class="md-layout-item md-size-100" style="margin-top: 15px;">
+                            <div class="md-layout">
+                                <md-button style="float: right;" class="md-raised md-accent" @click="submitResult">Làm lại</md-button>
+                                <md-button style="float: right;" class="md-raised md-accent" @click="submitResult">Đánh dấu</md-button>
+                                <md-button style="float: right;" class="md-raised md-accent" @click="submitResult">Quay lại</md-button>
+                                <md-button style="float: right;" class="md-raised md-accent" @click="submitResult">Nộp câu hỏi</md-button>
                             </div>
+                            
                         </div>
                     </div>
                 </div>
@@ -179,25 +182,25 @@ export default {
   name: 'Test',
   data () {
     return {
-      creatingExam: false,
-      testQuests: [],
-      isSubmited: false,
-      isSubmitting: false,
-      pointPerQuest: 0,
-      totalCorrect: 0,
-      showExpandImage: false,
-      currentImage: null,
-      inputName: null,
-      username: null,
       showStepper: true,
       firstStep: false,
       secondStep: false,
+      stepActive: 'firstStep',
+      inputName: null,
       code: null,
       isCheckingCode: false,
-      stepActive: 'firstStep',
+      username: null,
       settings: null,
-      textNotices : [],
-      showSnackbar : true
+      creatingExam: false,
+      testQuests: [],
+      currenQuest: null,
+      markQuests: [],
+      showExpandImage: false,
+      isSubmited: false,
+      isSubmitting: false,
+      totalCorrect: 0,
+      currentImage: null,
+      textNotices : []
     }
   },
   methods: {
@@ -222,8 +225,8 @@ export default {
     },
     async createExam () {
       const response = await QuestionApi.createExam(this.settings.module);
-      this.pointPerQuest = (1000 / response.data.length);
       this.testQuests = response.data;
+      this.currenQuest = this.testQuests[0];
       this.creatingExam = false;
       setTimeout(() => {
           this.$refs.countdown.start();
@@ -254,7 +257,7 @@ export default {
                     return Number(a.order) - Number(b.order);
                 });
                 self.isSubmitting = false;
-                TestApi.updateNewAnswer(self.code, self.username, self.settings.module, self.totalCorrect, self.testQuests);
+                // TestApi.updateNewAnswer(self.code, self.username, self.settings.module, self.totalCorrect, self.testQuests);
             }
           }
       })

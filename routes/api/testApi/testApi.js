@@ -25,7 +25,8 @@ router.get('/admin', (req, res) => {
                 total_results       : {$size: "$results"},
                 createdAt           : 1
             }
-        }
+        },
+        {$sort: {createdAt: 1}}
     ])
         .then(tests => res.json(tests));
 });
