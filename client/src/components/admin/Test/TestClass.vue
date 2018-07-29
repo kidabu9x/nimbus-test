@@ -80,7 +80,7 @@
         </div>
         <br>
         <br>
-        <div class="md-layout-item md-size-100" v-if="currentTest" style="margin-top 50px;">
+        <div class="md-layout-item md-size-100" v-if="currentTest" style="margin-top: 50px;">
             <md-table v-model="currentTest.results" md-card md-fixed-header>
                 <md-table-toolbar>
                     <div class="md-toolbar-section-start">

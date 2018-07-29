@@ -52,19 +52,24 @@
                     <div class="md-layout md-gutter">
                         <div class="md-layout-item md-size-100">
                             <md-card>
-                                <md-card-header :class="{'is-testing': !isSubmited, 'is-correct': (currenQuest.is_match && isSubmited), 'is-uncorrect': (!currenQuest.is_match && isSubmited)}">
-                                    <p>Câu 1/{{testQuests.length}}</p>
+                                <md-card-header :class="{'is-testing': !isSubmited, 'is-correct': (currentQuest.is_match && isSubmited), 'is-uncorrect': (!currentQuest.is_match && isSubmited)}">
+                                    <p>Câu {{currentIndex + 1}}/{{testQuests.length}}</p>
                                 </md-card-header>
                                 <md-card-content>
+                                    <div>
+                                        <md-button class="md-dense md-primary" @click="currentQuest = JSON.parse(JSON.stringify(backupQuest))" style="float: right; color: rgb(38, 198, 218);" >
+                                            Làm lại
+                                        </md-button>
+                                    </div>
                                     <div class="md-title">
                                         <h4 style="font-weight: 500;">
-                                            <span class='paragraph'>{{currenQuest.content}}</span>
+                                            <span class='paragraph'>{{currentQuest.content}}</span>
                                         </h4>
                                     </div>
-                                    <div v-if="currenQuest.image" @click="expandImage(currenQuest.image)" class="question-image">
-                                        <img :src="currenQuest.image">
+                                    <div v-if="currentQuest.image" @click="expandImage(currentQuest.image)" class="question-image">
+                                        <img :src="currentQuest.image">
                                     </div>
-                                    <div v-for="answer in currenQuest.answers" :key="answer.label" style="font-size: 18px;" class="md-layout md-gutter">
+                                    <div v-for="answer in currentQuest.answers" :key="answer.label" style="font-size: 18px;" class="md-layout md-gutter">
                                         <div class="md-layout-item md-size-100">
                                             <md-checkbox v-if="!isSubmited" v-model="answer.user_choice">
                                                 {{answer.label}}. <span class="paragraph">{{answer.content}}</span>
@@ -85,20 +90,37 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <p class='paragraph' style="color: #e74c3c;" v-if="isSubmited && currenQuest.description">
-                                        {{currenQuest.description}}
+                                    <p class='paragraph' style="color: #e74c3c;" v-if="isSubmited && currentQuest.description">
+                                        {{currentQuest.description}}
                                     </p>
                                 </md-card-content>
                             </md-card>                            
                         </div>
                         <div class="md-layout-item md-size-100" style="margin-top: 15px;">
-                            <div class="md-layout">
-                                <md-button style="float: right;" class="md-raised md-accent" @click="submitResult">Làm lại</md-button>
-                                <md-button style="float: right;" class="md-raised md-accent" @click="submitResult">Đánh dấu</md-button>
-                                <md-button style="float: right;" class="md-raised md-accent" @click="submitResult">Quay lại</md-button>
-                                <md-button style="float: right;" class="md-raised md-accent" @click="submitResult">Nộp câu hỏi</md-button>
+                            <div class="md-layout" style="float: right;">
+                                <div >
+                                    <md-button @click="prevQuest()" class="md-dense" v-if="currentIndex > 0">
+                                        <md-icon>navigate_before</md-icon>
+                                        <span style="line-height: 24px;">Quay lại</span>
+                                    </md-button>
+                                    <md-button v-if="checkIsInArray(markQuests, currentQuest, '_id')" @click="markQuests.push(currentQuest)" class="md-dense">
+                                        <md-icon>bookmark_border</md-icon>
+                                        Đánh dấu
+                                    </md-button>
+                                    <md-button v-else @click="removeFromArray(markQuests, currentQuest, '_id')" class="md-dense" style="background-color: #ffa726; color: #fff;">
+                                        <md-icon style="color: #fff;">bookmark</md-icon>
+                                        Bỏ đánh dấu
+                                    </md-button>
+                                    <md-button @click="nextQuest();" class="md-dense" style="background-color: rgb(38, 198, 218); color: #fff;">
+                                        Câu tiếp theo
+                                        <md-icon style="color: #fff;">navigate_next</md-icon>
+                                    </md-button>
+                                    <md-button class="md-dense" style="background-color: rgb(38, 198, 218); color: #fff;">
+                                        Trình đơn câu hỏi
+                                        <md-icon style="color: #fff;">navigate_next</md-icon>
+                                    </md-button>
+                                </div>
                             </div>
-                            
                         </div>
                     </div>
                 </div>
@@ -193,8 +215,13 @@ export default {
       settings: null,
       creatingExam: false,
       testQuests: [],
-      currenQuest: null,
+    //   Start changes here
+      currentQuest: null,
+      currentIndex: 0,
+      backupQuest: null,
       markQuests: [],
+
+    //   End change
       showExpandImage: false,
       isSubmited: false,
       isSubmitting: false,
@@ -202,6 +229,11 @@ export default {
       currentImage: null,
       textNotices : []
     }
+  },
+  mounted: function () {
+      this.showStepper = false;
+      this.code = 'HTq0nFvMV';
+      this.checkCode();
   },
   methods: {
     async checkCode() {
@@ -218,19 +250,39 @@ export default {
         }
     },
     beginTest () {
-        this.username = this.inputName
-        this.showStepper = false
-        this.creatingExam = true
-        this.createExam()
+        // this.username = this.inputName;
+        this.username = 'Duong dep trai';
+        this.showStepper = false;
+        this.creatingExam = true;
+        this.createExam();
     },
     async createExam () {
       const response = await QuestionApi.createExam(this.settings.module);
       this.testQuests = response.data;
-      this.currenQuest = this.testQuests[0];
+      this.currentQuest = this.testQuests[0];
+      this.backupQuest = JSON.parse(JSON.stringify(this.currentQuest));
       this.creatingExam = false;
       setTimeout(() => {
           this.$refs.countdown.start();
       }, 5*1000);
+    },
+    checkIsInArray(array, quest,fieldCheck) {
+        return !array.some(e => e[fieldCheck] == quest[fieldCheck]);
+    },
+    removeFromArray (array, quest, fieldRemove) {
+        array.splice(array.findIndex(e => e[fieldRemove] == quest[fieldRemove]), 1);
+    },
+    nextQuest () {
+        this.currentIndex += 1;
+        this.goToQuest();
+    },
+    prevQuest () {
+        this.currentIndex -= 1;
+        this.goToQuest();
+    },
+    goToQuest () {
+        this.currentQuest = this.testQuests[this.currentIndex];
+        this.backupQuest = JSON.parse(JSON.stringify(this.currentQuest));
     },
     async submitResult () {
       this.$refs.countdown.stop();
