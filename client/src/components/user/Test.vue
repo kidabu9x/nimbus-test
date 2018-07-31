@@ -51,13 +51,13 @@
                 <div class="md-layout-item md-size-50">
                     <div class="md-layout md-gutter">
                         <div class="md-layout-item md-size-100">
-                            <md-card>
+                            <md-card v-if="!showMenuQuests">
                                 <md-card-header :class="{'is-testing': !isSubmited, 'is-correct': (currentQuest.is_match && isSubmited), 'is-uncorrect': (!currentQuest.is_match && isSubmited)}">
                                     <p>Câu {{currentIndex + 1}}/{{testQuests.length}}</p>
                                 </md-card-header>
                                 <md-card-content>
                                     <div>
-                                        <md-button class="md-dense md-primary" @click="currentQuest = JSON.parse(JSON.stringify(backupQuest))" style="float: right; color: rgb(38, 198, 218);" >
+                                        <md-button class="md-dense md-primary" @click="goToQuest" style="float: right; color: rgb(38, 198, 218);" >
                                             Làm lại
                                         </md-button>
                                     </div>
@@ -94,34 +94,78 @@
                                         {{currentQuest.description}}
                                     </p>
                                 </md-card-content>
-                            </md-card>                            
-                        </div>
-                        <div class="md-layout-item md-size-100" style="margin-top: 15px;">
-                            <div class="md-layout" style="float: right;">
-                                <div >
-                                    <md-button @click="prevQuest()" class="md-dense" v-if="currentIndex > 0">
+                                <md-card-actions>
+                                    <md-button v-if="currentIndex > 0" @click="prevQuest()" class="md-dense" style="width: 130px;">
                                         <md-icon>navigate_before</md-icon>
                                         <span style="line-height: 24px;">Quay lại</span>
                                     </md-button>
-                                    <md-button v-if="checkIsInArray(markQuests, currentQuest, '_id')" @click="markQuests.push(currentQuest)" class="md-dense">
+                                    <md-button v-if="checkIsInArray(markQuests, currentQuest, '_id')" @click="markQuests.push(currentQuest)" class="md-dense" style="width: 130px;">
                                         <md-icon>bookmark_border</md-icon>
                                         Đánh dấu
                                     </md-button>
-                                    <md-button v-else @click="removeFromArray(markQuests, currentQuest, '_id')" class="md-dense" style="background-color: #ffa726; color: #fff;">
+                                    <md-button v-else @click="removeFromArray(markQuests, currentQuest, '_id')" class="md-dense" style="background-color: #ffa726; color: #fff; width: 130px;">
                                         <md-icon style="color: #fff;">bookmark</md-icon>
                                         Bỏ đánh dấu
                                     </md-button>
-                                    <md-button @click="nextQuest();" class="md-dense" style="background-color: rgb(38, 198, 218); color: #fff;">
+                                    <md-button v-if="currentIndex < testQuests.length - 1" @click="nextQuest();" class="md-dense" style="width: 130px;">
                                         Câu tiếp theo
-                                        <md-icon style="color: #fff;">navigate_next</md-icon>
+                                        <md-icon>navigate_next</md-icon>
                                     </md-button>
-                                    <md-button class="md-dense" style="background-color: rgb(38, 198, 218); color: #fff;">
+                                    <md-button v-else-if="(currentIndex == (testQuests.length - 1)) && answeredQuests.length != testQuests.length" @click="pushLastQuestAndShowMenu()" class="md-dense" style="background-color: rgb(38, 198, 218); color: #fff;">
                                         Trình đơn câu hỏi
-                                        <md-icon style="color: #fff;">navigate_next</md-icon>
+                                        <md-icon style="color: #fff;">assignment</md-icon>
                                     </md-button>
-                                </div>
-                            </div>
+                                    <md-button v-else @click="showMenuQuests = true" class="md-dense" style="background-color: rgb(38, 198, 218); color: #fff;">
+                                        Trình đơn câu hỏi
+                                        <md-icon style="color: #fff;">assignment</md-icon>
+                                    </md-button>
+                                </md-card-actions>
+                            </md-card>
+                            <md-card v-else>
+                                <md-card-content>
+                                    <div class="md-layout md-gutter">
+                                        <div class="md-layout-item md-size-100" style="border-bottom: 1px solid rgba(0,0,0,0.1)">
+                                            <div class="md-layout md-gutter">
+                                                <div class="md-layout-item md-size-20">
+                                                    <p style="text-align: center;">#</p>
+                                                </div>
+                                                <div class="md-layout-item md-size-40">
+                                                    <p style="text-align: center;">Đánh dấu xem lại</p>
+                                                </div>
+                                                <div class="md-layout-item md-size-40">
+                                                    <p style="text-align: center;">Quay lại câu hỏi</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="md-layout-item md-size-100" v-for="(quest, i) in answeredQuests" :key="quest._id" style="border-bottom: 1px solid rgba(0,0,0,0.02)">
+                                            <div class="md-layout md-gutter">
+                                                <div class="md-layout-item md-size-20">
+                                                    <p style="text-align: center;">{{i + 1}}</p>
+                                                </div>
+                                                <div class="md-layout-item md-size-40">
+                                                    <md-button v-if="!checkIsInArray(markQuests, quest, '_id')" @click="viewAnsweredQuest(i)" class="md-icon-button" style="display: block; margin: auto;">
+                                                        <md-icon style="color: #ffa726;">bookmark</md-icon>
+                                                        <md-tooltip md-direction="right">Xem lại câu {{i++}}</md-tooltip>
+                                                    </md-button>
+                                                </div>
+                                                <div class="md-layout-item md-size-40">
+                                                    <md-button class="md-icon-button" style="display: block; margin: auto;">
+                                                        <md-icon>assignment_return</md-icon>
+                                                        <md-tooltip md-direction="right">Quay lại câu {{i++}}</md-tooltip>
+                                                    </md-button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </md-card-content>
+                                <md-card-actions>
+                                    <md-button>
+                                        Chấm điểm
+                                    </md-button>
+                                </md-card-actions>
+                            </md-card>                       
                         </div>
+                        
                     </div>
                 </div>
                 <div class="md-layout-item md-size-25" style="position: relative;">
@@ -218,10 +262,10 @@ export default {
     //   Start changes here
       currentQuest: null,
       currentIndex: 0,
-      backupQuest: null,
       markQuests: [],
-
-    //   End change
+      answeredQuests: [],
+      showMenuQuests: false,
+    //   End changes
       showExpandImage: false,
       isSubmited: false,
       isSubmitting: false,
@@ -259,8 +303,7 @@ export default {
     async createExam () {
       const response = await QuestionApi.createExam(this.settings.module);
       this.testQuests = response.data;
-      this.currentQuest = this.testQuests[0];
-      this.backupQuest = JSON.parse(JSON.stringify(this.currentQuest));
+      this.goToQuest();
       this.creatingExam = false;
       setTimeout(() => {
           this.$refs.countdown.start();
@@ -273,16 +316,27 @@ export default {
         array.splice(array.findIndex(e => e[fieldRemove] == quest[fieldRemove]), 1);
     },
     nextQuest () {
+        this.answeredQuests.push(JSON.parse(JSON.stringify(this.currentQuest)));
         this.currentIndex += 1;
         this.goToQuest();
     },
     prevQuest () {
+        this.answeredQuests.splice(this.currentIndex - 1, 1);
         this.currentIndex -= 1;
         this.goToQuest();
     },
     goToQuest () {
-        this.currentQuest = this.testQuests[this.currentIndex];
-        this.backupQuest = JSON.parse(JSON.stringify(this.currentQuest));
+        this.currentQuest = JSON.parse(JSON.stringify(this.testQuests[this.currentIndex]));
+    },
+    pushLastQuestAndShowMenu: function () {
+        this.answeredQuests.push(JSON.parse(JSON.stringify(this.currentQuest)));
+        this.showMenuQuests = true;
+    },
+    viewAnsweredQuest: function (index) {
+        console.log(index);
+        console.log(this.answeredQuests[index]);
+        // this.showMenuQuests = false;
+        // this.currentQuest = this.answeredQuests[index];
     },
     async submitResult () {
       this.$refs.countdown.stop();
