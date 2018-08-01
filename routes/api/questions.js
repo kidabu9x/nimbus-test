@@ -71,7 +71,7 @@ router.get('/:module', (req, res) => {
         })
         return quest;
       })
-      res.json(response.slice(0, 5));
+      res.json(response);
     });
   } else if (module == 3) {
     Question.find(
