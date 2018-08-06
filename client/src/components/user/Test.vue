@@ -37,15 +37,7 @@
                         <h3 v-if="isSubmited" style="text-align: left;">
                             Tổng số điểm: <span style="color: #66bb6a">{{Math.floor(totalCorrect*(1000/testQuests.length))}}</span>/1000
                         </h3>
-                        <div v-if="isSubmitting">
-                            <hollow-dots-spinner
-                                :animation-duration="1000"
-                                :dot-size="15"
-                                :dots-num="3"
-                                color="#e74c3c"
-                                style="margin-left: 40%;"
-                            />
-                        </div>
+                        
                     </div>
                 </div>
                 <div class="md-layout-item md-size-50">
@@ -56,7 +48,7 @@
                                     <p>Câu {{currentIndex + 1}}/{{testQuests.length}}</p>
                                 </md-card-header>
                                 <md-card-content>
-                                    <div>
+                                    <div v-if="!isSubmited">
                                         <md-button class="md-dense md-primary" @click="goToQuest" style="float: right; color: rgb(38, 198, 218);" >
                                             Làm lại
                                         </md-button>
@@ -95,7 +87,7 @@
                                     </p>
                                 </md-card-content>
                                 <md-card-actions>
-                                    <md-button v-if="currentIndex > 0" @click="prevQuest()" class="md-dense" style="width: 130px;">
+                                    <md-button v-if="currentIndex > 0 && answeredQuests.length != testQuests.length" @click="prevQuest()" class="md-dense" style="width: 130px;">
                                         <md-icon>navigate_before</md-icon>
                                         <span style="line-height: 24px;">Quay lại</span>
                                     </md-button>
@@ -107,7 +99,7 @@
                                         <md-icon style="color: #fff;">bookmark</md-icon>
                                         Bỏ đánh dấu
                                     </md-button>
-                                    <md-button v-if="currentIndex < testQuests.length - 1" @click="nextQuest();" class="md-dense" style="width: 130px;">
+                                    <md-button v-if="currentIndex < testQuests.length - 1 && answeredQuests.length != testQuests.length" @click="nextQuest();" class="md-dense" style="width: 130px;">
                                         Câu tiếp theo
                                         <md-icon>navigate_next</md-icon>
                                     </md-button>
@@ -126,32 +118,45 @@
                                     <div class="md-layout md-gutter">
                                         <div class="md-layout-item md-size-100" style="border-bottom: 1px solid rgba(0,0,0,0.1)">
                                             <div class="md-layout md-gutter">
-                                                <div class="md-layout-item md-size-20">
+                                                <div class="md-layout-item">
                                                     <p style="text-align: center;">#</p>
                                                 </div>
-                                                <div class="md-layout-item md-size-40">
+                                                <div class="md-layout-item">
                                                     <p style="text-align: center;">Đánh dấu xem lại</p>
                                                 </div>
-                                                <div class="md-layout-item md-size-40">
+                                                <div class="md-layout-item">
                                                     <p style="text-align: center;">Quay lại câu hỏi</p>
+                                                </div>
+                                                <div class="md-layout-item" v-if="isSubmited">
+                                                    <p style="text-align: center;">Kết quả</p>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="md-layout-item md-size-100" v-for="(quest, i) in answeredQuests" :key="quest._id" style="border-bottom: 1px solid rgba(0,0,0,0.02)">
                                             <div class="md-layout md-gutter">
-                                                <div class="md-layout-item md-size-20">
+                                                <div class="md-layout-item">
                                                     <p style="text-align: center;">{{i + 1}}</p>
                                                 </div>
-                                                <div class="md-layout-item md-size-40">
+                                                <div class="md-layout-item">
                                                     <md-button v-if="!checkIsInArray(markQuests, quest, '_id')" @click="viewAnsweredQuest(i)" class="md-icon-button" style="display: block; margin: auto;">
                                                         <md-icon style="color: #ffa726;">bookmark</md-icon>
-                                                        <md-tooltip md-direction="right">Xem lại câu {{i++}}</md-tooltip>
+                                                        <md-tooltip md-direction="right">Xem lại câu {{i + 1}}</md-tooltip>
                                                     </md-button>
                                                 </div>
-                                                <div class="md-layout-item md-size-40">
-                                                    <md-button class="md-icon-button" style="display: block; margin: auto;">
+                                                <div class="md-layout-item">
+                                                    <md-button class="md-icon-button" @click="viewAnsweredQuest(i)" style="display: block; margin: auto;">
                                                         <md-icon>assignment_return</md-icon>
-                                                        <md-tooltip md-direction="right">Quay lại câu {{i++}}</md-tooltip>
+                                                        <md-tooltip md-direction="right">Quay lại câu {{i + 1}}</md-tooltip>
+                                                    </md-button>
+                                                </div>
+                                                <div class="md-layout-item" v-if="isSubmited">
+                                                    <md-button v-if="quest.is_match" class="md-icon-button" style="display: block; margin: auto;" @click="viewAnsweredQuest(i)">
+                                                        <md-icon style="color: #66bb6a;">assignment_turned_in</md-icon>
+                                                        <md-tooltip md-direction="right">Quay lại câu {{i + 1}}</md-tooltip>
+                                                    </md-button>
+                                                    <md-button v-else class="md-icon-button" style="display: block; margin: auto;" @click="viewAnsweredQuest(i)">
+                                                        <md-icon style="color: #ef5350;">error</md-icon>
+                                                        <md-tooltip md-direction="right">Quay lại câu {{i + 1}}</md-tooltip>
                                                     </md-button>
                                                 </div>
                                             </div>
@@ -159,26 +164,25 @@
                                     </div>
                                 </md-card-content>
                                 <md-card-actions>
-                                    <md-button>
+                                    <md-button v-if="!isSubmited" @click="submitResult">
                                         Chấm điểm
                                     </md-button>
+                                    <div v-if="isSubmitting">
+                                        <hollow-dots-spinner
+                                            :animation-duration="1000"
+                                            :dot-size="15"
+                                            :dots-num="3"
+                                            color="#e74c3c"
+                                            style="margin-left: 40%;"
+                                        />
+                                    </div>
                                 </md-card-actions>
                             </md-card>                       
                         </div>
                         
                     </div>
                 </div>
-                <div class="md-layout-item md-size-25" style="position: relative;">
-                    <div style="position: fixed; bottom: 5%;" v-if="textNotices.length  > 0 && isSubmited">
-                        <md-chip 
-                            v-for="notice in textNotices" :key="notice.msg" v-scroll-to="`#q_${notice.id}`" 
-                            :style="{'background-color': notice.status ? '#27ae60' : '#ff5252', margin: '5px'}" 
-                            class="md-accent" 
-                            md-clickable>
-                                {{notice.msg}}
-                        </md-chip>
-                    </div>
-                </div>
+                <div class="md-layout-item md-size-25" style="position: relative;"></div>
             </div>
         </div>
     </div>
@@ -270,14 +274,13 @@ export default {
       isSubmited: false,
       isSubmitting: false,
       totalCorrect: 0,
-      currentImage: null,
-      textNotices : []
+      currentImage: null
     }
   },
   mounted: function () {
-      this.showStepper = false;
-      this.code = 'HTq0nFvMV';
-      this.checkCode();
+    //   this.showStepper = false;
+    //   this.code = 'HTq0nFvMV';
+    //   this.checkCode();
   },
   methods: {
     async checkCode() {
@@ -294,8 +297,8 @@ export default {
         }
     },
     beginTest () {
-        // this.username = this.inputName;
-        this.username = 'Duong dep trai';
+        this.username = this.inputName;
+        // this.username = 'Duong dep trai';
         this.showStepper = false;
         this.creatingExam = true;
         this.createExam();
@@ -333,16 +336,15 @@ export default {
         this.showMenuQuests = true;
     },
     viewAnsweredQuest: function (index) {
-        console.log(index);
-        console.log(this.answeredQuests[index]);
-        // this.showMenuQuests = false;
-        // this.currentQuest = this.answeredQuests[index];
+        this.showMenuQuests = false;
+        this.currentIndex = index;
+        this.currentQuest = this.answeredQuests[index];
     },
     async submitResult () {
       this.$refs.countdown.stop();
       this.isSubmitting = true;
       let self = this;
-      this.testQuests.forEach((quest, index, arr) => {
+      this.answeredQuests.forEach((quest, index, arr) => {
           checkQuest(quest);
           async function checkQuest(quest) {
             let response = await QuestionApi.checkQuest(quest);
@@ -351,19 +353,10 @@ export default {
             if (quest.is_match) {
               self.totalCorrect += 1;
             }
-            self.textNotices.push({
-                order: index,
-                status: quest.is_match,
-                msg: `Câu ${index + 1}`,
-                id: quest._id
-            })
             arr[index] = quest;
             if (index == self.testQuests.length - 1) {
-                self.textNotices.sort(function (a,b) {
-                    return Number(a.order) - Number(b.order);
-                });
                 self.isSubmitting = false;
-                // TestApi.updateNewAnswer(self.code, self.username, self.settings.module, self.totalCorrect, self.testQuests);
+                TestApi.updateNewAnswer(self.code, self.username, self.settings.module, self.totalCorrect, self.answeredQuests);
             }
           }
       })
@@ -450,8 +443,8 @@ a {
 }
 
 .md-checkbox.md-theme-default.md-checked.checkbox-correct .md-checkbox-container {
-    background-color: #27ae60;
-    border-color: #27ae60;
+    background-color:#66bb6a;
+    border-color: #66bb6a;
 }
 
 .question-image {
