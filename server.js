@@ -14,7 +14,7 @@ app.use(cors())
 
 // Connect to Mongo
 mongoose
-  .connect(db)
+  .connect(db, {useNewUrlParser : true})
   .then(() => console.log('MongoDB Connected...'))
   .catch(err => console.log(err));
 
@@ -24,6 +24,9 @@ app.use('/api/questions', questions)
 
 const test = require('./routes/api/testApi/testApi')
 app.use('/api/test', test)
+
+const schedule = require('./routes/api/scheduleApi')
+app.use('/api/test', schedule)
 
 // Serve static assets if in production
 if (process.env.NODE_ENV === 'production') {
@@ -35,6 +38,6 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-const port = process.env.PORT || 8081;
+const port = process.env.PORT || 6969;
 
 app.listen(port, () => console.log(`Server started on port ${port}`));

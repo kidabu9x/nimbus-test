@@ -1,8 +1,16 @@
 import Api from '@/api/Api.js'
 
 export default {
-    fetchQuestions () {
-      return Api().get('/api/questions')
+    countTotalQuestion () {
+      return Api().get(`/api/questions/count`)
+    },
+    fetchQuestions (page, perPage) {
+      return Api().get('/api/questions', {
+        params : {
+          page: page,
+          perPage: perPage
+        }
+      })
     },
     createNewQuestion (newQuestion) {
       return Api().post('/api/questions', newQuestion)

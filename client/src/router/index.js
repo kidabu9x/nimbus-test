@@ -5,6 +5,7 @@ import Router from 'vue-router'
 import Admin from '@/components/admin/Admin'
 import Questions from '@/components/admin/Questions'
 import AdminTestClass from '@/components/admin/Test/TestClass'
+import ExamSchedules from '@/components/admin/ExamSchedule/Schedule'
 
 // User component
 import User from '@/components/user/User'
@@ -38,6 +39,10 @@ export default new Router({
         {
           path: 'tests',
           component: AdminTestClass,
+        },
+        {
+          path: 'schedules',
+          component: ExamSchedules
         }
       ]
     }

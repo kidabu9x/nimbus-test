@@ -8,8 +8,20 @@ const Question = require('../../models/Question');
 // @desc    Get All Questions
 // @access  Public
 router.get('/', (req, res) => {
+  let perPage = Number(req.query.perPage);
+  let page = Number(req.query.page);
   Question.find()
+    .skip(page > 0 ? ( ( page - 1 ) * perPage ) : 0 )
+    .limit(perPage)
     .then(questions => res.json(questions));
+});
+
+// @route   GET api/questions
+// @desc    Count number of Questions
+// @access  Public
+router.get('/count', (req, res) => {
+  Question.count()
+   .then(quantities => res.json(quantities));
 });
 
 // @route   GET api/questions/:module

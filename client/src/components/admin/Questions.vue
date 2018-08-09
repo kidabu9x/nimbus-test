@@ -1,15 +1,14 @@
 <template>
   <div>
-    <div class="questions md-layout md-gutter">
+    <div class="questions md-layout md-gutter" md-card>
       <div class="md-layout-item md-size-100">
-        <md-table v-model="searched" md-sort="name" md-sort-order="asc" md-card md-fixed-header>
+        <md-table v-model="searched" md-sort="name" md-sort-order="asc">
           <md-table-toolbar>
             <div class="md-toolbar-section-start md-layout md-gutter">
               <div class="md-layout-item">
                 <md-field>
                   <label for="filter-question">Filter</label>
                   <md-select v-model="filter" id="filter-question" name="filter-question" md-dense multiple @md-selected="filterQuestion">
-                    <!-- options -->
                     <md-optgroup v-for="opts in options" :key="opts.label" :label="opts.label">
                       <md-option v-for="opt of opts.options" :key="opt.name" :value="JSON.stringify(opt.value)" style="display: block;">
                         {{opt.name}}
@@ -18,18 +17,10 @@
                   </md-select>
                 </md-field>
               </div>
-              <!-- <div class="md-layout-item">
-                <md-field md-clearable>
-                  <md-input placeholder="Search by content..." v-model="search"  @input="searchQuestion"/>
-                </md-field>
-              </div> -->
             </div>
-
             <div class="md-toolbar-section-end">
               <md-button class="md-dense md-primary" @click="openCreateModal = true">New Question</md-button>
             </div>
-
-            
           </md-table-toolbar>
 
           <md-table-empty-state
@@ -40,7 +31,7 @@
           <md-table-row slot="md-table-row" slot-scope="{ item }">
             <md-table-cell md-label="Module" md-sort-by="module" md-numeric>{{ item.module }}</md-table-cell>
             <md-table-cell class="question-content" :title="item.content" md-label="Content" md-sort-by="content">
-              {{ item.content }}
+              <p>{{ item.content }}</p>
             </md-table-cell>
             <md-table-cell md-label="Type" md-sort-by="type">{{ item.type }}</md-table-cell>
             <md-table-cell md-label="Form" md-sort-by="form">{{ item.form }}</md-table-cell>
@@ -61,10 +52,17 @@
           </md-table-row>
         </md-table>
       </div>
-      <div class="md-layout-item md-size-100">
-        <h4>
-          Total question : {{questions.length}}
-        </h4>
+      <div class="md-layout-item md-size-100" style="padding-bottom: 50px;">
+          <paginate
+            v-model="currentPage"
+            :page-count="pageCount"
+            :container-class="'pagination'"
+            :prev-text="'prev'"
+            :next-text="'next'"
+            :hide-prev-next="true"
+            :click-handler="goToPage"
+          >
+          </paginate>
       </div>
     </div>
       
@@ -100,6 +98,7 @@ import QuestAction from "@/api/QuestionApi";
 // Components
 import NewQuest from "@/components/admin/NewQuest";
 import EditQuest from "@/components/admin/EditQuest";
+import Paginate from 'vuejs-paginate'
 
 // Functions
 const toLower = text => {
@@ -177,18 +176,31 @@ export default {
             }
           ]
         }
-      ]
+      ],
+      pageCount: 0,
+      perPage: 15,
+      currentPage : 1
     };
   },
   created() {
-    this.getAllQuestions();
+    this.countTotalQuestion();
   },
-  mounted() {},
+  mounted() {
+    this.fetchQuestions(this.currentPage, this.perPage);
+  },
   methods: {
-    async getAllQuestions() {
-      const response = await QuestAction.fetchQuestions();
+    async countTotalQuestion () {
+      const response = await QuestAction.countTotalQuestion();
+      this.pageCount = Math.ceil(Number(response.data)/this.perPage);
+    },
+    async fetchQuestions(page, perPage) {
+      const response = await QuestAction.fetchQuestions(page, perPage);
       this.questions = response.data;
       this.searched = response.data;
+    },
+    goToPage (pageNum) {
+      this.currentPage = pageNum;
+      this.fetchQuestions(pageNum, this.perPage);
     },
     editQuestion(question) {
       this.currentQuestion = question;
@@ -207,8 +219,7 @@ export default {
           let count = 0;
           for (let x of this.filter) {
             x = JSON.parse(x);
-            count +=
-              question[Object.keys(x)[0]] == x[Object.keys(x)[0]] ? 1 : 0;
+            count += question[Object.keys(x)[0]] == x[Object.keys(x)[0]] ? 1 : 0;
           }
           return count == this.filter.length;
         });
@@ -219,7 +230,7 @@ export default {
     async confirmDelete(question) {
       const response = await QuestAction.deleteQuestion(question._id);
       if (response) {
-        this.getAllQuestions();
+        this.fetchQuestions();
         this.openDeleteConfirm = false;
       }
     },
@@ -229,30 +240,55 @@ export default {
     },
     reload() {
       this.closeModal();
-      this.getAllQuestions();
+      this.fetchQuestions();
     }
   },
   components: {
     NewQuest,
-    EditQuest
+    EditQuest,
+    Paginate
   }
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style>
 .md-dialog {
   width: 80%;
 }
 .md-content {
   padding: 24px;
-  overflow: scroll;
+  padding-bottom: 0px;
 }
 .question-content {
   max-width: 250px;
-  color: rgb(68, 138, 255);
+}
+.question-content p{
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+ul.pagination {
+  display: block;
+  list-style: none;
+  text-align: right;
+  padding-right: 48px; 
+}
+ul.pagination li{
+  display: inline-block;
+  padding: 5px;
+  transition: all .3s;
+}
+ul.pagination li a{
+  color: #636e72 !important;
+  transition: all .3s;
+}
+
+ul.pagination li.active a{
+  color: #448AFF !important;
+  font-size: 18px;
+}
+ul.pagination li a:focus{
+  outline: none;
 }
 </style>
