@@ -69,13 +69,13 @@
 
     <md-dialog :md-active.sync="openCreateModal">
       <md-dialog-title>New Question</md-dialog-title>
-      <md-content class="md-scrollbar">
+      <md-content class="md-scrollbar" style="overflow-y: scroll;">
         <new-quest @close-modal="closeModal" @reload-quests="reload"></new-quest>
       </md-content>
     </md-dialog>
     <md-dialog :md-active.sync="openEditModal" v-if="currentQuestion">
       <md-dialog-title>Edit Question</md-dialog-title>
-      <md-content class="md-scrollbar">
+      <md-content class="md-scrollbar" style="overflow-y: scroll;">
         <edit-quest :question="currentQuestion" @close-modal="closeModal" @reload-quests="reload"></edit-quest>
       </md-content>
     </md-dialog>
@@ -230,7 +230,7 @@ export default {
     async confirmDelete(question) {
       const response = await QuestAction.deleteQuestion(question._id);
       if (response) {
-        this.fetchQuestions();
+        this.fetchQuestions(this.currentPage, this.perPage);
         this.openDeleteConfirm = false;
       }
     },
@@ -240,7 +240,7 @@ export default {
     },
     reload() {
       this.closeModal();
-      this.fetchQuestions();
+      this.fetchQuestions(this.currentPage, this.perPage);
     }
   },
   components: {
