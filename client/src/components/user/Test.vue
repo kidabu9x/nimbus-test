@@ -12,7 +12,7 @@
             <md-toolbar md-elevation="1" style="position: fixed; background-color: #26c6da; min-height: 40px;">
                 <div class="md-layout md-gutter" style="width: 100%;">
                     <div class="md-layout-item">
-                        <h3 class="md-title" style="color: #fff;">{{settings.name}} - Module {{settings.module}}</h3>
+                        <h3 class="md-title" style="color: #fff;">{{settings.name}} - Module {{module}}</h3>
                     </div>
                     <div class="md-layout-item">
                         <h3 class="md-title" style="color: #fff; text-align: center;">{{username}}</h3>
@@ -232,6 +232,25 @@
                     </div>
                 </div>
             </md-step>
+            <md-step v-if="codeIsMatch" id="thirdStep" md-label="Chọn module" :md-done.sync="thirdStep">
+                <div class="md-layout md-gutter">
+                    <div class="md-layout-item">
+                        <md-button class="md-primary" @click="beginTest(1)">
+                            Module 1
+                        </md-button>
+                    </div>
+                    <div class="md-layout-item">
+                        <md-button class="md-primary" @click="beginTest(2)">
+                            Module 2
+                        </md-button>
+                    </div>
+                    <div class="md-layout-item">
+                        <md-button class="md-primary" @click="beginTest(3)">
+                            Module 3
+                        </md-button>
+                    </div>
+                </div>
+            </md-step>
         </md-steppers>
       </md-content>
     </md-dialog>
@@ -255,14 +274,17 @@ export default {
       showStepper: true,
       firstStep: false,
       secondStep: false,
+      thirdStep: false,
       stepActive: 'firstStep',
       inputName: null,
       code: null,
       isCheckingCode: false,
+      codeIsMatch: false,
       username: null,
       settings: null,
       creatingExam: false,
       testQuests: [],
+      module: null,
     //   Start changes here
       currentQuest: null,
       currentIndex: 0,
@@ -290,21 +312,21 @@ export default {
             this.noticeError(response.data.error);
             this.isCheckingCode = false;
         } else {
-            this.noticeSuccess('Test nào !!!');
             this.settings = response.data;
-            this.beginTest();
             this.isCheckingCode = false;
+            this.codeIsMatch = true;
+            this.setDone('secondStep', 'thirdStep');
         }
     },
-    beginTest () {
+    beginTest (module) {
         this.username = this.inputName;
-        // this.username = 'Duong dep trai';
+        this.module = module;
         this.showStepper = false;
         this.creatingExam = true;
-        this.createExam();
+        this.createExam(module);
     },
-    async createExam () {
-      const response = await QuestionApi.createExam(this.settings.module);
+    async createExam (module) {
+      const response = await QuestionApi.createExam(module);
       this.testQuests = response.data;
       this.goToQuest();
       this.creatingExam = false;

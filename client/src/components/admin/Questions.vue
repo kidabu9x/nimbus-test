@@ -39,7 +39,7 @@
               <md-checkbox v-model="item.definitely_appear" disabled></md-checkbox>
             </md-table-cell>
             <md-table-cell md-label="Action">
-              <md-button class="md-icon-button md-primary" @click="editQuestion(item)">
+              <md-button class="md-icon-button" @click="editQuestion(item)">
                 <md-icon>edit</md-icon>
                 <md-tooltip>Edit</md-tooltip>
               </md-button>
@@ -70,14 +70,22 @@
     <md-dialog :md-active.sync="openCreateModal">
       <md-dialog-title>New Question</md-dialog-title>
       <md-content class="md-scrollbar" style="overflow-y: scroll;">
-        <new-quest @close-modal="closeModal" @reload-quests="reload"></new-quest>
+        <new-quest @close-modal="closeModal" @reload-quests="reload" ref="createQuest"></new-quest>
       </md-content>
+      <md-dialog-actions>
+        <md-button class="md-primary" @click="openCreateModal = false">Close</md-button>
+        <md-button class="md-primary" @click="$refs.createQuest.createNewQuestion()">Create</md-button>
+      </md-dialog-actions>
     </md-dialog>
     <md-dialog :md-active.sync="openEditModal" v-if="currentQuestion">
       <md-dialog-title>Edit Question</md-dialog-title>
       <md-content class="md-scrollbar" style="overflow-y: scroll;">
-        <edit-quest :question="currentQuestion" @close-modal="closeModal" @reload-quests="reload"></edit-quest>
+        <edit-quest :question="currentQuestion" @close-modal="closeModal" @reload-quests="reload" ref="editQuest"></edit-quest>
       </md-content>
+      <md-dialog-actions>
+        <md-button class="md-primary" @click="openEditModal = false">Close</md-button>
+        <md-button class="md-primary" @click="$refs.editQuest.updateQuestion()">Save</md-button>
+      </md-dialog-actions>
     </md-dialog>
     <md-dialog-confirm
       v-if="currentQuestion"
@@ -132,6 +140,12 @@ export default {
               name: "Module 1",
               value: {
                 module: 1
+              }
+            },
+            {
+              name: "Module 2",
+              value: {
+                module: 2
               }
             },
             {

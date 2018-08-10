@@ -85,7 +85,34 @@ router.get('/:module', (req, res) => {
       })
       res.json(response);
     });
-  } else if (module == 3) {
+  }
+  else if (module == 2) {
+    Question.find(
+      {
+        module: 2,
+        definitely_appear: true
+      }
+    )
+    .then(questions => {
+      function shuffleArr(a) {
+        for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+      }
+      shuffleArr(questions);
+      res.json(questions.map(quest => {
+        quest['is_match'] = false;
+        quest.answers.map(answer => {
+          answer.is_correct = false;
+          answer.user_choice = false;
+        })
+        return quest;
+      }));
+    });
+  }
+  else if (module == 3) {
     Question.find(
       {
         module: 3,

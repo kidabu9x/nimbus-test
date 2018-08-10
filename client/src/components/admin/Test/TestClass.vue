@@ -10,7 +10,7 @@
     </div>
     <div v-else class="all-tests md-layout md-gutter">
         <div class="md-layout-item md-size-100">
-            <md-table v-model="filteredList" md-card md-fixed-header>
+            <md-table v-model="filteredList" md-card>
                 <md-table-toolbar>
                     <div class="md-toolbar-section-start">
                         <div class="md-layout md-gutter">
@@ -47,14 +47,6 @@
                     <md-table-cell md-label="Teacher">{{ item.teacher_name }}</md-table-cell>
                     <md-table-cell md-label="Code">
                         <span style="color: #ff5252;">{{ item.handle }}</span>
-                    </md-table-cell>
-                    <md-table-cell md-label="Module">
-                        <div>
-                            <md-radio v-model="item.module" :value='1' @change="updateTest(item.handle, {module: 1})">Module 1</md-radio>
-                        </div>
-                        <div>
-                            <md-radio v-model="item.module" :value='3' @change="updateTest(item.handle, {module: 3})">Module 3</md-radio>
-                        </div>
                     </md-table-cell>
                     <md-table-cell md-label="Students">
                         <span v-if="item.total_results == item.number_of_students" style="color: rgb(255, 82, 82);">{{ item.total_results }}/{{ item.number_of_students }}</span>

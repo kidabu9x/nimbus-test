@@ -11,6 +11,7 @@
             <md-field>
               <md-select v-model="newQuest.module">
                 <md-option value="1">Module 1</md-option>
+                <md-option value="2">Module 2</md-option>
                 <md-option value="3">Module 3</md-option>
               </md-select>
             </md-field>
@@ -138,11 +139,6 @@
           </div>
         </div>
       </div>
-
-      <div class="md-layout-item md-size-100">
-        <md-button style="float: right;" class="md-primary" @click="createNewQuestion">Create</md-button>
-        <md-button style="float: right;" class="md-primary" @click="closeModal">Close</md-button>
-      </div>
     </div>
     
   </div>
@@ -155,10 +151,10 @@ export default {
   data () {
     return {
       newQuest: {
-        module  : 1,
+        module  : 2,
         type    : 'theory',
         form    : 1,
-        definitely_appear : false,
+        definitely_appear : true,
         content : null,
         image   : null,
         answers : [
