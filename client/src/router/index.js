@@ -5,6 +5,7 @@ import Router from 'vue-router'
 import Admin from '@/components/admin/Admin'
 import Questions from '@/components/admin/Questions'
 import AdminTestClass from '@/components/admin/Test/TestClass'
+import AdminTestResults from '@/components/admin/Test/TestResults'
 import ExamSchedules from '@/components/admin/ExamSchedule/Schedule'
 
 // User component
@@ -34,11 +35,15 @@ export default new Router({
       children: [
         {
           path: 'questions',
-          component: Questions,
+          component: Questions
         },
         {
           path: 'tests',
-          component: AdminTestClass,
+          component: AdminTestClass
+        },
+        {
+          path: 'tests/:code',
+          component: AdminTestResults
         },
         {
           path: 'schedules',

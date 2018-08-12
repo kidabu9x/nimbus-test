@@ -8,6 +8,23 @@ const Question = require('../../models/Question');
 // @desc    Get All Questions
 // @access  Public
 router.get('/', (req, res) => {
+  // Question.find(
+  // )
+  //   .then(questions => {
+  //     console.log(questions);
+  //     questions.forEach(q => {
+  //       Question.update(
+  //         {
+  //           _id: q._id
+  //         },
+  //         {
+  //           $set : {
+  //             "answers.3.img_url" : null
+  //           }
+  //         }
+  //       ).then(res => console.log(res));
+  //     })
+  //   })
   let perPage = Number(req.query.perPage);
   let page = Number(req.query.page);
   Question.find()
@@ -16,11 +33,24 @@ router.get('/', (req, res) => {
     .then(questions => res.json(questions));
 });
 
+// @route   GET api/questions/search
+// @desc    Search Questions by content
+// @access  Public
+router.get('/search', (req, res) => {
+  let search = req.query.search.toLowerCase();
+  Question.find()
+    .then(questions => {
+      res.json(questions.filter(q => {
+        return (q.content).toLowerCase().includes(search);
+      }).splice(0, 10))
+    });
+});
+
 // @route   GET api/questions
 // @desc    Count number of Questions
 // @access  Public
 router.get('/count', (req, res) => {
-  Question.count()
+  Question.countDocuments()
    .then(quantities => res.json(quantities));
 });
 
@@ -169,10 +199,16 @@ router.post('/:id', (req, res) => {
         if (checkQuest.answers[i].user_choice == question.answers[i].is_correct) {
           count ++;
         }
-          checkQuest.answers[i].is_correct = question.answers[i].is_correct;
+        checkQuest.answers[i].is_correct = question.answers[i].is_correct;
       }
       checkQuest.is_match = count == question.answers.length ? true : false;
-      res.json(checkQuest);
+      if (!checkQuest.is_match) {
+        question.incorrect_times += 1;
+      }
+      question.called_times += 1;
+      question.save().then(() => {
+        res.json(checkQuest);
+      })
     })
 });
 
@@ -205,5 +241,6 @@ router.delete('/:id', (req, res) => {
     .then(question => question.remove().then(() => res.json({ success: true })))
     .catch(err => res.status(404).json({ success: false }));
 });
+
 
 module.exports = router;

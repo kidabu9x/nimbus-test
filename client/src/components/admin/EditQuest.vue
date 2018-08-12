@@ -104,7 +104,7 @@
           </div>
         </div>
       </div>
-      <div class="md-layout-item md-size-100" v-for="answer in editedQuest.answers" :key="answer.lable">
+      <div class="md-layout-item md-size-100" v-for="answer in editedQuest.answers" :key="answer.label">
         <div class="md-layout md-gutter">
           <div class="md-layout-item md-size-10"></div>
           <div class="md-layout-item md-size-20">
@@ -113,9 +113,25 @@
             </md-checkbox>
           </div>
           <div class="md-layout-item md-size-70">
-            <md-field>
-              <md-textarea v-model="answer.content" required></md-textarea>
-            </md-field>
+            <div class="md-layout md-gutter">
+              <div class="md-layout-item md-size-100">
+                <md-field>
+                  <md-textarea v-model="answer.content" required></md-textarea>
+                </md-field>
+              </div>
+              <div class="md-layout-item md-size-100">
+                <div class="md-layout md-gutter">
+                  <div class="md-layout-item md-size-10"></div>
+                  <div class="md-layout-item md-size-90">
+                    <md-checkbox v-model="answer.include_img">Include image for this answer</md-checkbox>
+                    <md-field v-if="answer.include_img">
+                      <label>Image url</label>
+                      <md-input v-model="answer.img_url"></md-input>
+                    </md-field>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

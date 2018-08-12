@@ -113,9 +113,25 @@
             </md-checkbox>
           </div>
           <div class="md-layout-item md-size-70">
-            <md-field>
-              <md-textarea v-model="answer.content" required></md-textarea>
-            </md-field>
+            <div class="md-layout md-gutter">
+              <div class="md-layout-item md-size-100">
+                <md-field>
+                  <md-textarea v-model="answer.content" required></md-textarea>
+                </md-field>
+              </div>
+              <div class="md-layout-item md-size-100">
+                <div class="md-layout md-gutter">
+                  <div class="md-layout-item md-size-10"></div>
+                  <div class="md-layout-item md-size-90">
+                    <md-checkbox v-model="answer.include_img">Include image for this answer</md-checkbox>
+                    <md-field v-if="answer.include_img">
+                      <label>Image url</label>
+                      <md-input v-model="answer.img_url"></md-input>
+                    </md-field>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -159,24 +175,32 @@ export default {
         image   : null,
         answers : [
           {
-            label     : 'A',
-            content   : null,
-            is_correct: false
+            label       : 'A',
+            content     : null,
+            is_correct  : false,
+            include_img : false,
+            img_url     : null
           },
           {
-            label     : 'B',
-            content   : null,
-            is_correct: false
+            label       : 'B',
+            content     : null,
+            is_correct  : false,
+            include_img : false,
+            img_url     : null
           },
           {
-            label     : 'C',
-            content   : null,
-            is_correct: false
+            label       : 'C',
+            content     : null,
+            is_correct  : false,
+            include_img : false,
+            img_url     : null
           },
           {
-            label     : 'D',
-            content   : null,
-            is_correct: false
+            label       : 'D',
+            content     : null,
+            is_correct  : false,
+            include_img : false,
+            img_url     : null
           }
         ],
         description: null
@@ -202,9 +226,11 @@ export default {
       }
       this.currentLabel = incrementChar(this.currentLabel).toUpperCase();
       this.newQuest.answers.push({
-        label     : this.currentLabel,
-        content   : null,
-        is_correct: false
+        label       : this.currentLabel,
+        content     : null,
+        is_correct  : false,
+        include_img : false,
+        img_url     : null
       });
     },
     checkQuest (quest) {
@@ -214,8 +240,11 @@ export default {
       if (quest.form > 10 || quest.form < 1) {
         return 'Form must smaller than 10 and greater than 1 !'
       }
-      if (quest.answers.some(answer => answer.is_correct && !answer.content)) {
+      if (quest.answers.some(answer => answer.is_correct && !answer.content && !answer.include_img)) {
         return 'Content of correct answer cannot be empty !'
+      }
+      if (quest.answers.some(answer => answer.include_img && !answer.img_url)) {
+        return 'Image url of answer which included cannot be empty !'
       }
       return null
     },

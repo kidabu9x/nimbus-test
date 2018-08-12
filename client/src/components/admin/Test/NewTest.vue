@@ -15,6 +15,7 @@
                                 <md-option value="Quân">Quân</md-option>
                                 <md-option value="Nhất">Nhất</md-option>
                                 <md-option value="Trưởng">Trưởng</md-option>
+                                <md-option value="Khoa">Khoa</md-option>
                             </md-select>
                         </md-field>
                     </div>
@@ -31,24 +32,6 @@
                     <div class="md-layout-item md-size-70">
                         <md-field>
                             <md-input v-model="newTest.name" type="text"></md-input>
-                        </md-field>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="md-layout-item md-size-100">
-            <div class="md-layout md-gutter">
-                <div class="md-layout md-gutter">
-                    <div class="md-layout-item md-size-30">
-                        <h5>Module</h5>
-                    </div>
-                    <div class="md-layout-item md-size-70">
-                        <md-field>
-                            <md-select v-model="newTest.module">
-                                <md-option value="1">Module 1</md-option>
-                                <md-option value="3">Module 3</md-option>
-                            </md-select>
                         </md-field>
                     </div>
                 </div>

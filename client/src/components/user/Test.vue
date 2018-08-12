@@ -37,7 +37,6 @@
                         <h3 v-if="isSubmited" style="text-align: left;">
                             Tổng số điểm: <span style="color: #66bb6a">{{Math.floor(totalCorrect*(1000/testQuests.length))}}</span>/1000
                         </h3>
-                        
                     </div>
                 </div>
                 <div class="md-layout-item md-size-50">
@@ -62,8 +61,8 @@
                                         <img :src="currentQuest.image">
                                     </div>
                                     <div v-for="answer in currentQuest.answers" :key="answer.label" style="font-size: 18px;" class="md-layout md-gutter">
-                                        <div class="md-layout-item md-size-100">
-                                            <md-checkbox v-if="!isSubmited" v-model="answer.user_choice">
+                                        <div class="md-layout-item md-size-100" v-if="answer.content || answer.include_img">
+                                            <md-checkbox v-if="!isSubmited" v-model="answer.user_choice" class="checkbox-default">
                                                 {{answer.label}}. <span class="paragraph">{{answer.content}}</span>
                                             </md-checkbox>
                                             <div v-else>
@@ -79,6 +78,9 @@
                                                 <md-checkbox v-else v-model="answer.user_choice">
                                                     {{answer.label}}. <span class="paragraph">{{answer.content}}</span>
                                                 </md-checkbox>
+                                            </div>
+                                            <div v-if="answer.include_img && answer.img_url" @click="expandImage(answer.img_url)" class="question-image">
+                                                <img :src="answer.img_url">
                                             </div>
                                         </div>
                                     </div>
@@ -301,8 +303,9 @@ export default {
   },
   mounted: function () {
     //   this.showStepper = false;
-    //   this.code = 'HTq0nFvMV';
+    //   this.code = 'L2ZHbE4dr';
     //   this.checkCode();
+    //   this.beginTest(3)
   },
   methods: {
     async checkCode() {
@@ -320,6 +323,7 @@ export default {
     },
     beginTest (module) {
         this.username = this.inputName;
+        // this.username = "Dương đẹp trai";
         this.module = module;
         this.showStepper = false;
         this.creatingExam = true;
@@ -378,7 +382,7 @@ export default {
             arr[index] = quest;
             if (index == self.testQuests.length - 1) {
                 self.isSubmitting = false;
-                TestApi.updateNewAnswer(self.code, self.username, self.settings.module, self.totalCorrect, self.answeredQuests);
+                // TestApi.updateNewAnswer(self.code, self.username, self.settings.module, self.totalCorrect, self.answeredQuests);
             }
           }
       })
@@ -462,6 +466,11 @@ a {
 }
 .md-checkbox .md-checkbox-label {
     height: auto;
+}
+
+.md-checkbox.md-theme-default.md-checked.checkbox-default .md-checkbox-container {
+    background-color:rgb(38, 198, 218);
+    border-color: rgb(38, 198, 218);
 }
 
 .md-checkbox.md-theme-default.md-checked.checkbox-correct .md-checkbox-container {

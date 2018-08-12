@@ -3,14 +3,14 @@
     <div v-if="testClass.length == 0" class="empty-test">
         <md-empty-state
             md-icon="devices_other"
-            md-label="Empty test class"
+            md-label="Empty test"
         >
             <md-button class="md-primary md-raised" @click="openTestModal = true">Create first test</md-button>
         </md-empty-state>
     </div>
     <div v-else class="all-tests md-layout md-gutter">
         <div class="md-layout-item md-size-100">
-            <md-table v-model="filteredList" md-card>
+            <md-table v-model="filteredList">
                 <md-table-toolbar>
                     <div class="md-toolbar-section-start">
                         <div class="md-layout md-gutter">
@@ -23,19 +23,21 @@
                             <div class="md-layout-item">
                                 <md-field>
                                     <md-select v-model="teacher" placeholder="Teacher">
+                                        <md-option value="all">Tất cả</md-option>
                                         <md-option value="Huy Nguyễn">Huy Nguyễn</md-option>
                                         <md-option value="Huy Đỗ">Huy Đỗ</md-option>
                                         <md-option value="Quân">Quân</md-option>
                                         <md-option value="Nhất">Nhất</md-option>
                                         <md-option value="Trưởng">Trưởng</md-option>
+                                        <md-option value="Khoa">Khoa</md-option>
                                     </md-select>
                                 </md-field>
                             </div>
                         </div>
                     </div>
                     <div class="md-toolbar-section-end">
-                        <md-button class="md-dense md-raised md-primary" @click="openTestModal = true">
-                            Create New Class
+                        <md-button class="md-dense md-primary" @click="openTestModal = true">
+                            Create New Test
                         </md-button>
                     </div>
                 </md-table-toolbar>
@@ -54,18 +56,10 @@
                     </md-table-cell>
                     <md-table-cell md-label="Time">{{ item.time }}</md-table-cell>
                     <md-table-cell md-label="Actions">
-                        <div>
-                            <md-switch v-model="item.active" @change="updateTest(item.handle, {active: item.active})">
-                                <span v-if="item.active" style="color: #ff5252;">Active</span>
-                                <span v-else>Inactive</span>
-                            </md-switch>
-                        </div>
-                        <div>
-                            <md-button style="font-weight: inherit; text-transform: none; margin-left: 0;" @click="showResult(item.handle)">
-                                <md-icon>list_alt</md-icon>
-                                See results
-                            </md-button>
-                        </div>
+                        <md-button class="md-icon-button" @click="showResult(item.handle)">
+                            <md-icon>list_alt</md-icon>
+                            <md-tooltip md-direction="right">Results</md-tooltip>
+                        </md-button>
                     </md-table-cell>
                 </md-table-row>
             </md-table>
@@ -159,8 +153,10 @@ export default {
         return this.testClass.filter(test => {
             if (this.teacher && this.search != '') {
                 return test.name.toLowerCase().indexOf(this.search.toLowerCase()) > -1 && test.teacher_name == this.teacher;
-            } else if (this.teacher) {
+            } else if (this.teacher && this.teacher != 'all') {
                 return test.teacher_name == this.teacher;
+            } else if (this.teacher && this.teacher != 'all') {
+                return test;
             } else if (this.search != '') {
                 return test.name.toLowerCase().indexOf(this.search.toLowerCase()) > -1;
             } else {

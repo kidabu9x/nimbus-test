@@ -5,17 +5,15 @@
         <md-table v-model="searched" md-sort="name" md-sort-order="asc">
           <md-table-toolbar>
             <div class="md-toolbar-section-start md-layout md-gutter">
-              <div class="md-layout-item">
-                <md-field>
-                  <label for="filter-question">Filter</label>
-                  <md-select v-model="filter" id="filter-question" name="filter-question" md-dense multiple @md-selected="filterQuestion">
-                    <md-optgroup v-for="opts in options" :key="opts.label" :label="opts.label">
-                      <md-option v-for="opt of opts.options" :key="opt.name" :value="JSON.stringify(opt.value)" style="display: block;">
-                        {{opt.name}}
-                      </md-option>
-                    </md-optgroup>
-                  </md-select>
-                </md-field>
+              <div class="md-layout-item md-size-100">
+                <md-autocomplete v-model="content" :md-options="searchedQuestion" @md-changed="getContent" @md-selected="editQuestion">
+                  <label>Question content</label>
+                  <template slot="md-autocomplete-item" slot-scope="{ item }">
+                    <p>
+                      {{ item.content }}
+                    </p>
+                  </template>
+                </md-autocomplete>
               </div>
             </div>
             <div class="md-toolbar-section-end">
@@ -33,8 +31,8 @@
             <md-table-cell class="question-content" :title="item.content" md-label="Content" md-sort-by="content">
               <p>{{ item.content }}</p>
             </md-table-cell>
-            <md-table-cell md-label="Type" md-sort-by="type">{{ item.type }}</md-table-cell>
-            <md-table-cell md-label="Form" md-sort-by="form">{{ item.form }}</md-table-cell>
+            <md-table-cell md-label="Called Times" md-sort-by="called_times">{{ item.called_times }}</md-table-cell>
+            <md-table-cell md-label="Incorrect" md-sort-by="incorrect_times">{{ item.incorrect_times }}</md-table-cell>
             <md-table-cell md-label="Appear">
               <md-checkbox v-model="item.definitely_appear" disabled></md-checkbox>
             </md-table-cell>
@@ -65,7 +63,6 @@
           </paginate>
       </div>
     </div>
-      
 
     <md-dialog :md-active.sync="openCreateModal">
       <md-dialog-title>New Question</md-dialog-title>
@@ -130,6 +127,8 @@ export default {
       questions: [],
       searched: [],
       search: "",
+      content: "",
+      searchedQuestion : [],
       filter: [],
       currentQuestion: null,
       options: [
@@ -247,6 +246,10 @@ export default {
         this.fetchQuestions(this.currentPage, this.perPage);
         this.openDeleteConfirm = false;
       }
+    },
+    async getContent (searchTerm) {
+        const response = await QuestAction.searchContent(searchTerm ? searchTerm : '');
+        this.searchedQuestion = response.data;
     },
     closeModal() {
       this.openCreateModal = false;

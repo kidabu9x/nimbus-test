@@ -31,6 +31,14 @@ var QuestionSchema = new Schema({
   definitely_appear: {
     type: Boolean,
     default: false
+  },
+  incorrect_times: {
+    type: Number,
+    default: 0
+  },
+  called_times: {
+    type: Number,
+    default: 0
   }
 });
 

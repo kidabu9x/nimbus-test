@@ -12,6 +12,13 @@ export default {
         }
       })
     },
+    searchContent (searchTerm) {
+      return Api().get('/api/questions/search', {
+        params : {
+          search : searchTerm
+        }
+      })
+    },
     createNewQuestion (newQuestion) {
       return Api().post('/api/questions', newQuestion)
     },
