@@ -27,7 +27,13 @@ router.get('/', (req, res) => {
   //   })
   let perPage = Number(req.query.perPage);
   let page = Number(req.query.page);
-  Question.find()
+  let module = req.query.module;
+  Question.find(
+    {
+      module : req.query && req.query.module ? req.query.module : {$exists : true}
+    }
+  )
+    .sort({incorrect_times : -1})
     .skip(page > 0 ? ( ( page - 1 ) * perPage ) : 0 )
     .limit(perPage)
     .then(questions => res.json(questions));
@@ -42,7 +48,7 @@ router.get('/search', (req, res) => {
     .then(questions => {
       res.json(questions.filter(q => {
         return (q.content).toLowerCase().includes(search);
-      }).splice(0, 10))
+      }).splice(0, 5))
     });
 });
 
@@ -50,7 +56,9 @@ router.get('/search', (req, res) => {
 // @desc    Count number of Questions
 // @access  Public
 router.get('/count', (req, res) => {
-  Question.countDocuments()
+  Question.countDocuments({
+    module : req.query && req.query.module ? req.query.module : {$exists : true}
+  })
    .then(quantities => res.json(quantities));
 });
 

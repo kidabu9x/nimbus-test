@@ -7,7 +7,7 @@ import Questions from '@/components/admin/Questions'
 import AdminTestClass from '@/components/admin/Test/TestClass'
 import AdminTestResults from '@/components/admin/Test/TestResults'
 import ExamSchedules from '@/components/admin/ExamSchedule/Schedule'
-
+import Dev from '@/components/Dev/Dev'
 // User component
 import User from '@/components/user/User'
 import Test from '@/components/user/Test'
@@ -27,6 +27,10 @@ export default new Router({
           component: Test
         }
       ]
+    },
+    {
+      path: '/dev',
+      component: Dev
     },
     {
       path: '/admin',

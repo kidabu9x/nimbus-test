@@ -2,14 +2,38 @@
   <div>
     <div class="questions md-layout md-gutter" md-card>
       <div class="md-layout-item md-size-100">
-        <md-table v-model="searched" md-sort="name" md-sort-order="asc">
+        <md-table v-model="questions" md-sort="name" md-sort-order="asc">
           <md-table-toolbar>
             <div class="md-toolbar-section-start md-layout md-gutter">
               <div class="md-layout-item md-size-100">
-                <md-autocomplete v-model="content" :md-options="searchedQuestion" @md-changed="getContent" @md-selected="editQuestion">
-                  <label>Question content</label>
-                  <template slot="md-autocomplete-item" slot-scope="{ item }">
-                    <p>
+                <div class="md-layout md-gutter">
+                  <div class="md-layout-item md-size-20">
+                    <p style="line-height: 48px;">Module</p>
+                  </div>
+                  <div class="md-layout-item md-size-40">
+                    <md-field>
+                      <md-select v-model="module" @md-selected="filterByModule">
+                        <md-option value="null">All</md-option>
+                        <md-option value="1">Module 1</md-option>
+                        <md-option value="2">Module 2</md-option>
+                        <md-option value="3">Module 3</md-option>
+                      </md-select>
+                    </md-field>
+                  </div>
+                  <div class="md-layout-item md-size-40"></div>
+                </div>
+              </div>
+              <div class="md-layout-item md-size-100">
+                <md-autocomplete 
+                  v-model="search" 
+                  :md-options="searched" 
+                  @md-changed="getContent" 
+                  @md-selected="editSearchedQuestion"
+                  @md-opened="getContent"
+                >
+                  <label>Search question</label>
+                  <template slot="md-autocomplete-item" slot-scope="{ item }" style="display: block;">
+                    <p style="display: block;">
                       {{ item.content }}
                     </p>
                   </template>
@@ -105,18 +129,6 @@ import NewQuest from "@/components/admin/NewQuest";
 import EditQuest from "@/components/admin/EditQuest";
 import Paginate from 'vuejs-paginate'
 
-// Functions
-const toLower = text => {
-  return text.toString().toLowerCase();
-};
-
-const searchByContent = (items, term) => {
-  if (term) {
-    return items.filter(item => toLower(item.content).includes(toLower(term)));
-  }
-  return items;
-};
-
 export default {
   name: "handle-test",
   data() {
@@ -127,72 +139,11 @@ export default {
       questions: [],
       searched: [],
       search: "",
-      content: "",
-      searchedQuestion : [],
-      filter: [],
       currentQuestion: null,
-      options: [
-        {
-          label: "Module",
-          options: [
-            {
-              name: "Module 1",
-              value: {
-                module: 1
-              }
-            },
-            {
-              name: "Module 2",
-              value: {
-                module: 2
-              }
-            },
-            {
-              name: "Module 3",
-              value: {
-                module: 3
-              }
-            }
-          ]
-        },
-        {
-          label: "Type",
-          options: [
-            {
-              name: "Theory",
-              value: {
-                type: "theory"
-              }
-            },
-            {
-              name: "Practice",
-              value: {
-                type: "practice"
-              }
-            }
-          ]
-        },
-        {
-          label: "Appear",
-          options: [
-            {
-              name: "Definitely",
-              value: {
-                definitely_appear: true
-              }
-            },
-            {
-              name: "Random",
-              value: {
-                definitely_appear: false
-              }
-            }
-          ]
-        }
-      ],
       pageCount: 0,
-      perPage: 15,
-      currentPage : 1
+      perPage: 10,
+      currentPage : 1,
+      module: null
     };
   },
   created() {
@@ -202,18 +153,17 @@ export default {
     this.fetchQuestions(this.currentPage, this.perPage);
   },
   methods: {
-    async countTotalQuestion () {
-      const response = await QuestAction.countTotalQuestion();
+    async countTotalQuestion (module) {
+      const response = await QuestAction.countTotalQuestion(module);
       this.pageCount = Math.ceil(Number(response.data)/this.perPage);
     },
-    async fetchQuestions(page, perPage) {
-      const response = await QuestAction.fetchQuestions(page, perPage);
+    async fetchQuestions(page, perPage, module) {
+      const response = await QuestAction.fetchQuestions(page, perPage, module);
       this.questions = response.data;
-      this.searched = response.data;
     },
     goToPage (pageNum) {
       this.currentPage = pageNum;
-      this.fetchQuestions(pageNum, this.perPage);
+      this.fetchQuestions(pageNum, this.perPage, this.module);
     },
     editQuestion(question) {
       this.currentQuestion = question;
@@ -223,33 +173,29 @@ export default {
       this.currentQuestion = question;
       this.openDeleteConfirm = true;
     },
-    searchQuestion() {
-      this.searched = searchByContent(this.questions, this.search);
-    },
-    filterQuestion() {
-      if (this.filter.length > 0) {
-        this.searched = this.questions.filter(question => {
-          let count = 0;
-          for (let x of this.filter) {
-            x = JSON.parse(x);
-            count += question[Object.keys(x)[0]] == x[Object.keys(x)[0]] ? 1 : 0;
-          }
-          return count == this.filter.length;
-        });
-      } else {
-        this.searched = this.questions;
-      }
-    },
     async confirmDelete(question) {
       const response = await QuestAction.deleteQuestion(question._id);
       if (response) {
-        this.fetchQuestions(this.currentPage, this.perPage);
+        this.fetchQuestions(this.currentPage, this.perPage, this.module);
         this.openDeleteConfirm = false;
       }
     },
-    async getContent (searchTerm) {
-        const response = await QuestAction.searchContent(searchTerm ? searchTerm : '');
-        this.searchedQuestion = response.data;
+    getContent (searchTerm) {
+      this.searched = new Promise(async function (resolve) {
+        let response = await QuestAction.searchContent(searchTerm ? searchTerm : '');
+        resolve(response.data);
+      })
+    },
+    editSearchedQuestion (question) {
+      this.search = question.content;
+      this.editQuestion(question);
+    },
+    filterByModule (module) {
+      if (module) {
+        this.currentPage = 1;
+        this.countTotalQuestion(module);
+        this.fetchQuestions(this.currentPage, this.perPage, module);
+      }
     },
     closeModal() {
       this.openCreateModal = false;
@@ -257,7 +203,7 @@ export default {
     },
     reload() {
       this.closeModal();
-      this.fetchQuestions(this.currentPage, this.perPage);
+      this.fetchQuestions(this.currentPage, this.perPage, this.module);
     }
   },
   components: {

@@ -1,14 +1,19 @@
 import Api from '@/api/Api.js'
 
 export default {
-    countTotalQuestion () {
-      return Api().get(`/api/questions/count`)
+    countTotalQuestion (module) {
+      if (module && module != 'null') {
+        return Api().get(`/api/questions/count?module=${module}`);
+      } else {
+        return Api().get(`/api/questions/count`);
+      }
     },
-    fetchQuestions (page, perPage) {
+    fetchQuestions (page, perPage, module) {
       return Api().get('/api/questions', {
         params : {
           page: page,
-          perPage: perPage
+          perPage: perPage,
+          module: module && module != 'null' ? module : null
         }
       })
     },

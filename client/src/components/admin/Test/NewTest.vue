@@ -37,38 +37,6 @@
                 </div>
             </div>
         </div>
-
-        <div class="md-layout-item md-size-100">
-            <div class="md-layout md-gutter">
-                <div class="md-layout md-gutter">
-                    <div class="md-layout-item md-size-30">
-                        <h5>Time(minutes)</h5>
-                    </div>
-                    <div class="md-layout-item md-size-70">
-                        <md-field>
-                            <md-input v-model="newTest.time" type="number"></md-input>
-                            <md-icon>timer</md-icon>
-                        </md-field>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="md-layout-item md-size-100">
-            <div class="md-layout md-gutter">
-                <div class="md-layout md-gutter">
-                    <div class="md-layout-item md-size-30">
-                        <h5>Number of Students</h5>
-                    </div>
-                    <div class="md-layout-item md-size-70">
-                        <md-field>
-                            <md-input v-model="newTest.number_of_students" type="number"></md-input>
-                            <md-icon>people</md-icon>
-                        </md-field>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 </template>
 <script>

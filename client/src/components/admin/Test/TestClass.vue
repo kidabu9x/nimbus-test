@@ -50,11 +50,6 @@
                     <md-table-cell md-label="Code">
                         <span style="color: #ff5252;">{{ item.handle }}</span>
                     </md-table-cell>
-                    <md-table-cell md-label="Students">
-                        <span v-if="item.total_results == item.number_of_students" style="color: rgb(255, 82, 82);">{{ item.total_results }}/{{ item.number_of_students }}</span>
-                        <span v-else>{{ item.total_results }}/{{ item.number_of_students }}</span>
-                    </md-table-cell>
-                    <md-table-cell md-label="Time">{{ item.time }}</md-table-cell>
                     <md-table-cell md-label="Actions">
                         <md-button class="md-icon-button" @click="showResult(item.handle)">
                             <md-icon>list_alt</md-icon>
