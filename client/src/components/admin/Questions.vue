@@ -254,4 +254,7 @@ ul.pagination li.active a{
 ul.pagination li a:focus{
   outline: none;
 }
+.md-list-item {
+  display: block;
+}
 </style>
