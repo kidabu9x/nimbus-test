@@ -11,7 +11,6 @@ router.get('/', (req, res) => {
   // Question.find(
   // )
   //   .then(questions => {
-  //     console.log(questions);
   //     questions.forEach(q => {
   //       Question.update(
   //         {
@@ -19,7 +18,7 @@ router.get('/', (req, res) => {
   //         },
   //         {
   //           $set : {
-  //             "answers.3.img_url" : null
+  //             "answer_type" : 'multi_choice'
   //           }
   //         }
   //       ).then(res => console.log(res));
@@ -27,7 +26,6 @@ router.get('/', (req, res) => {
   //   })
   let perPage = Number(req.query.perPage);
   let page = Number(req.query.page);
-  let module = req.query.module;
   Question.find(
     {
       module : req.query && req.query.module ? req.query.module : {$exists : true}

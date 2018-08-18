@@ -94,6 +94,19 @@
       <div class="md-layout-item md-size-100">
         <md-divider></md-divider>
       </div>
+      <!-- Answer_type: multi_choice or drag_drop -->
+      <div class="md-layout-item md-size-100">
+        <div class="md-layout md-gutter">
+          <div class="md-layout-item md-size-30">
+            <h5>Answer Type</h5>
+          </div>
+          <div class="md-layout-item md-size-70">
+            <md-radio v-model="newQuest.answer_type" :value="'multi_choice'">Multi choice</md-radio>
+            <md-radio v-model="newQuest.answer_type" :value="'drag_drop'">Drag and Drop</md-radio>
+          </div>
+        </div>
+      </div>
+
       <div class="md-layout-item md-size-100">
         <div class="md-layout md-gutter">
           <div class="md-layout-item md-size-30">
@@ -162,6 +175,7 @@
 
 <script>
 import QuestApi from '@/api/QuestionApi'
+import shortId from 'shortid'
 export default {
   name: 'new-quest',
   data () {
@@ -173,6 +187,7 @@ export default {
         definitely_appear : true,
         content : null,
         image   : null,
+        answer_type: 'multi_choice',
         answers : [
           {
             label       : 'A',
@@ -207,6 +222,8 @@ export default {
       },
       currentLabel : 'D'
     }
+  },
+  mounted () {
   },
   methods: {
     async createNewQuestion () {

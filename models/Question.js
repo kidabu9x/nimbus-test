@@ -20,6 +20,11 @@ var QuestionSchema = new Schema({
     type: String,
     default: null
   },
+  answer_type: {
+    type: String,
+    default: 'multi_choice'
+    // Current there are two options: multi_choice and drag_drop
+  },
   answers: {
     type: Array,
     default: []
