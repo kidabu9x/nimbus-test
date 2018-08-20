@@ -127,7 +127,7 @@ import QuestAction from "@/api/QuestionApi";
 // Components
 import NewQuest from "@/components/admin/NewQuest";
 import EditQuest from "@/components/admin/EditQuest";
-import Paginate from 'vuejs-paginate'
+import Paginate from 'vuejs-paginate';
 
 export default {
   name: "handle-test",

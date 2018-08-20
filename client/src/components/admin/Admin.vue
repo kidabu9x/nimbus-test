@@ -42,8 +42,11 @@
 </template>
 
 <script>
+
 export default {
-  name: 'Admin'
+  name: 'Admin',
+  components : {
+  }
 }
 </script>
 

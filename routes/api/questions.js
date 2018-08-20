@@ -174,6 +174,16 @@ router.get('/:module', (req, res) => {
       }));
     });
   }
+  else if (module == 4) {
+    Question.find(
+      {
+        module: 4
+      }
+    )
+    .then(questions => {
+      res.send(questions);
+    });
+  }
 });
 
 // @route   POST api/questions
@@ -184,6 +194,7 @@ router.post('/', (req, res) => {
     module      : req.body.module,
     type        : req.body.type,
     form        : req.body.form,
+    answer_type : req.body.answer_type,
     content     : req.body.content,
     image       : req.body.image,
     answers     : req.body.answers,
@@ -229,6 +240,7 @@ router.put('/:id', (req, res) => {
       question.form        = req.body.form,
       question.content     = req.body.content,
       question.image       = req.body.image,
+      question.answer_type = req.body.answer_type,
       question.answers     = req.body.answers,
       question.description = req.body.description,
       question.definitely_appear = req.body.definitely_appear

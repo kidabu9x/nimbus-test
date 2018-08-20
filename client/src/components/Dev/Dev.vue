@@ -1,103 +1,47 @@
 <template>
   <div class="simple-page">
-    <div class="md-layout md-gutter">
+    <div class="md-layout md-gutter" v-if="currentQuest">
         <div class="md-layout-item">
-            <Container 
-                :group-name="'test'"
-                :get-child-payload="i => getPayload(i, 'items')"
-                @drop="onDrop('items', $event)"
-            >
-                <Draggable v-for="item in items" :key="item.id" :should-accept-drop="true">
-                    <div class="draggable-item">
-                        <h3 class="word">
-                            {{item.data}}
-                        </h3>
-                    </div>
-                </Draggable>
-            </Container>
+          <Container>
+            <Draggable v-for="drag in currentQuest.answers" :key="drag.id" v-if="drag.type == 'drag_item'">
+              <div class="draggable-item">
+                <p>{{drag.content}}</p>
+              </div>
+            </Draggable>
+          </Container>
         </div>
         <div class="md-layout-item">
-            <Container
-                :group-name="'test'"
-                :get-child-payload="i => getPayload(i, 'items2')"
-                @drop="onDrop('items2', $event)"
-            >
-                <Draggable v-for="item in items2" :key="item.id" :should-accept-drop="true">
-                    <div class="draggable-item">
-                        <h3 class="word">
-                            {{item.data}}
-                        </h3>
-                    </div>
-                </Draggable>
-            </Container>
+          <div v-for="drop in currentQuest.answers" :key="drop.id" v-if="drop.type == 'drop_target'">
+            <p>{{drop.content}}</p>
+          </div>
         </div>
     </div>
   </div>
 </template>
 
 <script>
+// Api
+import QuestApi from "@/api/QuestionApi";
+
+// Drag and Drop
 import { Container, Draggable } from "vue-smooth-dnd";
 export default {
   name: 'Dev',
   data () {
     return {
-      items: [
-        {
-          id : 1,
-          data : 'zauuuuu'
-        },
-        {
-          id : 2,
-          data : 'qưeqweqweqwe'
-        },
-        {
-          id : 3,
-          data : 'Hello'
-        },
-        {
-          id : 4,
-          data : 'Heellooo'
-        },
-        {
-          id : 5,
-          data : 'al,sdla,sdl'
-        }
-      ],
-      items2: [
-        {
-          id : 11,
-          data : 'zxczxc'
-        },
-        {
-          id : 21,
-          data : '123'
-        }
-      ]
+      questions : [],
+      currentQuest : null
     }
   },
+  mounted () {
+    this.fetchQuest();
+  },
   methods : {
-      onDrop(collection, dropResult) {
-        this[collection]= this.applyDrag(this[collection], dropResult);
-      },
-      getPayload (i, arr) {
-        return this[arr][i];
-      },
-      applyDrag(array, { removedIndex, addedIndex, payload }) {
-        if (removedIndex === null && addedIndex === null) return array;
-
-        const result = [...array];
-        let itemToAdd = payload;
-
-        if (removedIndex !== null) {
-          itemToAdd = result.splice(removedIndex, 1)[0];
-        }
-
-        if (addedIndex !== null) {
-          result.splice(addedIndex, 0, itemToAdd);
-        }
-
-        return result;
-      },
+      async fetchQuest () {
+        let response = await QuestApi.createExam(4);
+        this.questions = response.data;
+        this.currentQuest = this.questions[0];
+      }
   },
   components: {
       Container,

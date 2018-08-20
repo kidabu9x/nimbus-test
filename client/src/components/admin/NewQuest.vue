@@ -13,6 +13,7 @@
                 <md-option value="1">Module 1</md-option>
                 <md-option value="2">Module 2</md-option>
                 <md-option value="3">Module 3</md-option>
+                <md-option value="4">Module 4</md-option>
               </md-select>
             </md-field>
           </div>
@@ -23,13 +24,13 @@
       <div class="md-layout-item md-size-100">
         <div class="md-layout md-gutter">
           <div class="md-layout-item md-size-30">
-            <h5>Type</h5>
+            <h5>Loại</h5>
           </div>
           <div class="md-layout-item md-size-70">
             <md-field>
               <md-select v-model="newQuest.type">
-                <md-option value="theory">Theory</md-option>
-                <md-option value="practice">Practice</md-option>
+                <md-option value="theory">Lý thuyết</md-option>
+                <md-option value="practice">Thực hành</md-option>
               </md-select>
             </md-field>
           </div>
@@ -40,7 +41,7 @@
       <div class="md-layout-item md-size-100">
         <div class="md-layout md-gutter">
           <div class="md-layout-item md-size-30">
-            <h5>Form</h5>
+            <h5>Dạng</h5>
           </div>
           <div class="md-layout-item md-size-70">
             <md-field>
@@ -54,10 +55,11 @@
       <div class="md-layout-item md-size-100">
         <div class="md-layout md-gutter">
           <div class="md-layout-item md-size-30">
-            <h5>Definitely Appear in the Test</h5>
+            <h5>Xuất hiện</h5>
           </div>
           <div class="md-layout-item md-size-70">
-            <md-switch class="md-primary" v-model="newQuest.definitely_appear"></md-switch>
+            <md-radio v-model="newQuest.definitely_appear" :value="true">Chắc chắn</md-radio>
+            <md-radio v-model="newQuest.definitely_appear" :value="false">Random</md-radio>
           </div>
         </div>
       </div>
@@ -66,7 +68,7 @@
       <div class="md-layout-item md-size-100">
         <div class="md-layout md-gutter">
           <div class="md-layout-item md-size-30">
-            <h5>Question Content</h5>
+            <h5>Nội dung câu hỏi</h5>
           </div>
           <div class="md-layout-item md-size-70">
             <md-field>
@@ -80,7 +82,7 @@
       <div class="md-layout-item md-size-100">
         <div class="md-layout md-gutter">
           <div class="md-layout-item md-size-30">
-            <h5>Question Image</h5>
+            <h5>Hình ảnh</h5>
           </div>
           <div class="md-layout-item md-size-70">
             <md-field>
@@ -98,58 +100,138 @@
       <div class="md-layout-item md-size-100">
         <div class="md-layout md-gutter">
           <div class="md-layout-item md-size-30">
-            <h5>Answer Type</h5>
+            <h5>Loại câu hỏi</h5>
           </div>
           <div class="md-layout-item md-size-70">
-            <md-radio v-model="newQuest.answer_type" :value="'multi_choice'">Multi choice</md-radio>
-            <md-radio v-model="newQuest.answer_type" :value="'drag_drop'">Drag and Drop</md-radio>
+            <md-radio v-model="newQuest.answer_type" :value="'multi_choice'">
+              Trắc nghiệm
+            </md-radio>
+            <md-radio v-model="newQuest.answer_type" :value="'drag_drop'">
+              Kéo thả
+            </md-radio>
           </div>
         </div>
       </div>
 
-      <div class="md-layout-item md-size-100">
+      <div v-if="newQuest.answer_type == 'multi_choice'" class="md-layout-item md-size-100">
         <div class="md-layout md-gutter">
-          <div class="md-layout-item md-size-30">
-            <h5>Answers</h5>
-          </div>
-          <div class="md-layout-item md-size-70">
-            <p>Content</p>
-          </div>
-        </div>
-      </div>
-      <div class="md-layout-item md-size-100" v-for="answer in newQuest.answers" :key="answer.lable">
-        <div class="md-layout md-gutter">
-          <div class="md-layout-item md-size-10"></div>
-          <div class="md-layout-item md-size-20">
-            <md-checkbox class="md-primary" v-model="answer.is_correct">
-              {{answer.label}}.
-            </md-checkbox>
-          </div>
-          <div class="md-layout-item md-size-70">
+          <div class="md-layout-item md-size-100">
             <div class="md-layout md-gutter">
-              <div class="md-layout-item md-size-100">
-                <md-field>
-                  <md-textarea v-model="answer.content" required></md-textarea>
-                </md-field>
+              <div class="md-layout-item md-size-30">
+                <h5>Câu trả lời</h5>
               </div>
-              <div class="md-layout-item md-size-100">
+              <div class="md-layout-item md-size-70">
+                <p>Nội dung</p>
+              </div>
+            </div>
+          </div>
+          <div v-if="newQuest.answer_type == 'multi_choice'" class="md-layout-item md-size-100" v-for="answer in newQuest.answers" :key="answer.lable">
+            <div class="md-layout md-gutter">
+              <div class="md-layout-item md-size-10"></div>
+              <div class="md-layout-item md-size-20">
+                <md-checkbox class="md-primary" v-model="answer.is_correct">
+                  {{answer.label}}.
+                </md-checkbox>
+              </div>
+              <div class="md-layout-item md-size-70">
                 <div class="md-layout md-gutter">
-                  <div class="md-layout-item md-size-10"></div>
-                  <div class="md-layout-item md-size-90">
-                    <md-checkbox v-model="answer.include_img">Include image for this answer</md-checkbox>
-                    <md-field v-if="answer.include_img">
-                      <label>Image url</label>
-                      <md-input v-model="answer.img_url"></md-input>
+                  <div class="md-layout-item md-size-100">
+                    <md-field>
+                      <md-textarea v-model="answer.content" required></md-textarea>
                     </md-field>
+                  </div>
+                  <div class="md-layout-item md-size-100">
+                    <div class="md-layout md-gutter">
+                      <div class="md-layout-item md-size-10"></div>
+                      <div class="md-layout-item md-size-90">
+                        <md-checkbox v-model="answer.include_img">Thêm hình ảnh vào câu trả lời</md-checkbox>
+                        <md-field v-if="answer.include_img">
+                          <label>Image url</label>
+                          <md-input v-model="answer.img_url"></md-input>
+                        </md-field>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+          <div class="md-layout-item md-size-100">
+            <md-button class="md-primary" @click="addMoreAns()" style="float: right; text-transform: none;">Thêm câu trả lời</md-button>
+          </div>
         </div>
       </div>
-      <div class="md-layout-item md-size-100">
-        <md-button class="md-primary" @click="addMoreAns()" style="float: right; text-transform: none;">Add answer</md-button>
+      
+      <div v-if="newQuest.answer_type == 'drag_drop'" class="md-layout-item md-size-100">
+        <div class="md-layout md-gutter">
+          <div class="md-layout-item md-size-30">
+            <div class="md-layout-item md-size-100" style="text-align: center">
+              <p>A</p>
+            </div>
+            <Container
+              behaviour="copy"
+              :get-child-payload="getPayload"
+              group-name="drag_drop"
+              drag-handle-selector=".word-box-drag"
+              drag-class="drag-item"
+            >
+              <Draggable v-for="(dragItem) in dragItems" :key="dragItem.id">
+                  <md-field v-if="dragItem.isEdit">
+                    <md-input v-model="dragItem.content" type="text" @keyup.enter="dragItem.isEdit = false"></md-input>
+                  </md-field>
+                  <p v-else class="word-box word-box-drag" @dblclick="dragItem.isEdit = true">
+                    <span v-if="dragItem.content">{{dragItem.content}}</span>
+                    <span v-else> - </span>
+                  </p>
+              </Draggable>
+            </Container>
+            <div class="md-layout-item md-size-100" style="text-align: center">
+              <md-button @click="addDragDropItem('drag_item')">
+                <md-icon>add</md-icon>
+              </md-button>
+            </div>
+          </div>
+          <div class="md-layout-item md-size-10"></div>
+          <div class="md-layout-item md-size-30">
+            <div class="md-layout-item md-size-100" style="text-align: center;">
+              <p>Nối</p>
+            </div>
+            <div class="md-layout-item md-size-100">
+              <Container
+                group-name="drag_drop"
+                @drop="replaceDropZone"
+              >
+                <div class="md-layout-item md-size-100" v-for="(dropItem, index) in dropZone" :key="index" style="text-align: center;">
+                  <p v-if="dropItem && dropItem.id" class="word-box word-box-drop">
+                    {{dropItem.content}}
+                  </p>
+                  <p v-else class="word-box word-box-drop">
+                    -
+                  </p>
+                </div>
+              </Container>
+            </div>
+          </div>
+          <div class="md-layout-item md-size-30">
+            <div class="md-layout-item md-size-100" style="text-align: center;">
+              <p>B</p>
+            </div>
+            <div class="md-layout-item md-size-100" v-for="(dropTarget) in dropTargets" :key="dropTarget.id">
+              <md-field v-if="dropTarget.isEdit">
+                <md-input v-model="dropTarget.content" type="text" @keyup.enter="dropTarget.isEdit = false"></md-input>
+              </md-field>
+              <p v-else class="word-box" @dblclick="dropTarget.isEdit = true">
+                <span v-if="dropTarget.content">{{dropTarget.content}}</span>
+                <span v-else style="text-align: center;"> - </span>
+              </p>
+            </div>
+            <div class="md-layout-item md-size-100" style="text-align: center;">
+              <md-button @click="addDragDropItem('drop_target')">
+                <md-icon>add</md-icon>
+              </md-button>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Description -->
@@ -159,7 +241,7 @@
       <div class="md-layout-item md-size-100">
         <div class="md-layout md-gutter">
           <div class="md-layout-item md-size-30">
-            <h5>Description</h5>
+            <h5>Giải thích đáp án</h5>
           </div>
           <div class="md-layout-item md-size-70">
             <md-field>
@@ -169,19 +251,21 @@
         </div>
       </div>
     </div>
-    
   </div>
 </template>
 
 <script>
 import QuestApi from '@/api/QuestionApi'
 import shortId from 'shortid'
+
+// Components 
+import { Container, Draggable } from "vue-smooth-dnd";
 export default {
   name: 'new-quest',
   data () {
     return {
       newQuest: {
-        module  : 2,
+        module  : 4,
         type    : 'theory',
         form    : 1,
         definitely_appear : true,
@@ -220,21 +304,89 @@ export default {
         ],
         description: null
       },
-      currentLabel : 'D'
+      currentLabel  : 'D',
+      dragItems     : [
+        {
+          id        : shortId.generate(),
+          content   : null,
+          type      : 'drag_item',
+          match_with: null,
+          isEdit    : false
+        }
+      ],
+      dropTargets   : [
+        {
+          id        : shortId.generate(),
+          content   : null,
+          type      : 'drop_target',
+          match_with: null,
+          isEdit    : false
+        }
+      ],
+      dropZone      : [{
+        id      : null,
+        content : null
+      }]
     }
   },
   mounted () {
   },
   methods: {
     async createNewQuestion () {
-      let error = this.checkQuest(this.newQuest)
+      let self = this;
+      let error = self.checkQuest(self.newQuest)
       if (error) {
-          this.noticeError(error)
+          self.noticeError(error)
       } else {
+        if (self.newQuest.answer_type == 'drag_drop') {
+          for (let i = 0; i < self.dropTargets.length; i++) {
+            if (self.dropZone[i].id != null) {
+              self.dropTargets[i].match_with =  self.dropZone[i].id;
+              self.dragItems[self.dragItems.findIndex(e => e.id == self.dropZone[i].id)].match_with = self.dropTargets[i].id;
+            }
+          }
+          self.newQuest.answers = [...self.dragItems, ...self.dropTargets].map(e => {
+            delete e.isEdit;
+            return e;
+          });
+        }
         const response = await QuestApi.createNewQuestion(this.newQuest)
         if (response) {
           this.closeModalAndReloadQuests()
         }
+      }
+    },
+    addDragDropItem (type) {
+      if (type == 'drag_item') {
+        this.dragItems.push({
+          id        : shortId.generate(),
+          content   : null,
+          type      : 'drag_item',
+          match_with: null,
+          isEdit    : true
+        })
+      }
+      if (type == 'drop_target') {
+        this.dropTargets.push({
+          id        : shortId.generate(),
+          content   : null,
+          type      : 'drop_target',
+          match_with: null,
+          isEdit    : true
+        })
+        this.dropZone.push({
+          id      : null,
+          content : null
+        });
+      }
+    },
+    getPayload (i) {
+      return this.dragItems[i];
+    },
+    replaceDropZone (result) {
+      if (result.addedIndex != null && result.payload && this.dropZone.length > result.addedIndex) {
+        this.dropZone[result.addedIndex].id = result.payload.id;
+        this.dropZone[result.addedIndex].content = result.payload.content;
       }
     },
     addMoreAns() {
@@ -252,16 +404,30 @@ export default {
     },
     checkQuest (quest) {
       if (!quest.content) {
-        return 'Content cannot be empty !'
+        return 'Nội dung câu hỏi không được bỏ trống !';
       }
       if (quest.form > 10 || quest.form < 1) {
-        return 'Form must smaller than 10 and greater than 1 !'
+        return 'Dạng câu hỏi phải nằm trong đoạn từ 1 tới 10 !';
       }
-      if (quest.answers.some(answer => answer.is_correct && !answer.content && !answer.include_img)) {
-        return 'Content of correct answer cannot be empty !'
+      if (quest.answer_type == 'multi_choice' && quest.answers.some(answer => answer.is_correct && !answer.content && !answer.include_img)) {
+        return 'Nội dung của đáp án đúng không được bỏ trống !';
       }
       if (quest.answers.some(answer => answer.include_img && !answer.img_url)) {
-        return 'Image url of answer which included cannot be empty !'
+        return 'Thiếu link hình ảnh !';
+      }
+      if (quest.answer_type == 'drag_drop') {
+        for (let drag of this.dragItems) {
+          if (drag.content == null) {
+            return 'Nội dung ở cột A không được bỏ trống !';
+            break;
+          }
+        }
+        for (let drop of this.dropTargets) {
+          if (drop.content == null) {
+            return 'Nội dung ở cột B không được bỏ trống !';
+            break;
+          }
+        }
       }
       return null
     },
@@ -287,6 +453,10 @@ export default {
     closeModalAndReloadQuests () {
       this.$emit('reload-quests')
     }
+  },
+  components : {
+    Draggable,
+    Container
   }
 }
 </script>
@@ -295,5 +465,26 @@ export default {
 <style scoped>
 .md-dialog {
   width: 80%;
+}
+.word-box {
+  border: 1px solid #678;
+  background-color: white;
+  padding: 5px 10px;
+  line-height: 48px;
+}
+.word-box-drag {
+  cursor: pointer;
+}
+.smooth-dnd-draggable-wrapper {
+  overflow: inherit !important;
+}
+.highlighted {
+  background-color: orange;
+}
+.word-box-drop {
+  background-color: transparent;
+}
+.drag-item {
+  background-color: orange;
 }
 </style>
