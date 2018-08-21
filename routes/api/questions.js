@@ -152,7 +152,7 @@ router.get('/:module', (req, res) => {
     Question.find(
       {
         module: 3,
-        definitely_appear: true
+        answer_type : 'drag_drop'
       }
     )
     .then(questions => {
@@ -166,10 +166,29 @@ router.get('/:module', (req, res) => {
       shuffleArr(questions);
       res.json(questions.map(quest => {
         quest['is_match'] = false;
-        quest.answers.map(answer => {
-          answer.is_correct = false;
-          answer.user_choice = false;
-        })
+        if (quest.answer_type == 'multi_choice') {
+          quest.answers.map(answer => {
+            answer.is_correct = false;
+            answer.user_choice = false;
+          })
+        } else {
+          let dragItems = [];
+          let dropTargets = [];
+          let dropZone = [];
+          quest.answers.forEach(ans => {
+            if (ans.type == 'drag_item') {
+              dragItems.push(ans);
+            }
+            if (ans.type == 'drop_target') {
+              dropTargets.push(ans);
+              dropZone.push({
+                id : null,
+                content : null
+              });
+            }
+          });
+          quest.answers = [dragItems, dropTargets, dropZone];
+        }
         return quest;
       }));
     });
@@ -181,7 +200,27 @@ router.get('/:module', (req, res) => {
       }
     )
     .then(questions => {
-      res.send(questions);
+      res.send(questions.map(q => {
+        if (q.answer_type == 'drag_drop') {
+          let dragItems = [];
+          let dropTargets = [];
+          let dropZone = [];
+          q.answers.forEach(ans => {
+            if (ans.type == 'drag_item') {
+              dragItems.push(ans);
+            }
+            if (ans.type == 'drop_target') {
+              dropTargets.push(ans);
+              dropZone.push({
+                id : null,
+                content : null
+              });
+            }
+          });
+          q.answers = [dragItems, dropTargets, dropZone];
+        }
+        return q;
+      }));
     });
   }
 });
@@ -211,14 +250,24 @@ router.post('/:id', (req, res) => {
   Question.findById(req.params.id)
     .then(question => {
       let checkQuest = req.body;
+      console.log(checkQuest);
       let count = 0;
-      for (let i = 0; i < checkQuest.answers.length; i++) {
-        if (checkQuest.answers[i].user_choice == question.answers[i].is_correct) {
-          count ++;
+      if (checkQuest.answer_type == 'multi_choice') {
+        for (let i = 0; i < checkQuest.answers.length; i++) {
+          if (checkQuest.answers[i].user_choice == question.answers[i].is_correct) {
+            count ++;
+          }
+          checkQuest.answers[i].is_correct = question.answers[i].is_correct;
         }
-        checkQuest.answers[i].is_correct = question.answers[i].is_correct;
+        checkQuest.is_match = count == question.answers.length ? true : false;
+      } else {
+        for (let i = 0; i < checkQuest.answers[1].length; i++) {
+          if (checkQuest.answers[1][i].match_with == checkQuest.answers[2][i].id) {
+            count ++;
+          }
+        }
+        checkQuest.is_match = count == question.answers[1].length ? true : false;
       }
-      checkQuest.is_match = count == question.answers.length ? true : false;
       if (!checkQuest.is_match) {
         question.incorrect_times += 1;
       }
