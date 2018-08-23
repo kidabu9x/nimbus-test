@@ -152,7 +152,7 @@ router.get('/:module', (req, res) => {
     Question.find(
       {
         module: 3,
-        answer_type : 'drag_drop'
+        definitely_appear: true
       }
     )
     .then(questions => {
@@ -186,6 +186,10 @@ router.get('/:module', (req, res) => {
                 content : null
               });
             }
+          });
+          dragItems.push({
+            id: null,
+            type: null
           });
           quest.answers = [dragItems, dropTargets, dropZone];
         }
@@ -250,7 +254,6 @@ router.post('/:id', (req, res) => {
   Question.findById(req.params.id)
     .then(question => {
       let checkQuest = req.body;
-      console.log(checkQuest);
       let count = 0;
       if (checkQuest.answer_type == 'multi_choice') {
         for (let i = 0; i < checkQuest.answers.length; i++) {
@@ -260,13 +263,13 @@ router.post('/:id', (req, res) => {
           checkQuest.answers[i].is_correct = question.answers[i].is_correct;
         }
         checkQuest.is_match = count == question.answers.length ? true : false;
-      } else {
+      } else if (checkQuest.answer_type == 'drag_drop') {
         for (let i = 0; i < checkQuest.answers[1].length; i++) {
           if (checkQuest.answers[1][i].match_with == checkQuest.answers[2][i].id) {
             count ++;
           }
         }
-        checkQuest.is_match = count == question.answers[1].length ? true : false;
+        checkQuest.is_match = count == checkQuest.answers[1].length ? true : false;
       }
       if (!checkQuest.is_match) {
         question.incorrect_times += 1;

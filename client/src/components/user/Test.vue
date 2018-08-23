@@ -94,9 +94,10 @@
                                                 behaviour="copy"
                                                 :get-child-payload="getPayload"
                                                 >
-                                                <Draggable v-for="drag in currentQuest.answers[0]" :key="drag.id" v-if="drag.type == 'drag_item'">
+                                                <Draggable v-for="drag in currentQuest.answers[0]" :key="drag.id">
                                                     <div class="word-box">
-                                                    <p>{{drag.content}}</p>
+                                                        <p v-if="drag.content != null" >{{drag.content}}</p>
+                                                        <p v-else>-</p>
                                                     </div>
                                                 </Draggable>
                                                 </Container>
@@ -115,7 +116,7 @@
                                                 </Container>
                                             </div>
                                             <div class="md-layout-item">
-                                                <div class="word-box" v-for="drop in currentQuest.answers[1]" :key="drop.id" v-if="drop.type == 'drop_target'">
+                                                <div class="word-box" v-for="drop in currentQuest.answers[1]" :key="drop.id">
                                                 <p>{{drop.content}}</p>
                                                 </div>
                                             </div>
@@ -325,13 +326,11 @@ export default {
       creatingExam: false,
       testQuests: [],
       module: null,
-    //   Start changes here
       currentQuest: null,
       currentIndex: 0,
       markQuests: [],
       answeredQuests: [],
       showMenuQuests: false,
-    //   End changes
       showExpandImage: false,
       isSubmited: false,
       isSubmitting: false,
@@ -340,10 +339,10 @@ export default {
     }
   },
   mounted: function () {
-      this.showStepper = false;
-      this.code = 'L2ZHbE4dr';
-      this.checkCode();
-      this.beginTest(3)
+    //   this.showStepper = false;
+    //   this.code = 'L2ZHbE4dr';
+    //   this.checkCode();
+    //   this.beginTest(3)
   },
   methods: {
     async checkCode() {
@@ -360,8 +359,8 @@ export default {
         }
     },
     beginTest (module) {
-        // this.username = this.inputName;
-        this.username = "Dương đẹp trai";
+        this.username = this.inputName;
+        // this.username = "Dương đẹp trai";
         this.module = module;
         this.showStepper = false;
         this.creatingExam = true;
@@ -399,7 +398,6 @@ export default {
         return this.currentQuest.answers[0][i];
     },
     replaceAnswer (result) {
-        console.log(result);
         if (result.addedIndex != null && result.payload && this.currentQuest.answers[2].length > result.addedIndex) {
             this.currentQuest.answers[2][result.addedIndex].id = result.payload.id;
             this.currentQuest.answers[2][result.addedIndex].content = result.payload.content;
@@ -445,10 +443,6 @@ export default {
         } else {
             return {}
         }
-    },
-    scrollToQuest(refName) {
-        var element = this.$refs[refName];
-        element.scrollTop = element.scrollHeight;
     },
     expandImage (imgUrl) {
         this.currentImage = imgUrl

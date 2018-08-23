@@ -13,7 +13,7 @@
                   <div class="md-layout-item md-size-40">
                     <md-field>
                       <md-select v-model="module" @md-selected="filterByModule">
-                        <md-option value="null">All</md-option>
+                        <md-option value="null">Toàn bộ</md-option>
                         <md-option value="1">Module 1</md-option>
                         <md-option value="2">Module 2</md-option>
                         <md-option value="3">Module 3</md-option>
@@ -31,7 +31,7 @@
                   @md-selected="editSearchedQuestion"
                   @md-opened="getContent"
                 >
-                  <label>Search question</label>
+                  <label>Tìm kiếm...</label>
                   <template slot="md-autocomplete-item" slot-scope="{ item }" style="display: block;">
                     <p style="display: block;">
                       {{ item.content }}
@@ -41,7 +41,7 @@
               </div>
             </div>
             <div class="md-toolbar-section-end">
-              <md-button class="md-dense md-primary" @click="openCreateModal = true">New Question</md-button>
+              <md-button class="md-dense md-primary" @click="openCreateModal = true">Thêm câu hỏi</md-button>
             </div>
           </md-table-toolbar>
 
@@ -52,23 +52,24 @@
 
           <md-table-row slot="md-table-row" slot-scope="{ item }">
             <md-table-cell md-label="Module" md-sort-by="module" md-numeric>{{ item.module }}</md-table-cell>
-            <md-table-cell class="question-content" :title="item.content" md-label="Content" md-sort-by="content">
+            <md-table-cell class="question-content" :title="item.content" md-label="Nội dung" md-sort-by="content">
               <p>{{ item.content }}</p>
             </md-table-cell>
-            <md-table-cell md-label="Called Times" md-sort-by="called_times">{{ item.called_times }}</md-table-cell>
-            <md-table-cell md-label="Incorrect" md-sort-by="incorrect_times">{{ item.incorrect_times }}</md-table-cell>
-            <md-table-cell md-label="Appear">
-              <md-checkbox v-model="item.definitely_appear" disabled></md-checkbox>
+            <md-table-cell md-label="Số lần sử dụng" md-sort-by="called_times">{{ item.called_times }}</md-table-cell>
+            <md-table-cell md-label="Số lần sai" md-sort-by="incorrect_times">{{ item.incorrect_times }}</md-table-cell>
+            <md-table-cell md-label="Xuất hiện">
+              <p v-if="item.definitely_appear">Chắc chắn</p>
+              <p v-else>Ngẫu nhiên</p>
             </md-table-cell>
-            <md-table-cell md-label="Action">
+            <md-table-cell md-label="Tác vụ">
               <md-button class="md-icon-button" @click="editQuestion(item)">
                 <md-icon>edit</md-icon>
-                <md-tooltip>Edit</md-tooltip>
+                <md-tooltip>Sửa</md-tooltip>
               </md-button>
 
               <md-button class="md-icon-button" @click="deleteQuestion(item)">
                 <md-icon>delete</md-icon>
-                <md-tooltip>Delete</md-tooltip>
+                <md-tooltip>Xoá</md-tooltip>
               </md-button>
             </md-table-cell>
           </md-table-row>
