@@ -230,23 +230,23 @@ export default {
   methods: {
     async updateQuestion () {
       let self = this;
-      let error = self.checkQuest(self.newQuest)
+      let error = self.checkQuest(self.editedQuest)
       if (error) {
           self.noticeError(error)
       } else {
-        if (self.newQuest.answer_type == 'drag_drop') {
+        if (self.editedQuest.answer_type == 'drag_drop') {
           for (let i = 0; i < self.dropTargets.length; i++) {
             if (self.dropZone[i].id != null) {
               self.dropTargets[i].match_with =  self.dropZone[i].id;
               self.dragItems[self.dragItems.findIndex(e => e.id == self.dropZone[i].id)].match_with = self.dropTargets[i].id;
             }
           }
-          self.newQuest.answers = [...self.dragItems, ...self.dropTargets].map(e => {
+          self.editedQuest.answers = [...self.dragItems, ...self.dropTargets].map(e => {
             delete e.isEdit;
             return e;
           });
         }
-        const response = await QuestApi.updateQuestion(this.newQuest)
+        const response = await QuestApi.updateQuestion(this.editedQuest)
         if (response) {
           this.closeModalAndReloadQuests()
         }

@@ -3,38 +3,8 @@
     <div class="md-layout md-gutter" v-if="currentQuest">
       <div class="md-layout-item md-size-20"></div>
       <div class="md-layout-item md-size-60">
-        <div class="md-layout md-gutter">
-          <div class="md-layout-item">
-            <Container
-              group-name="drag_drop"
-              behaviour="copy"
-              :get-child-payload="getPayload"
-            >
-              <Draggable v-for="drag in currentQuest.answers[0]" :key="drag.id" v-if="drag.type == 'drag_item'">
-                <div class="word-box">
-                  <p>{{drag.content}}</p>
-                </div>
-              </Draggable>
-            </Container>
-          </div>
-          <div class="md-layout-item">
-            <Container
-              group-name="drag_drop"
-              @drop="replaceAnswer"
-            >
-              <Draggable v-for="(drag, index) in currentQuest.answers[2]" :key="index">
-                <div class="word-box">
-                  <p v-if="drag.content">{{drag.content}}</p>
-                  <p v-else>-</p>
-                </div>
-              </Draggable>
-            </Container>
-          </div>
-          <div class="md-layout-item">
-            <div class="word-box" v-for="drop in currentQuest.answers[1]" :key="drop.id" v-if="drop.type == 'drop_target'">
-              <p>{{drop.content}}</p>
-            </div>
-          </div>
+        <div class="md-layout-item md-size-100">
+          <p>{{handleContent(currentQuest.content)}}</p>
         </div>
       </div>
       <div class="md-layout-item md-size-20"></div>
@@ -61,10 +31,9 @@ export default {
   },
   methods : {
       async fetchQuest () {
-        let response = await QuestApi.createExam(4);
+        let response = await QuestApi.createExam(3);
         this.questions = response.data;
         this.currentQuest = this.questions[0];
-        console.log(this.currentQuest);
       },
       getPayload (i) {
         return this.currentQuest.answers[0][i];
@@ -75,6 +44,14 @@ export default {
           this.currentQuest.answers[2][result.addedIndex].id = result.payload.id;
           this.currentQuest.answers[2][result.addedIndex].content = result.payload.content;
         }
+      },
+      handleContent (content) {
+        console.log(content.includes('https://'));
+        if (content.includes('https://')) {
+          let rawText = content.match(/\b(https?:\/\/.*?\.[a-z]{2,4}\b)/g);
+          console.log(rawText);
+        }
+        return content;
       }
   },
   components: {
