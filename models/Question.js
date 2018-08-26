@@ -1,7 +1,8 @@
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
-var QuestionSchema = new Schema({
+var QuestionSchema = new Schema(
+{
   module: {
     type: Number
   },
@@ -9,16 +10,8 @@ var QuestionSchema = new Schema({
     type: String,
     default: 'theory'
   },
-  form: {
-    type: Number,
-    default: 1
-  },
   content: {
     type: String
-  },
-  image: {
-    type: String,
-    default: null
   },
   answer_type: {
     type: String,
@@ -45,7 +38,14 @@ var QuestionSchema = new Schema({
     type: Number,
     default: 0
   }
-});
+}, 
+{
+  timestamps: {
+    createAt: 'create_at',
+    updateAt: 'update_at'
+  }
+}
+);
 
 var question = mongoose.model("Question", QuestionSchema);
 module.exports = question;

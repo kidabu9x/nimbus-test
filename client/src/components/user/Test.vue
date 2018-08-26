@@ -61,23 +61,23 @@
                                         <img :src="currentQuest.image">
                                     </div>
                                     <div v-if="currentQuest.answer_type == 'multi_choice'">
-                                        <div v-for="answer in currentQuest.answers" :key="answer.label" style="font-size: 18px;" class="md-layout md-gutter">
+                                        <div v-for="answer in currentQuest.answers" :key="answer.id" style="font-size: 18px;" class="md-layout md-gutter">
                                             <div class="md-layout-item md-size-100" v-if="answer.content || answer.include_img">
                                                 <md-checkbox v-if="!isSubmited" v-model="answer.user_choice" class="checkbox-default">
-                                                    {{answer.label}}. <span class="paragraph">{{answer.content}}</span>
+                                                    <span class="paragraph">{{answer.content}}</span>
                                                 </md-checkbox>
                                                 <div v-else>
                                                     <md-checkbox v-if="answer.user_choice == answer.is_correct" v-model="answer.user_choice" class="checkbox-correct">
-                                                        {{answer.label}}. <span class="paragraph">{{answer.content}}</span>
+                                                        <span class="paragraph">{{answer.content}}</span>
                                                     </md-checkbox>
                                                     <md-checkbox v-else-if="answer.user_choice && !answer.is_correct" v-model="answer.user_choice">
-                                                        {{answer.label}}. <span class="paragraph">{{answer.content}}</span>
+                                                        <span class="paragraph">{{answer.content}}</span>
                                                     </md-checkbox>
                                                     <md-checkbox v-else-if="!answer.user_choice && answer.is_correct" v-model="answer.is_correct" class="checkbox-correct">
-                                                        {{answer.label}}. <span class="paragraph">{{answer.content}}</span>
+                                                        <span class="paragraph">{{answer.content}}</span>
                                                     </md-checkbox>
                                                     <md-checkbox v-else v-model="answer.user_choice">
-                                                        {{answer.label}}. <span class="paragraph">{{answer.content}}</span>
+                                                        <span class="paragraph">{{answer.content}}</span>
                                                     </md-checkbox>
                                                 </div>
                                                 <div v-if="answer.include_img && answer.img_url" @click="expandImage(answer.img_url)" class="question-image">

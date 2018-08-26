@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const shortId = require('shortid');
 
 // Question Model
 const Question = require('../../models/Question');
@@ -8,20 +9,26 @@ const Question = require('../../models/Question');
 // @desc    Get All Questions
 // @access  Public
 router.get('/', (req, res) => {
-  // Question.find(
+  // Question.find({
+  //     "answer_type" : 'multi_choice'
+  //   }
   // )
   //   .then(questions => {
   //     questions.forEach(q => {
-  //       Question.update(
-  //         {
-  //           _id: q._id
-  //         },
-  //         {
-  //           $set : {
-  //             "answer_type" : 'multi_choice'
+  //       for (let i = 0; i < q.answers.length; i++) {
+  //         let answerIndex = `answers`;
+  //         Question.update(
+  //           {
+  //             _id: q._id
+  //           },
+  //           {
+  //             $set : {
+  //               [answerIndex] : shortId.generate()
+  //             }
   //           }
-  //         }
-  //       ).then(res => console.log(res));
+  //         ).then(res => console.log(res));
+  //       }
+        
   //     })
   //   })
   let perPage = Number(req.query.perPage);
@@ -235,11 +242,8 @@ router.get('/:module', (req, res) => {
 router.post('/', (req, res) => {
   const newQuest = new Question({
     module      : req.body.module,
-    type        : req.body.type,
-    form        : req.body.form,
-    answer_type : req.body.answer_type,
     content     : req.body.content,
-    image       : req.body.image,
+    answer_type : req.body.answer_type,
     answers     : req.body.answers,
     description : req.body.description,
     definitely_appear: req.body.definitely_appear
@@ -288,10 +292,7 @@ router.put('/:id', (req, res) => {
   Question.findById(req.params.id)
     .then(question => {
       question.module      = req.body.module,
-      question.type        = req.body.type,
-      question.form        = req.body.form,
       question.content     = req.body.content,
-      question.image       = req.body.image,
       question.answer_type = req.body.answer_type,
       question.answers     = req.body.answers,
       question.description = req.body.description,

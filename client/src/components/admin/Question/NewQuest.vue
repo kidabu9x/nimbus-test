@@ -1,6 +1,6 @@
 <template>
   <div class="questions">
-    <div class="md-layout md-gutter" v-if="editedQuest">
+    <div class="md-layout md-gutter">
       <!-- Module: Module 1 or Module 3 -->
       <div class="md-layout-item md-size-100">
         <div class="md-layout md-gutter">
@@ -9,7 +9,7 @@
           </div>
           <div class="md-layout-item md-size-70">
             <md-field>
-              <md-select v-model="editedQuest.module">
+              <md-select v-model="newQuest.module">
                 <md-option value="1">Module 1</md-option>
                 <md-option value="2">Module 2</md-option>
                 <md-option value="3">Module 3</md-option>
@@ -19,45 +19,15 @@
         </div>
       </div>
 
-      <!-- Type: Theory or practice -->
-      <div class="md-layout-item md-size-100">
-        <div class="md-layout md-gutter">
-          <div class="md-layout-item md-size-30">
-            <h5>Type</h5>
-          </div>
-          <div class="md-layout-item md-size-70">
-            <md-field>
-              <md-select v-model="editedQuest.type">
-                <md-option value="theory">Theory</md-option>
-                <md-option value="practice">Practice</md-option>
-              </md-select>
-            </md-field>
-          </div>
-        </div>
-      </div>
-
       <!-- Definitely appear in the test -->
       <div class="md-layout-item md-size-100">
         <div class="md-layout md-gutter">
           <div class="md-layout-item md-size-30">
-            <h5>Form</h5>
+            <h5>Xuất hiện</h5>
           </div>
           <div class="md-layout-item md-size-70">
-            <md-field>
-              <md-input type="number" min=1 max=10 v-model="editedQuest.form"></md-input>
-            </md-field>
-          </div>
-        </div>
-      </div>
-
-      <!-- Definitely appear in the test -->
-      <div class="md-layout-item md-size-100">
-        <div class="md-layout md-gutter">
-          <div class="md-layout-item md-size-30">
-            <h5>Definitely Appear in the Test</h5>
-          </div>
-          <div class="md-layout-item md-size-70">
-            <md-switch class="md-primary" v-model="editedQuest.definitely_appear"></md-switch>
+            <md-radio v-model="newQuest.definitely_appear" :value="true">Chắc chắn</md-radio>
+            <md-radio v-model="newQuest.definitely_appear" :value="false">Random</md-radio>
           </div>
         </div>
       </div>
@@ -66,92 +36,75 @@
       <div class="md-layout-item md-size-100">
         <div class="md-layout md-gutter">
           <div class="md-layout-item md-size-30">
-            <h5>Question Content</h5>
+            <h5>Nội dung câu hỏi</h5>
           </div>
           <div class="md-layout-item md-size-70">
             <md-field>
-              <md-textarea v-model="editedQuest.content" required></md-textarea>
+              <md-textarea v-model="newQuest.content" required></md-textarea>
             </md-field>
           </div>
         </div>
       </div>
 
-      <!-- Type: Theory or practice -->
-      <div class="md-layout-item md-size-100">
-        <div class="md-layout md-gutter">
-          <div class="md-layout-item md-size-30">
-            <h5>Question Image</h5>
-          </div>
-          <div class="md-layout-item md-size-70">
-            <md-field>
-              <md-textarea v-model="editedQuest.image" required></md-textarea>
-            </md-field>
-          </div>
-        </div>
-      </div>
 
       <!-- Answers -->
       <div class="md-layout-item md-size-100">
         <md-divider></md-divider>
       </div>
+      <!-- Answer_type: multi_choice or drag_drop -->
       <div class="md-layout-item md-size-100">
         <div class="md-layout md-gutter">
           <div class="md-layout-item md-size-30">
             <h5>Loại câu hỏi</h5>
           </div>
           <div class="md-layout-item md-size-70">
-            <p v-if="editedQuest.answer_type == 'multi_choice'">Trắc nghiệm</p>
-            <p v-if="editedQuest.answer_type == 'drag_drop'">Kéo thả</p>
+            <md-radio v-model="newQuest.answer_type" :value="'multi_choice'">
+              Trắc nghiệm
+            </md-radio>
+            <md-radio v-model="newQuest.answer_type" :value="'drag_drop'">
+              Kéo thả
+            </md-radio>
           </div>
         </div>
       </div>
-      <div class="md-layout-item md-size-100" v-if="editedQuest.answer_type == 'multi_choice'">
-        <div class="md-layout-item md-size-100">
-          <div class="md-layout md-gutter">
-            <div class="md-layout-item md-size-30">
-              <h5>Answers</h5>
-            </div>
-            <div class="md-layout-item md-size-70">
-              <p>Content</p>
+
+      <div v-if="newQuest.answer_type == 'multi_choice'" class="md-layout-item md-size-100">
+        <div class="md-layout md-gutter">
+          <div class="md-layout-item md-size-100">
+            <div class="md-layout md-gutter">
+              <div class="md-layout-item md-size-30">
+                <h5>Đáp án</h5>
+              </div>
+              <div class="md-layout-item md-size-70">
+                <p>Nội dung</p>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="md-layout-item md-size-100" v-for="answer in editedQuest.answers" :key="answer.label">
-          <div class="md-layout md-gutter">
-            <div class="md-layout-item md-size-10"></div>
-            <div class="md-layout-item md-size-20">
-              <md-checkbox class="md-primary" v-model="answer.is_correct">
-                {{answer.label}}.
-              </md-checkbox>
-            </div>
-            <div class="md-layout-item md-size-70">
-              <div class="md-layout md-gutter">
-                <div class="md-layout-item md-size-100">
-                  <md-field>
-                    <md-textarea v-model="answer.content" required></md-textarea>
-                  </md-field>
-                </div>
-                <div class="md-layout-item md-size-100">
-                  <div class="md-layout md-gutter">
-                    <div class="md-layout-item md-size-10"></div>
-                    <div class="md-layout-item md-size-90">
-                      <md-checkbox v-model="answer.include_img">Include image for this answer</md-checkbox>
-                      <md-field v-if="answer.include_img">
-                        <label>Image url</label>
-                        <md-input v-model="answer.img_url"></md-input>
-                      </md-field>
-                    </div>
+          <div v-if="newQuest.answer_type == 'multi_choice'" class="md-layout-item md-size-100" v-for="answer in newQuest.answers" :key="answer.id">
+            <div class="md-layout md-gutter">
+              <div class="md-layout-item md-size-10"></div>
+              <div class="md-layout-item md-size-20">
+                <md-checkbox class="md-primary" v-model="answer.is_correct">
+                </md-checkbox>
+              </div>
+              <div class="md-layout-item md-size-70">
+                <div class="md-layout md-gutter">
+                  <div class="md-layout-item md-size-100">
+                    <md-field>
+                      <md-textarea v-model="answer.content"></md-textarea>
+                    </md-field>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="md-layout-item md-size-100">
-          <md-button class="md-primary" @click="addMoreAns()" style="float: right; text-transform: none;">Add answer</md-button>
+          <div class="md-layout-item md-size-100">
+            <md-button class="md-primary" @click="addMoreAns()" style="float: right; text-transform: none;">Thêm đáp án</md-button>
+          </div>
         </div>
       </div>
-      <div class="md-layout-item md-size-100" v-if="editedQuest.answer_type == 'drag_drop'">
+      
+      <div v-if="newQuest.answer_type == 'drag_drop'" class="md-layout-item md-size-100">
         <div class="md-layout md-gutter">
           <div class="md-layout-item md-size-30">
             <div class="md-layout-item md-size-100" style="text-align: center">
@@ -230,66 +183,72 @@
       <div class="md-layout-item md-size-100">
         <div class="md-layout md-gutter">
           <div class="md-layout-item md-size-30">
-            <h5>Description</h5>
+            <h5>Giải thích đáp án</h5>
           </div>
           <div class="md-layout-item md-size-70">
             <md-field>
-              <md-textarea v-model="editedQuest.description" required></md-textarea>
+              <md-textarea v-model="newQuest.description"></md-textarea>
             </md-field>
           </div>
         </div>
       </div>
-
     </div>
-    
   </div>
 </template>
 
 <script>
-import QuestApi from '@/api/QuestionApi';
-import shortId from 'shortid';
+import QuestApi from '@/api/QuestionApi'
+import shortId from 'shortid'
 
 // Components 
 import { Container, Draggable } from "vue-smooth-dnd";
-
 export default {
   name: 'new-quest',
-  props: ['question'],
   data () {
     return {
-      editedQuest: null,
-      currentLabel: null,
-      // For drag drop question
-      dropZone : [],
-      dragItems : [],
-      dropTargets : [],
+      newQuest: {
+        module  : 1,
+        type    : 'theory',
+        definitely_appear : true,
+        content : null,
+        answer_type: 'multi_choice',
+        answers : [
+          {
+            content     : null,
+            is_correct  : false,
+            id          : shortId.generate()
+          }
+        ],
+        description: null
+      },
+      dragItems     : [
+        {
+          id        : shortId.generate(),
+          content   : null,
+          type      : 'drag_item',
+          match_with: null,
+          isEdit    : false
+        }
+      ],
+      dropTargets   : [
+        {
+          id        : shortId.generate(),
+          content   : null,
+          type      : 'drop_target',
+          match_with: null,
+          isEdit    : false
+        }
+      ],
+      dropZone      : [{
+        id      : null,
+        content : null
+      }]
     }
   },
   mounted () {
-    this.editedQuest = this.question;
-    this.currentLabel = this.question.answers[this.question.answers.length-1].label;
-    if (this.editedQuest.answer_type == 'drag_drop') {
-      for (let item of this.editedQuest.answers) {
-        item.isEdited = false;
-        if (item.type == 'drag_item') {
-          this.dragItems.push(item);
-        } else {
-          this.dropTargets.push(item);
-        }
-      }
-      let i = 0;
-      let self = this;
-      while (i < this.dropTargets.length) {
-        this.dropZone.push({
-          id : this.dropTargets[i].match_with,
-          content : this.dropTargets[i].match_with != null ? this.dragItems[this.dragItems.findIndex(e => e.id == self.dropTargets[i].match_with)].content : null
-        });
-        i ++;
-      }
-    }
   },
   methods: {
-    async updateQuestion () {
+    async createNewQuestion () {
       let self = this;
       let error = self.checkQuest(self.newQuest)
       if (error) {
@@ -307,7 +266,7 @@ export default {
             return e;
           });
         }
-        const response = await QuestApi.updateQuestion(this.newQuest)
+        const response = await QuestApi.createNewQuestion(this.newQuest)
         if (response) {
           this.closeModalAndReloadQuests()
         }
@@ -350,22 +309,32 @@ export default {
       function incrementChar(c) {
         return String.fromCharCode(c.charCodeAt(0) + 1)
       }
-      this.currentLabel = incrementChar(this.currentLabel).toUpperCase();
-      this.editedQuest.answers.push({
-        label     : this.currentLabel,
-        content   : null,
-        is_correct: false
+      this.newQuest.answers.push({
+        content     : null,
+        is_correct  : false,
+        id          : shortId.generate()
       });
     },
     checkQuest (quest) {
-      if (!quest.content || quest.content == '') {
-        return 'Content cannot be empty !'
+      if (!quest.content) {
+        return 'Nội dung câu hỏi không được bỏ trống !';
       }
-      if (quest.form > 10 || quest.form < 1) {
-        return 'Form must smaller than 10 and greater than 1 !'
+      if (quest.answer_type == 'multi_choice' && quest.answers.some(answer => answer.is_correct && !answer.content && !answer.include_img)) {
+        return 'Nội dung của đáp án đúng không được bỏ trống !';
       }
-      if (quest.answers.some(answer => answer.is_correct && (!answer.content || answer.content == ''))) {
-        return 'Content of correct answer cannot be empty !'
+      if (quest.answer_type == 'drag_drop') {
+        for (let drag of this.dragItems) {
+          if (drag.content == null) {
+            return 'Nội dung ở cột A không được bỏ trống !';
+            break;
+          }
+        }
+        for (let drop of this.dropTargets) {
+          if (drop.content == null) {
+            return 'Nội dung ở cột B không được bỏ trống !';
+            break;
+          }
+        }
       }
       return null
     },
@@ -393,7 +362,8 @@ export default {
     }
   },
   components : {
-    Container, Draggable
+    Draggable,
+    Container
   }
 }
 </script>

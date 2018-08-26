@@ -3,7 +3,7 @@ import Router from 'vue-router'
 
 // Admin component
 import Admin from '@/components/admin/Admin'
-import Questions from '@/components/admin/Questions'
+import Questions from '@/components/admin/Question/Questions'
 import AdminTestClass from '@/components/admin/Test/TestClass'
 import AdminTestResults from '@/components/admin/Test/TestResults'
 import ExamSchedules from '@/components/admin/ExamSchedule/Schedule'

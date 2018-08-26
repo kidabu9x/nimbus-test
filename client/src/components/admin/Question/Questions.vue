@@ -112,7 +112,7 @@
     <md-dialog-confirm
       v-if="currentQuestion"
       :md-active.sync="openDeleteConfirm"
-      md-title="Delete this question : "
+      md-title="Xoá câu hỏi : "
       :md-content="`${currentQuestion.content}`"
       md-confirm-text="Delete"
       md-cancel-text="Cancel"
@@ -126,8 +126,8 @@
 import QuestAction from "@/api/QuestionApi";
 
 // Components
-import NewQuest from "@/components/admin/NewQuest";
-import EditQuest from "@/components/admin/EditQuest";
+import NewQuest from "@/components/admin/Question/NewQuest";
+import EditQuest from "@/components/admin/Question/EditQuest";
 import Paginate from 'vuejs-paginate';
 
 export default {
