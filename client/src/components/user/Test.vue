@@ -12,7 +12,7 @@
             <md-toolbar md-elevation="1" style="position: fixed; background-color: #26c6da; min-height: 40px;">
                 <div class="md-layout md-gutter" style="width: 100%;">
                     <div class="md-layout-item">
-                        <h3 class="md-title" style="color: #fff;">{{settings.name}} - Module {{module}}</h3>
+                        <h3 v-if="settings != null" class="md-title" style="color: #fff;">{{settings.name}} - Module {{module}}</h3>
                     </div>
                     <div class="md-layout-item">
                         <h3 class="md-title" style="color: #fff; text-align: center;">{{username}}</h3>
@@ -54,7 +54,7 @@
                                     </div>
                                     <div class="md-title">
                                         <h4 style="font-weight: 500;">
-                                            <span class='paragraph'>{{currentQuest.content}}</span>
+                                            <span v-html="handleContent(currentQuest.content)" class='paragraph'></span>
                                         </h4>
                                     </div>
                                     <div v-if="currentQuest.image" @click="expandImage(currentQuest.image)" class="question-image">
@@ -62,22 +62,22 @@
                                     </div>
                                     <div v-if="currentQuest.answer_type == 'multi_choice'">
                                         <div v-for="answer in currentQuest.answers" :key="answer.id" style="font-size: 18px;" class="md-layout md-gutter">
-                                            <div class="md-layout-item md-size-100" v-if="answer.content || answer.include_img">
+                                            <div class="md-layout-item md-size-100" v-if="handleContent(answer.content) || answer.include_img">
                                                 <md-checkbox v-if="!isSubmited" v-model="answer.user_choice" class="checkbox-default">
-                                                    <span class="paragraph">{{answer.content}}</span>
+                                                    <span v-html="handleContent(answer.content)" class="paragraph"></span>
                                                 </md-checkbox>
                                                 <div v-else>
-                                                    <md-checkbox v-if="answer.user_choice == answer.is_correct" v-model="answer.user_choice" class="checkbox-correct">
-                                                        <span class="paragraph">{{answer.content}}</span>
+                                                    <md-checkbox v-if="answer.user_choice && answer.is_correct" v-model="answer.user_choice" class="checkbox-correct">
+                                                        <span v-html="handleContent(answer.content)" class="paragraph"></span>
                                                     </md-checkbox>
                                                     <md-checkbox v-else-if="answer.user_choice && !answer.is_correct" v-model="answer.user_choice">
-                                                        <span class="paragraph">{{answer.content}}</span>
+                                                        <span v-html="handleContent(answer.content)" class="paragraph"></span>
                                                     </md-checkbox>
                                                     <md-checkbox v-else-if="!answer.user_choice && answer.is_correct" v-model="answer.is_correct" class="checkbox-correct">
-                                                        <span class="paragraph">{{answer.content}}</span>
+                                                        <span v-html="handleContent(answer.content)" class="paragraph"></span>
                                                     </md-checkbox>
                                                     <md-checkbox v-else v-model="answer.user_choice">
-                                                        <span class="paragraph">{{answer.content}}</span>
+                                                        <span v-html="handleContent(answer.content)" class="paragraph"></span>
                                                     </md-checkbox>
                                                 </div>
                                                 <div v-if="answer.include_img && answer.img_url" @click="expandImage(answer.img_url)" class="question-image">
@@ -95,7 +95,7 @@
                                                 :get-child-payload="getPayload"
                                                 >
                                                 <Draggable v-for="drag in currentQuest.answers[0]" :key="drag.id">
-                                                    <div class="word-box">
+                                                    <div class="word-box word-box-drag">
                                                         <p v-if="drag.content != null" >{{drag.content}}</p>
                                                         <p v-else>-</p>
                                                     </div>
@@ -107,7 +107,7 @@
                                                 group-name="drag_drop"
                                                 @drop="replaceAnswer"
                                                 >
-                                                <Draggable v-for="(drag, index) in currentQuest.answers[2]" :key="index">
+                                                <Draggable v-for="(drag, index) in currentQuest.answers[1]" :key="index">
                                                     <div class="word-box">
                                                     <p v-if="drag.content">{{drag.content}}</p>
                                                     <p v-else>-</p>
@@ -116,14 +116,13 @@
                                                 </Container>
                                             </div>
                                             <div class="md-layout-item">
-                                                <div class="word-box" v-for="drop in currentQuest.answers[1]" :key="drop.id">
+                                                <div class="word-box" v-for="drop in currentQuest.answers[2]" :key="drop.id">
                                                 <p>{{drop.content}}</p>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <p class='paragraph' style="color: #e74c3c;" v-if="isSubmited && currentQuest.description">
-                                        {{currentQuest.description}}
+                                    <p class='paragraph' style="color: #e74c3c;" v-if="isSubmited && currentQuest.description" v-html="currentQuest.description">
                                     </p>
                                 </md-card-content>
                                 <md-card-actions>
@@ -308,6 +307,9 @@ import {BreedingRhombusSpinner, HollowDotsSpinner } from 'epic-spinners/dist/lib
 import VueCountdown from '@xkeshi/vue-countdown';
 import { Container, Draggable } from "vue-smooth-dnd";
 
+// Plugins
+import getUrls from 'get-urls';
+
 export default {
   name: 'Test',
   data () {
@@ -339,10 +341,10 @@ export default {
     }
   },
   mounted: function () {
-    //   this.showStepper = false;
-    //   this.code = 'L2ZHbE4dr';
-    //   this.checkCode();
-    //   this.beginTest(3)
+      this.showStepper = false;
+      this.code = 'L2ZHbE4dr';
+      this.checkCode();
+      this.beginTest(1)
   },
   methods: {
     async checkCode() {
@@ -359,8 +361,8 @@ export default {
         }
     },
     beginTest (module) {
-        this.username = this.inputName;
-        // this.username = "Dương đẹp trai";
+        // this.username = this.inputName;
+        this.username = "Dương đẹp trai";
         this.module = module;
         this.showStepper = false;
         this.creatingExam = true;
@@ -398,9 +400,9 @@ export default {
         return this.currentQuest.answers[0][i];
     },
     replaceAnswer (result) {
-        if (result.addedIndex != null && result.payload && this.currentQuest.answers[2].length > result.addedIndex) {
-            this.currentQuest.answers[2][result.addedIndex].id = result.payload.id;
-            this.currentQuest.answers[2][result.addedIndex].content = result.payload.content;
+        if (result.addedIndex != null && result.payload && this.currentQuest.answers[1].length > result.addedIndex) {
+            this.currentQuest.answers[1][result.addedIndex].id = result.payload.id;
+            this.currentQuest.answers[1][result.addedIndex].content = result.payload.content;
         }
     },
     pushLastQuestAndShowMenu: function () {
@@ -443,6 +445,15 @@ export default {
         } else {
             return {}
         }
+    },
+    handleContent (content) {
+        let matches = getUrls(content);
+          if (matches.size > 0) {
+            matches.forEach(url => {
+            content = content.replace(url, `<img src="${url}"/>`)
+          });
+        }
+        return content;
     },
     expandImage (imgUrl) {
         this.currentImage = imgUrl
@@ -571,5 +582,8 @@ a {
   margin-right: 5px;
   text-align: center;
   margin: 4px 0;
+}
+.word-box-drag {
+  cursor: all-scroll;
 }
 </style>

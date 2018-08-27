@@ -49,11 +49,15 @@ router.get('/', (req, res) => {
 // @access  Public
 router.get('/search', (req, res) => {
   let search = req.query.search.toLowerCase();
-  Question.find()
+  Question.find({
+    content : {
+      $regex : search,
+      $options : 'i'
+    }
+  })
+    .limit(5)
     .then(questions => {
-      res.json(questions.filter(q => {
-        return (q.content).toLowerCase().includes(search);
-      }).splice(0, 5))
+      res.json(questions);
     });
 });
 
@@ -75,171 +79,66 @@ router.get('/:module', (req, res) => {
   Question.find({
     module: module
   })
-    .then(question => {
-      res.json(question);
+    .then(questions => {
+      let queue = questions.filter(q => q.definitely_appear);
+      let pending = questions.filter(q => !q.definitely_appear);
+      for (let i = 0; i < questions.length; i++) {
+        if (queue.length < 45) {
+          let randQuest = getRandomQuest(pending);
+          pending.splice(pending.findIndex(e => e.id == randQuest.id), 1);
+          queue.push(randQuest);
+        }
+      }
+      queue = shuffleArr(queue);
+      res.json(queue.map(quest => {
+        quest.is_match = false;
+        if (quest.answer_type == 'multi_choice') {
+          quest.answers.map(ans => {
+            ans.user_choice = false;
+            ans.is_correct = false;
+            return ans;
+          })
+          quest.answers = shuffleArr(quest.answers);
+        } else if (quest.answer_type == 'drag_drop') {
+          let dragItems   = quest.answers.filter(e => e.type == 'drag_item');
+          let dropTargets = quest.answers.filter(e => e.type == 'drop_target');
+          let dropZone = [];
+          let i = 0;
+          while (i < dropTargets.length) {
+            i++;
+            dropZone.push({
+              id : null,
+              content : null
+            })
+          }
+          // Shuffle all arrays
+          dragItems = shuffleArr(dragItems);
+          dragItems.push({
+            id: null,
+            content : null
+          });
+          dropTargets = shuffleArr(dropTargets);
+          quest.answers = [dragItems, dropZone, dropTargets];
+        }
+        return quest;
+      }));
     });
-  // if (module == 1) {
-  //   Question.find(
-  //     {
-  //       module: 1
-  //     }
-  //   )
-  //   .then(questions => {
-  //     let totalQuests = Math.floor(Math.random() * 2) + 38;
-  //     let response = questions.filter(q => q.definitely_appear);
-  //     let pending = questions.filter(q => !q.definitely_appear);
-  //     let forms = [];
 
-  //     function getRandomQuest() {
-  //       return pending[Math.round(Math.random() * (pending.length - 1))];
-  //     }
+    function shuffleArr(a) {
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function getRandomQuest(arr) {
+      return arr[Math.round(Math.random() * (arr.length - 1))];
+    }
       
-  //     function questExists(quest) {
-  //       return response.indexOf(quest) > -1;
-  //     }
-  //     while (response.length < totalQuests) {
-  //       let randQuest = getRandomQuest();
-  //       if (!questExists(randQuest) && randQuest.form != 1) {
-  //         if (forms.length == 0 || !forms.some(form => form.form == randQuest.form)) {
-  //           forms.push({
-  //             form: randQuest.form,
-  //             count: 1
-  //           })
-  //           response.push(randQuest)
-  //         } else {
-  //           forms.forEach(form => {
-  //             if (form.form == randQuest.form && form.count < 2) {
-  //               response.push(randQuest)
-  //               form.count ++
-  //             }
-  //           })
-  //         }
-  //       }
-  //     }
-  //     function shuffleArr(a) {
-  //       for (let i = a.length - 1; i > 0; i--) {
-  //         const j = Math.floor(Math.random() * (i + 1));
-  //         [a[i], a[j]] = [a[j], a[i]];
-  //       }
-  //       return a;
-  //     }
-  //     shuffleArr(response);
-  //     response = response.map(quest => {
-  //       quest['is_match'] = false;
-  //       quest.answers.map(answer => {
-  //         answer.is_correct = false;
-  //         answer.user_choice = false;
-  //       })
-  //       return quest;
-  //     })
-  //     res.json(response);
-  //   });
-  // }
-  // else if (module == 2) {
-  //   Question.find(
-  //     {
-  //       module: 2,
-  //       definitely_appear: true
-  //     }
-  //   )
-  //   .then(questions => {
-  //     function shuffleArr(a) {
-  //       for (let i = a.length - 1; i > 0; i--) {
-  //         const j = Math.floor(Math.random() * (i + 1));
-  //         [a[i], a[j]] = [a[j], a[i]];
-  //       }
-  //       return a;
-  //     }
-  //     shuffleArr(questions);
-  //     res.json(questions.map(quest => {
-  //       quest['is_match'] = false;
-  //       quest.answers.map(answer => {
-  //         answer.is_correct = false;
-  //         answer.user_choice = false;
-  //       })
-  //       return quest;
-  //     }));
-  //   });
-  // }
-  // else if (module == 3) {
-  //   Question.find(
-  //     {
-  //       module: 3,
-  //       definitely_appear: true
-  //     }
-  //   )
-  //   .then(questions => {
-  //     function shuffleArr(a) {
-  //       for (let i = a.length - 1; i > 0; i--) {
-  //         const j = Math.floor(Math.random() * (i + 1));
-  //         [a[i], a[j]] = [a[j], a[i]];
-  //       }
-  //       return a;
-  //     }
-  //     shuffleArr(questions);
-  //     res.json(questions.map(quest => {
-  //       quest['is_match'] = false;
-  //       if (quest.answer_type == 'multi_choice') {
-  //         quest.answers.map(answer => {
-  //           answer.is_correct = false;
-  //           answer.user_choice = false;
-  //         })
-  //       } else {
-  //         let dragItems = [];
-  //         let dropTargets = [];
-  //         let dropZone = [];
-  //         quest.answers.forEach(ans => {
-  //           if (ans.type == 'drag_item') {
-  //             dragItems.push(ans);
-  //           }
-  //           if (ans.type == 'drop_target') {
-  //             dropTargets.push(ans);
-  //             dropZone.push({
-  //               id : null,
-  //               content : null
-  //             });
-  //           }
-  //         });
-  //         dragItems.push({
-  //           id: null,
-  //           type: null
-  //         });
-  //         quest.answers = [dragItems, dropTargets, dropZone];
-  //       }
-  //       return quest;
-  //     }));
-  //   });
-  // }
-  // else if (module == 4) {
-  //   Question.find(
-  //     {
-  //       module: 4
-  //     }
-  //   )
-  //   .then(questions => {
-  //     res.send(questions.map(q => {
-  //       if (q.answer_type == 'drag_drop') {
-  //         let dragItems = [];
-  //         let dropTargets = [];
-  //         let dropZone = [];
-  //         q.answers.forEach(ans => {
-  //           if (ans.type == 'drag_item') {
-  //             dragItems.push(ans);
-  //           }
-  //           if (ans.type == 'drop_target') {
-  //             dropTargets.push(ans);
-  //             dropZone.push({
-  //               id : null,
-  //               content : null
-  //             });
-  //           }
-  //         });
-  //         q.answers = [dragItems, dropTargets, dropZone];
-  //       }
-  //       return q;
-  //     }));
-  //   });
-  // }
+    function questExists(arr, quest) {
+      return arr.indexOf(quest) > -1;
+    }
 });
 
 // @route   POST api/questions
@@ -266,21 +165,23 @@ router.post('/:id', (req, res) => {
       let checkQuest = req.body;
       let count = 0;
       if (checkQuest.answer_type == 'multi_choice') {
-        for (let i = 0; i < checkQuest.answers.length; i++) {
-          if (checkQuest.answers[i].user_choice == question.answers[i].is_correct) {
+        for (let ans of checkQuest.answers) {
+          let rawAns = question.answers[question.answers.findIndex(e => e.id == ans.id)];
+          if ((ans.user_choice && rawAns.is_correct) || (!ans.user_choice && !rawAns.is_correct)) {
             count ++;
           }
-          checkQuest.answers[i].is_correct = question.answers[i].is_correct;
+          ans.is_correct = rawAns.is_correct;
         }
         checkQuest.is_match = count == question.answers.length ? true : false;
       } else if (checkQuest.answer_type == 'drag_drop') {
-        for (let i = 0; i < checkQuest.answers[1].length; i++) {
-          if (checkQuest.answers[1][i].match_with == checkQuest.answers[2][i].id) {
+        for (let i = 0; i < checkQuest.answers[2].length; i++) {
+          if (checkQuest.answers[2][i].match_with == checkQuest.answers[1][i].id) {
             count ++;
           }
         }
         checkQuest.is_match = count == checkQuest.answers[1].length ? true : false;
       }
+      // Update result to database
       if (!checkQuest.is_match) {
         question.incorrect_times += 1;
       }
