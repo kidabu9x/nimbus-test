@@ -341,10 +341,10 @@ export default {
     }
   },
   mounted: function () {
-      this.showStepper = false;
-      this.code = 'L2ZHbE4dr';
-      this.checkCode();
-      this.beginTest(1)
+    //   this.showStepper = false;
+    //   this.code = 'L2ZHbE4dr';
+    //   this.checkCode();
+    //   this.beginTest(1)
   },
   methods: {
     async checkCode() {
@@ -361,8 +361,8 @@ export default {
         }
     },
     beginTest (module) {
-        // this.username = this.inputName;
-        this.username = "Dương đẹp trai";
+        this.username = this.inputName;
+        // this.username = "Dương đẹp trai";
         this.module = module;
         this.showStepper = false;
         this.creatingExam = true;
