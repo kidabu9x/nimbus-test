@@ -83,7 +83,7 @@ router.get('/:module', (req, res) => {
       let queue = questions.filter(q => q.definitely_appear);
       let pending = questions.filter(q => !q.definitely_appear);
       for (let i = 0; i < questions.length; i++) {
-        if (queue.length < 45) {
+        if (queue.length < 45 && pending.length > 0) {
           let randQuest = getRandomQuest(pending);
           pending.splice(pending.findIndex(e => e.id == randQuest.id), 1);
           queue.push(randQuest);
