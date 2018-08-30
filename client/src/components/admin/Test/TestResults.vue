@@ -1,91 +1,69 @@
 <template>
   <div class="result">
     <div class="md-layout md-gutter">
-        <div class="md-layout-item md-size-100">
-            <md-card v-for="(question, index) in answers" :key="question._id" :class="getClass(question)" :id="`q_${question._id}`">
-                <md-card-header>
-                    <div class="md-title">
-                        <h4 style="font-weight: 500;">
-                            {{index + 1}}. <span class='paragraph'>{{question.content}}</span>
-                        </h4>
-                    </div>
-                    <div v-if="question.image" @click="expandImage(question.image)" class="question-image">
-                        <img :src="question.image">
-                    </div>
-                </md-card-header>
-
-                <md-card-content>
-                    <div v-for="answer in question.answers" :key="answer.label" style="font-size: 18px;" class="md-layout md-gutter">
-                        <div class="md-layout-item md-size-100">
-                            <md-checkbox v-if="answer.user_choice == answer.is_correct" v-model="answer.user_choice" class="checkbox-correct">
-                                {{answer.label}}. <span class="paragraph">{{answer.content}}</span>
-                            </md-checkbox>
-                            <md-checkbox v-else-if="answer.user_choice && !answer.is_correct" v-model="answer.user_choice">
-                                {{answer.label}}. <span class="paragraph">{{answer.content}}</span>
-                            </md-checkbox>
-                            <md-checkbox v-else-if="!answer.user_choice && answer.is_correct" v-model="answer.is_correct" class="checkbox-correct">
-                                {{answer.label}}. <span class="paragraph">{{answer.content}}</span>
-                            </md-checkbox>
-                            <md-checkbox v-else v-model="answer.user_choice">
-                                {{answer.label}}. <span class="paragraph">{{answer.content}}</span>
-                            </md-checkbox>
-                        </div>
-                    </div>
-                    <p class='paragraph' style="color: #e74c3c;" v-if="question.description">
-                        {{question.description}}
-                    </p>
-                </md-card-content>
-            </md-card>
+        <div v-if="isFetching" class="md-layout-item md-size-100" style="text-align: center;">
+            <md-progress-spinner class="md-accent" :md-diameter="30" md-mode="indeterminate"></md-progress-spinner>
+        </div>
+        <div v-else-if="!isFetching && testResults.length == 0" class="md-layout-item md-size-100">
+            <md-empty-state
+                md-rounded
+                md-icon="access_time"
+                md-label="Oops...."
+                md-description="Hình như học viên hơi lười..."
+            >
+            </md-empty-state>
+        </div>
+        <div v-else class="md-layout-item md-size-100">
+            <md-table v-model="testResults">
+                <md-table-row slot="md-table-row" slot-scope="{ item }">
+                    <md-table-cell md-label="Thời gian nộp bài" md-numeric>
+                        <span>{{ item.createdAt | moment("from", "now") }}</span>
+                    </md-table-cell>
+                    <md-table-cell md-label="Học viên">
+                        {{ item.username }}
+                    </md-table-cell>
+                    <md-table-cell md-label="Module">
+                        {{ item.module }}
+                    </md-table-cell>
+                    <md-table-cell md-label="Số câu đúng">
+                        {{ item.total_corrects }}
+                    </md-table-cell>
+                    <md-table-cell md-label="Tổng số câu">
+                        {{ item.total_questions }}
+                    </md-table-cell>
+                    <md-table-cell md-label="Điểm số">
+                        {{ item.score }}
+                    </md-table-cell>
+                </md-table-row>
+            </md-table>
         </div>
     </div>
-    
-    <md-dialog :md-active.sync="showExpandImage" v-if="currentImage" style="width: 100%;">
-      <md-content>
-          <img :src="currentImage" style="width: 100%;">
-      </md-content>
-      <md-dialog-actions>
-        <md-button class="md-primary" @click="showExpandImage = false">Đóng</md-button>
-      </md-dialog-actions>
-    </md-dialog>
-
-    
   </div>
 </template>
 
 <script>
 // Api
+import TestApi from '@/api/TestApi';
 
 // Components
-
 export default {
   name: 'Test',
-  props: ['answers'],
   data () {
     return {
-      showExpandImage: false,
-      currentImage: null
+      testResults : [],
+      isFetching  : true
     }
   },
+  mounted () {
+    this.getTestResults();
+  },
   methods: {
-    getClass (question) {
-        return {
-            'is-correct'    : question.is_match,
-            'is-uncorrect'  : !question.is_match
-        }
-    },
-    scrollToQuest(refName) {
-        var element = this.$refs[refName];
-        element.scrollTop = element.scrollHeight;
-    },
-    expandImage (imgUrl) {
-        this.currentImage = imgUrl
-        this.showExpandImage = true
-    },
-    setDone (id, index) {
-        this[id] = true
-        if (index) {
-            this.stepActive = index
-        }
+    async getTestResults () {
+        this.isFetching = true;
+        const response = await TestApi.getTestResults(this.$route.params.code);
+        console.log(response);
+        this.testResults = response.data;
+        this.isFetching = false;
     },
     noticeError (msg) {
         this.$toasted.show(msg, {

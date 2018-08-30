@@ -430,7 +430,7 @@ export default {
             arr[index] = quest;
             if (index == self.testQuests.length - 1) {
                 self.isSubmitting = false;
-                // TestApi.updateNewAnswer(self.code, self.username, self.settings.module, self.totalCorrect, self.answeredQuests);
+                TestApi.createNewAnswer(self.code, self.username, self.settings.module, self.totalCorrect, self.answeredQuests.length);
             }
           }
       })
@@ -448,10 +448,10 @@ export default {
     },
     handleContent (content) {
         let matches = getUrls(content);
-          if (matches.size > 0) {
+        if (matches.size > 0) {
             matches.forEach(url => {
-            content = content.replace(url, `<img src="${url}"/>`)
-          });
+                content = content.replace(url, `<img src="${url}"/>`)
+            });
         }
         return content;
     },

@@ -11,19 +11,22 @@ export default {
     updateTest(keyClass, updateField) {
         return Api().put(`/api/test/admin/${keyClass}`, updateField);
     },
+
     getTestResults (keyClass) {
-        return Api().get(`/api/test/admin/${keyClass}`);
+        return Api().get(`/api/test-result/admin/${keyClass}`);
     },
+    
     // --------------For User-------------
     checkCode(keyClass) {
         return Api().get(`/api/test/${keyClass}`);
     },
-    updateNewAnswer(keyClass, username, module, totalCorrect, answers) {
-        Api().put(`/api/test/${keyClass}`, {
+    createNewAnswer(keyClass, username, module, totalCorrect, totalQuestions) {
+        Api().post(`/api/test-result`, {
+            test_code : keyClass,
             username: username,
             module: module,
-            total_correct: totalCorrect,
-            answers: answers
+            total_corrects: totalCorrect,
+            total_questions : totalQuestions
         })
     }
 }

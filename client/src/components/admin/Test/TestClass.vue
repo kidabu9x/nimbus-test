@@ -51,7 +51,7 @@
                         <span style="color: #ff5252;">{{ item.handle }}</span>
                     </md-table-cell>
                     <md-table-cell md-label="Actions">
-                        <md-button class="md-icon-button" @click="showResult(item.handle)">
+                        <md-button class="md-icon-button" @click="$router.push({ path: `/admin/tests/${item.handle}` })">
                             <md-icon>list_alt</md-icon>
                             <md-tooltip md-direction="right">Results</md-tooltip>
                         </md-button>
@@ -60,40 +60,6 @@
             </md-table>
         </div>
         <br>
-        <br>
-        <div class="md-layout-item md-size-100" v-if="currentTest" style="margin-top: 50px;">
-            <md-table v-model="currentTest.results" md-card md-fixed-header>
-                <md-table-toolbar>
-                    <div class="md-toolbar-section-start">
-                        <h4>Results: {{currentTest.name}}</h4>
-                    </div>
-                    <div class="md-toolbar-section-end">
-                        <md-button style="font-weight: inherit; text-transform: none; margin-left: 0;" @click="showResult(currentTest.handle)">
-                            <md-icon>loop</md-icon>
-                            Reload results
-                        </md-button>
-                    </div>
-                </md-table-toolbar>
-                <md-table-empty-state md-label="No result."></md-table-empty-state>
-                <md-table-row slot="md-table-row" slot-scope="{ item }">
-                    <md-table-cell md-label="Name" md-numeric>
-                        <span>{{item.username}}</span>
-                    </md-table-cell>
-                    <md-table-cell md-label="Module">{{ item.module }}</md-table-cell>
-                    <md-table-cell md-label="Total correct"><span style="color: #ff5252;">{{ item.total_correct}}</span>/{{item.answers.length }}</md-table-cell>
-                    <md-table-cell md-label="Score">
-                        <span style="color: #ff5252;">{{ Math.floor((1000/item.answers.length)*Number(item.total_correct)) }}</span>
-                    </md-table-cell>
-                    
-                    <md-table-cell md-label="Actions">
-                        <md-button style="font-weight: inherit; text-transform: none; margin-left: 0;" @click="exploreAnswers(item)">
-                            <md-icon>zoom_in</md-icon>
-                            Explore
-                        </md-button>
-                    </md-table-cell>
-                </md-table-row>
-            </md-table>
-        </div>
     </div>
     <md-dialog :md-active.sync="openTestModal">
       <md-dialog-title>New Test</md-dialog-title>
@@ -103,15 +69,6 @@
       <md-dialog-actions>
         <md-button class="md-primary" @click="openTestModal = false">Close</md-button>
         <md-button class="md-primary" @click="createNewTestClass">Create</md-button>
-      </md-dialog-actions>
-    </md-dialog>
-    <md-dialog :md-active.sync="openResultModal" v-if="currentAnswer">
-      <md-dialog-title>{{currentAnswer.username}}</md-dialog-title>
-      <md-content class="md-dialog-content md-scrollbar">
-        <test-result :answers="currentAnswer.answers"></test-result>
-      </md-content>
-      <md-dialog-actions>
-        <md-button class="md-primary" @click="openResultModal = false">Close</md-button>
       </md-dialog-actions>
     </md-dialog>
   </div>
@@ -132,9 +89,7 @@ export default {
       openResultModal: false,
       testClass: [],
       search: '',
-      teacher: null,
-      currentTest: null,
-      currentAnswer: null
+      teacher: null
     };
   },
   mounted() {
@@ -171,10 +126,6 @@ export default {
     async updateTest(handle, updateField){
         let response = await TestApi.updateTest(handle, updateField);
         this.noticeSuccess(response.data.msg)
-    },
-    async showResult(handle) {
-        let response = await TestApi.getTestResults(handle);
-        this.currentTest = response.data;
     },
     exploreAnswers (answer) {
         this.currentAnswer = answer;

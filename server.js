@@ -26,7 +26,10 @@ const test = require('./routes/api/testApi/testApi')
 app.use('/api/test', test)
 
 const schedule = require('./routes/api/scheduleApi')
-app.use('/api/test', schedule)
+app.use('/api/schedule', schedule)
+
+const testResult = require('./routes/api/testApi/testResultApi')
+app.use('/api/test-result', testResult)
 
 // Serve static assets if in production
 if (process.env.NODE_ENV === 'production') {

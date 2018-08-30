@@ -4,17 +4,22 @@ var Schema = mongoose.Schema;
 var TestResultSchema = new Schema(
     {
         module: {
-            type: Number
+            type    : Number
         },
-        test_id : {
-            type: String
+        test_code : {
+            type    : String
         },
         username : {
-            type: String
+            type    : String
         },
-        answers : {
-            type: Array,
-            default: []
+        total_corrects : {
+            type    : Number
+        },
+        total_questions : {
+            type    : Number
+        },
+        score   : {
+            type    : Number
         }
     }, 
     {

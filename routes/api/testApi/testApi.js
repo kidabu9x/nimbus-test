@@ -4,7 +4,8 @@ const shortId = require('shortid')
 
 // Test Model
 const Test = require('../../../models/TestClass');
-
+// Test Result Model
+const TestResult = require('../../../models/TestResult');
 
 // ----------------------------------API for admin----------------------------
 // @route   GET api/test/admin
@@ -130,21 +131,6 @@ router.post('/', (req, res) => {
   newTestClass.save().then(testClass => res.json(testClass));
 });
 
-// @route   UPDATE api/test-class/:code
-// @desc    Create new answer from student to results
-// @access  Public
-router.put('/:code', (req, res) => {
-    Test.findOne({
-        handle: req.params.code
-    })
-    .then(question => {
-      question.results.push(req.body);
-      question.save()
-        .then(() => res.json({success: true}))
-        .catch(err => res.json({success: false}))
-    })
-    .catch(err => res.status(404).json({ success: false }));
-});
 
 // ----------------------------------End API for user----------------------------
 
