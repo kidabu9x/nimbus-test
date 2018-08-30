@@ -29,12 +29,13 @@ router.post('/admin', (req, res) => {
 // @desc    Update A Member
 // @access  Public
 router.put('/admin', (req, res) => {
-    Member.findById(req.body.id)
+    Member.findById(req.body._id)
     .then(member => {
         member.username        = req.body.username,
         member.email           = req.body.email,
         member.password        = req.body.password,
-        member.phone           = req.body.description,
+        member.phone           = req.body.phone,
+        member.identity        = req.body.identity,
         member.first_name      = req.body.first_name,
         member.last_name       = req.body.last_name,
         member.date_of_birth   = req.body.date_of_birth,
@@ -48,7 +49,9 @@ router.put('/admin', (req, res) => {
         member.extra_info      = req.body.extra_info
       member.save()
         .then(() => res.json({success: true}))
-        .catch(err => res.json({success: false}))
+        .catch(err => {
+            res.json({success: false})
+        })
     })
     .catch(err => res.status(404).json({ success: false }));
 });

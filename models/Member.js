@@ -52,6 +52,9 @@ var MemberSchema = new Schema(
         },
         extra_info: {
             type: String
+        },
+        identity: {
+            type: String
         }
     },
     {

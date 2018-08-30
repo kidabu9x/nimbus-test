@@ -23,6 +23,10 @@
             <md-icon>dashboard</md-icon>
             <span class="md-list-item-text">Bảng điều khiển</span>
           </md-list-item>
+          <md-list-item>
+            <md-icon>layers</md-icon>
+            <span class="md-list-item-text">Các khoá học</span>
+          </md-list-item>
           <md-list-item href="/admin/questions">
             <md-icon>help</md-icon>
             <span class="md-list-item-text">Bộ câu hỏi</span>
