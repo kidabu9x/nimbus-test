@@ -61,7 +61,6 @@ export default {
     async getTestResults () {
         this.isFetching = true;
         const response = await TestApi.getTestResults(this.$route.params.code);
-        console.log(response);
         this.testResults = response.data;
         this.isFetching = false;
     },

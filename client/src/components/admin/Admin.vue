@@ -19,6 +19,10 @@
         </md-toolbar>
 
         <md-list>
+          <md-list-item>
+            <md-icon>dashboard</md-icon>
+            <span class="md-list-item-text">Bảng điều khiển</span>
+          </md-list-item>
           <md-list-item href="/admin/questions">
             <md-icon>help</md-icon>
             <span class="md-list-item-text">Bộ câu hỏi</span>
@@ -27,18 +31,10 @@
             <md-icon>assignment</md-icon>
             <span class="md-list-item-text">Code kiểm tra</span>
           </md-list-item>
-          <!-- <md-list-item>
-            <md-icon>library_books</md-icon>
-            <span class="md-list-item-text">Course</span>
-          </md-list-item>
-          <md-list-item>
-            <md-icon>computer</md-icon>
-            <span class="md-list-item-text">Class</span>
-          </md-list-item>
-          <md-list-item>
+          <md-list-item href="/admin/members">
             <md-icon>how_to_reg</md-icon>
-            <span class="md-list-item-text">Employees</span>
-          </md-list-item> -->
+            <span class="md-list-item-text">Thành viên</span>
+          </md-list-item>
         </md-list>
       </md-app-drawer>
 
@@ -66,5 +62,8 @@ export default {
 <style lang="scss">
 .md-list-item {
   cursor: pointer;
+}
+.md-app.md-fixed .md-app-scroller {
+  overflow-x: hidden;
 }
 </style>
