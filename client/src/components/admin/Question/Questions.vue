@@ -6,6 +6,22 @@
           <md-table-toolbar>
             <div class="md-toolbar-section-start md-layout md-gutter">
               <div class="md-layout-item md-size-100">
+                <md-autocomplete 
+                  v-model="search" 
+                  :md-options="searched" 
+                  @md-changed="getContent" 
+                  @md-selected="editSearchedQuestion"
+                  @md-opened="getContent"
+                >
+                  <label>Tìm kiếm...</label>
+                  <template slot="md-autocomplete-item" slot-scope="{ item }" style="display: block;">
+                    <p style="display: block;">
+                      {{ item.content }}
+                    </p>
+                  </template>
+                </md-autocomplete>
+              </div>
+              <div class="md-layout-item md-size-100">
                 <div class="md-layout md-gutter">
                   <div class="md-layout-item md-size-20">
                     <p style="line-height: 48px;">Module</p>
@@ -22,22 +38,6 @@
                   </div>
                   <div class="md-layout-item md-size-40"></div>
                 </div>
-              </div>
-              <div class="md-layout-item md-size-100">
-                <md-autocomplete 
-                  v-model="search" 
-                  :md-options="searched" 
-                  @md-changed="getContent" 
-                  @md-selected="editSearchedQuestion"
-                  @md-opened="getContent"
-                >
-                  <label>Tìm kiếm...</label>
-                  <template slot="md-autocomplete-item" slot-scope="{ item }" style="display: block;">
-                    <p style="display: block;">
-                      {{ item.content }}
-                    </p>
-                  </template>
-                </md-autocomplete>
               </div>
             </div>
             <div class="md-toolbar-section-end">
