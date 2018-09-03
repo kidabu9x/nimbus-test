@@ -23,19 +23,19 @@
             <md-icon>dashboard</md-icon>
             <span class="md-list-item-text">Bảng điều khiển</span>
           </md-list-item>
-          <md-list-item>
+          <md-list-item to="/admin/courses">
             <md-icon>layers</md-icon>
             <span class="md-list-item-text">Các khoá học</span>
           </md-list-item>
-          <md-list-item href="/admin/questions">
-            <md-icon>help</md-icon>
+          <md-list-item to="/admin/questions">
+            <md-icon >help</md-icon>
             <span class="md-list-item-text">Bộ câu hỏi</span>
           </md-list-item>
-          <md-list-item href="/admin/tests">
+          <md-list-item to="/admin/tests">
             <md-icon>assignment</md-icon>
             <span class="md-list-item-text">Code kiểm tra</span>
           </md-list-item>
-          <md-list-item href="/admin/members">
+          <md-list-item to="/admin/members">
             <md-icon>how_to_reg</md-icon>
             <span class="md-list-item-text">Thành viên</span>
           </md-list-item>

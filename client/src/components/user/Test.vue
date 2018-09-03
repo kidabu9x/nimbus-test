@@ -430,7 +430,7 @@ export default {
             arr[index] = quest;
             if (index == self.testQuests.length - 1) {
                 self.isSubmitting = false;
-                TestApi.createNewAnswer(self.code, self.username, self.settings.module, self.totalCorrect, self.answeredQuests.length);
+                TestApi.createNewAnswer(self.code, self.username, self.module, self.totalCorrect, self.answeredQuests.length);
             }
           }
       })

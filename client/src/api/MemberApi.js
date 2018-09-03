@@ -13,5 +13,5 @@ export default {
     },
     deleteMember (memberId) {
         return Api().delete(`/api/member/admin/${memberId}`);
-    }
+    },
 }

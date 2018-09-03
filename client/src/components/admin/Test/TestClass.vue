@@ -37,20 +37,23 @@
                     </div>
                     <div class="md-toolbar-section-end">
                         <md-button class="md-dense md-primary" @click="openTestModal = true">
-                            Create New Test
+                            Tạo Test mới
                         </md-button>
                     </div>
                 </md-table-toolbar>
                 <md-table-row slot="md-table-row" slot-scope="{ item }">
-                    <md-table-cell md-label="Created At" md-numeric>
+                    <md-table-cell md-label="Tạo vào lúc" md-numeric>
                         <span>{{ item.createdAt | moment("DD/MM/YY-hA") }}</span>
                     </md-table-cell>
-                    <md-table-cell md-label="Name">{{ item.name }}</md-table-cell>
-                    <md-table-cell md-label="Teacher">{{ item.teacher_name }}</md-table-cell>
+                    <md-table-cell md-label="Tên">{{ item.name }}</md-table-cell>
+                    <md-table-cell md-label="Giảng viên">{{ item.teacher_name }}</md-table-cell>
                     <md-table-cell md-label="Code">
                         <span style="color: #ff5252;">{{ item.handle }}</span>
                     </md-table-cell>
-                    <md-table-cell md-label="Actions">
+                    <md-table-cell md-label="Số kết quả">
+                        <span>{{ item.total_result }}</span>
+                    </md-table-cell>
+                    <md-table-cell md-label="Tác vụ">
                         <md-button class="md-icon-button" @click="$router.push({ path: `/admin/tests/${item.handle}` })">
                             <md-icon>list_alt</md-icon>
                             <md-tooltip md-direction="right">Results</md-tooltip>
@@ -121,11 +124,21 @@ export default {
     },
     async fetchTests () {
         let response = await TestApi.fetchTestClass();
-        this.testClass = response.data;
+        this.testClass = response.data.map(e => {
+            e.total_result = 0;
+            return e;
+        });
+        for (let test of this.testClass) {
+            countResult();
+            async function countResult () {
+                let response = await TestApi.countTestResults(test.handle);
+                test.total_result = response.data;
+            }
+        }
     },
-    async updateTest(handle, updateField){
-        let response = await TestApi.updateTest(handle, updateField);
-        this.noticeSuccess(response.data.msg)
+    async updateTest(code, updateField){
+        let response = await TestApi.updateTest(code, updateField);
+        this.noticeSuccess(response.data.msg);
     },
     exploreAnswers (answer) {
         this.currentAnswer = answer;

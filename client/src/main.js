@@ -4,15 +4,18 @@ import Vue from 'vue';
 import App from './App';
 import Toasted from 'vue-toasted';
 import VueScrollTo from 'vue-scrollto';
-// import { MdButton, MdApp, MdAppToolbar, MdIcon, MdAppDrawer, MdListItem, MdList, MdAppContent } from 'vue-material/dist/components';
-import { MdButton, MdIcon, MdApp, MdDrawer, MdSteppers, MdToolbar, MdMenu, MdList, MdContent, MdTable, MdAutocomplete, MdField, MdDialog, MdDialogConfirm, MdEmptyState, MdCard,MdTooltip, MdRipple, MdCheckbox, MdRadio, MdDivider } from 'vue-material/dist/components';
+import { MdButton, MdIcon, MdApp, MdDrawer, MdSteppers, MdToolbar, MdMenu, MdList, MdContent, MdTable, MdAutocomplete, MdField, MdDialog, MdDialogConfirm, MdEmptyState, MdCard, MdSubheader, MdTooltip, MdRipple, MdCheckbox, MdRadio, MdDivider, MdProgress, MdAvatar } from 'vue-material/dist/components';
 import 'vue-material/dist/vue-material.min.css';
 
 import router from './router';
 
 Vue.config.productionTip = false;
 Vue.use(Toasted);
-Vue.use(require('vue-moment'));
+const momentLocale = require('moment')
+require('moment/locale/vi')
+Vue.use(require('vue-moment'), {
+  momentLocale
+});
 Vue.use(VueScrollTo);
 
 Vue.use(MdButton);
@@ -36,7 +39,9 @@ Vue.use(MdDivider);
 Vue.use(MdDialogConfirm);
 Vue.use(MdSteppers);
 Vue.use(MdCard);
-
+Vue.use(MdProgress);
+Vue.use(MdSubheader);
+Vue.use(MdAvatar);
 
 /* eslint-disable no-new */
 new Vue({

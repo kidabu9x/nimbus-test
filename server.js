@@ -34,6 +34,9 @@ app.use('/api/test-result', testResult)
 const member = require('./routes/api/memberApi')
 app.use('/api/member', member)
 
+const course = require('./routes/api/courseApi/courseApi')
+app.use('/api/course', course)
+
 // Serve static assets if in production
 if (process.env.NODE_ENV === 'production') {
   // Set static folder

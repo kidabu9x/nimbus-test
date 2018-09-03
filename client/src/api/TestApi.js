@@ -11,7 +11,9 @@ export default {
     updateTest(keyClass, updateField) {
         return Api().put(`/api/test/admin/${keyClass}`, updateField);
     },
-
+    countTestResults (keyClass) {
+        return Api().get(`/api/test-result/admin/count/${keyClass}`);
+    },
     getTestResults (keyClass) {
         return Api().get(`/api/test-result/admin/${keyClass}`);
     },

@@ -8,6 +8,7 @@ import AdminTestClass from '@/components/admin/Test/TestClass'
 import AdminTestResults from '@/components/admin/Test/TestResults'
 import ExamSchedules from '@/components/admin/ExamSchedule/Schedule'
 import Member from '@/components/admin/Member/Members'
+import AllCourse from '@/components/admin/Course/AllCourse'
 import Dev from '@/components/Dev/Dev'
 // User component
 import User from '@/components/user/User'
@@ -57,6 +58,10 @@ export default new Router({
         {
           path: 'members',
           component: Member
+        },
+        {
+          path: 'courses',
+          component: AllCourse
         }
       ]
     }

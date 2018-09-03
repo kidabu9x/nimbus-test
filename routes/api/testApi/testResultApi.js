@@ -14,6 +14,14 @@ router.get('/admin/:code', (req, res) => {
         .then(testResult => res.json(testResult));
 });
 
+// @route   GET api/test-result/admin
+// @desc    Count Test Results of a Key
+// @access  Public
+router.get('/admin/count/:code', (req, res) => {
+  TestResult.countDocuments({ test_code : req.params.code})
+      .then(count => res.json(count));
+});
+
 // @route   POST  api/test-result
 // @desc    Create A Test Result
 // @access  Public
