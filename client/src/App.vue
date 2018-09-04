@@ -67,6 +67,10 @@ export default {
       outline: 0;
       box-shadow: 0 0 0 1px #2e7d32;
   }
+
+  input.hidden-input {
+    display: none;
+  }
 }
 
 

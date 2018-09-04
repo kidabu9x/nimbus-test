@@ -19,22 +19,22 @@
                     <md-card-content>
                         <div class="md-layout-item md-size-100 regular-input-wrapper">
                             <p class="regular-label">Tên lớp</p>
-                            <input class="regular-input" type="text" v-model="newGrade.name">
+                            <input class="regular-input" type="text" v-model="newGrade.name" placeholder="IC3/MOS x.x">
                         </div>
                         <div class="md-layout-item md-size-100">
                             <div class="md-layout md-gutter">
                                 <div class="md-layout-item regular-input-wrapper">
                                     <p class="regular-label">Giảng viên chính</p>
                                     <select v-model="newGrade.main_teacher_id" class="regular-input" >
-                                        <option v-for="teacher in teachers" :key="teacher.id" :value="teacher.id">{{teacher.first_name}} {{teacher.last_name}}</option>
+                                        <option v-for="teacher in teachers" :key="teacher._id" :value="teacher._id">{{teacher.first_name}} {{teacher.last_name}}</option>
                                     </select>
                                 </div>
                                 <div class="md-layout-item regular-input-wrapper">
                                     <p class="regular-label">Ngày khai giảng</p>
-                                    <flat-pickr class="regular-input" v-model="newGrade.start_date"></flat-pickr>
+                                    <flat-pickr class="regular-input" :config="datePickrConfigs.basic" v-model="newGrade.start_date"></flat-pickr>
                                 </div>
                                 <div class="md-layout-item regular-input-wrapper">
-                                    <p class="regular-label">Số buổi học</p>
+                                    <p class="regular-label">Số ngày học</p>
                                     <input v-model="newGrade.number_of_school_days" class="regular-input" type="number" min=0>
                                 </div>
                             </div>
@@ -54,22 +54,80 @@
                     </md-card-content>
                 </md-card>
             </div>
-            <div class="md-layout-item md-size-100" style="margin-top: 15px;">
+            <div v-if="newGrade.school_days.length > 0" class="md-layout-item md-size-100" style="margin-top: 15px;">
                 <md-card>
                     <md-card-header>
-                        <div class="md-title">Lịch học</div>
+                        <div class="md-title">
+                            <div class="md-layout md-gutter">
+                                <div class="md-layout-item md-size-50">
+                                    Lịch học
+                                </div>
+                                <div class="md-layout-item md-size-50" style="text-align: right;">
+                                    <md-button v-if="estimatedDate.length > 0" @click="createEstimatedDate">
+                                        <md-icon>schedule</md-icon>
+                                        Cập nhật lịch dự kiến
+                                    </md-button>
+                                </div>
+                            </div>
+                        </div>
                     </md-card-header>
                     <md-card-content>
                         <div class="md-layout md-gutter">
-                            <div v-if="estimated_schedules.length == 0" class="md-layout-item md-size-100" style="text-align: center;">
-                                <md-button class="md-primary" @click="createEstimatedSchedule">
+                            <div v-if="estimatedDate.length == 0" class="md-layout-item md-size-100" style="text-align: center;">
+                                <md-button v-if="newGrade.school_days.length > 0" class="md-primary" @click="createEstimatedDate">
                                     <md-icon>schedule</md-icon>
                                     Tạo lịch dự kiến
                                 </md-button>
                             </div>
+                            <div v-else class="md-layout-item md-size-100">
+                                <div class="md-layout-item md-size-100 regular-input-wrapper">
+                                    <flat-pickr class="regular-input hidden-input" :config="datePickrConfigs.multiDate" v-model="estimatedDate"></flat-pickr>
+                                </div>
+                                <div class="md-layout-item md-size-100" style="text-align: center; margin-top: 20px;">
+                                    <md-button class="md-primary" @click="createFinalSchedule">
+                                        <md-icon>calendar_today</md-icon>
+                                        Xác nhận lịch
+                                    </md-button>
+                                </div>
+                            </div>
                         </div>
                     </md-card-content>
                 </md-card>
+            </div>
+            <div v-if="finalSchedule.length > 0" class="md-layout-item md-size-100" style="margin-top: 5px;">
+                <md-table v-model="finalSchedule" md-card>
+                    <md-table-toolbar>
+                        <h1 class="md-title">Giảng viên và thời gian học</h1>
+                    </md-table-toolbar>
+
+                    <md-table-row slot="md-table-row" slot-scope="{ item }">
+                        <md-table-cell md-label="Ngày học">
+                            {{ item.school_date | moment('DD/MM') }}
+                        </md-table-cell>
+                        <md-table-cell md-label="Giảng viên">
+                            <div class="regular-input-wrapper">
+                                <select v-model="item.teacher_id" class="regular-input" >
+                                    <option v-for="teacher in teachers" :key="teacher._id" :value="teacher._id">{{teacher.first_name}} {{teacher.last_name}}</option>
+                                </select>
+                            </div>
+                        </md-table-cell>
+                        <md-table-cell md-label="Giờ bắt đầu">
+                            <div class="md-layout-item md-size-100 regular-input-wrapper">
+                                <flat-pickr class="regular-input" :config="datePickrConfigs.timeConfig" v-model="item.start_hour"></flat-pickr>
+                            </div>
+                        </md-table-cell>
+                        <md-table-cell md-label="Giờ kết thúc">
+                            <div class="md-layout-item md-size-100 regular-input-wrapper">
+                                <flat-pickr class="regular-input" :config="datePickrConfigs.timeConfig" v-model="item.end_hour"></flat-pickr>
+                            </div>
+                        </md-table-cell>
+                    </md-table-row>
+                </md-table>
+            </div>
+            <div v-if="finalSchedule.length > 0" class="md-layout-item md-size-100" style="margin-top: 5px;">
+                <md-button style="width: 100%;" class="md-accent md-dense md-raised">
+                    Thêm lớp học
+                </md-button>
             </div>
         </div>
     </div>
@@ -87,6 +145,7 @@ import MemberApi from '@/api/MemberApi';
 import flatPickr from 'vue-flatpickr-component';
 import 'flatpickr/dist/flatpickr.css';
 import 'flatpickr/dist/themes/airbnb.css';
+import {Vietnamese} from 'flatpickr/dist/l10n/vn';
 
 const dayOfWeeks = [
     {
@@ -130,19 +189,43 @@ export default {
   name: 'all-courses',
   data () {
       return {
-        teachers : [],
         newGrade : {
             name: '',
             course_id: '',
             main_teacher_id: '',
             start_date : new Date(),
-            school_days: [],
+            school_days: [new Date().getDay()],
             number_of_school_days: 4,
             end_date : null
         },
+        estimatedDate : [],
+        finalSchedule : [],
+        teachers : [],
         dayOfWeeks : dayOfWeeks,
-        estimated_schedules : [],
-        learning_dates : []
+        datePickrConfigs :{
+          basic : {
+            altFormat: 'l-d/m',
+            altInput: true,
+            dateFormat: 'Y-m-d',
+            locale: Vietnamese
+          },
+          multiDate : {
+            altFormat: 'l-d/m',
+            altInput: true,
+            dateFormat: 'Y-m-d',
+            locale: Vietnamese,
+            mode: 'multiple',
+            defaultDate: [],
+            inline : true,
+            showMonths : 2
+          },
+          timeConfig : {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "H:i",
+            time_24hr: true
+          }
+        }
       }
   },
   mounted () {
@@ -153,16 +236,30 @@ export default {
         let response = await MemberApi.fetchTeachers();
         this.teachers = response.data;
     },
-    createEstimatedSchedule () {
+    createEstimatedDate () {
+        this.estimatedDate = [];
         let currentDate = new Date(this.newGrade.start_date);
-        this.learning_dates.push(currentDate);
-        while (this.learning_dates.length < this.newGrade.number_of_school_days) {
+        this.estimatedDate.push(currentDate);
+        while (this.estimatedDate.length < this.newGrade.number_of_school_days) {
             currentDate = increaseDateTimeByDays(currentDate, 1);
             if (this.newGrade.school_days.indexOf(currentDate.getDay()) > -1) {
-                this.learning_dates.push(currentDate);
+                this.estimatedDate.push(currentDate);
             }
         }
-        console.log(this.learning_dates);
+    },
+    createFinalSchedule () {
+        this.finalSchedule = [];
+        if (this.estimatedDate.length > 0) {
+            for (let schoolDate of this.estimatedDate) {
+                let currentDate = new Date(schoolDate);
+                this.finalSchedule.push({
+                    school_date : schoolDate,
+                    teacher_id : this.newGrade.main_teacher_id,
+                    start_hour : new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 7, 0, 0),
+                    end_hour : new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 9, 0, 0),
+                })
+            }
+        }
     }
   },
   components: {
@@ -172,6 +269,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+.flatpickr-calendar.inline {
+    margin: auto;
+}
 
 </style>
