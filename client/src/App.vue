@@ -30,4 +30,44 @@ export default {
   -webkit-filter: blur(0.00001px);
   filter: blur(0.00001px);
 }
+
+.regular-input-wrapper {
+  margin-top: 1rem;
+  position: relative;
+
+  .regular-label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-weight: 400;
+    line-height: 2rem;
+    text-transform: initial;
+    letter-spacing: initial;
+    cursor: pointer;
+  }
+
+  .regular-input {
+    display: block;
+    width: 100%;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    overflow: hidden;
+  }
+
+  .regular-input:focus {
+      color: #495057;
+      background-color: #fff;
+      border-color: #2e7d32;
+      outline: 0;
+      box-shadow: 0 0 0 1px #2e7d32;
+  }
+}
+
+
 </style>

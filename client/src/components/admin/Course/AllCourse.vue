@@ -5,7 +5,7 @@
     </div>
     <div v-if="!isFetching && courses.length == 0" class="md-layout-item md-size-100">
         <md-empty-state
-            md-icon="assignment_late"
+            md-icon="layers_clear"
             md-description="Chưa có khoá học nào à. Tù thế"
         >
             <md-button class="md-dense md-raised md-primary" @click="openNewDialog = true">
@@ -14,36 +14,38 @@
         </md-empty-state>
     </div>
     <div v-else class="md-layout-item md-size-100">
-        <md-card v-for="course in courses" :key="course.id" class="md-course-card md-elevation-1" md-with-hover >
-            <md-card-header>
-                <md-card-header-text>
-                    <div class="md-title">{{course.name}}</div>
-                    <div class="md-subhead">7 lớp đang trong thời gian học</div>
-                </md-card-header-text>
-                <md-card-media>
-                    <img :src="course.img_url" :alt="course.name">
-                </md-card-media>
-            </md-card-header>
-            <md-card-content>
-                <md-divider></md-divider>
-                <md-list class="md-double-line">
-                    <md-subheader>Lớp học ngày hôm nay</md-subheader>
-                    <md-list-item>
-                        <md-icon class="md-primary">access_time</md-icon>
-                        <div class="md-list-item-text">
-                            <span>IC3 Thứ 3 - Thứ 7</span>
-                            <span>15h - 17h | Quân</span>
-                        </div>
-                    </md-list-item>
-                    <md-list-item class="md-inset">
-                        <div class="md-list-item-text">
-                            <span>IC3 riêng 13</span>
-                            <span>19h - 21h | Nhất</span>
-                        </div>
-                    </md-list-item>
-                </md-list>
-            </md-card-content>
-        </md-card>
+        <router-link v-for="course in courses" :key="course.id" :to="{path: `courses/${course.handle}`}">
+            <md-card class="md-course-card md-elevation-1" md-with-hover >
+                <md-card-header>
+                    <md-card-header-text>
+                        <div class="md-title">{{course.name}}</div>
+                        <div class="md-subhead">7 lớp đang trong thời gian học</div>
+                    </md-card-header-text>
+                    <md-card-media>
+                        <img :src="course.img_url" :alt="course.name">
+                    </md-card-media>
+                </md-card-header>
+                <md-card-content>
+                    <md-divider></md-divider>
+                    <md-list class="md-double-line">
+                        <md-subheader>Lớp học ngày hôm nay</md-subheader>
+                        <md-list-item>
+                            <md-icon class="md-primary">access_time</md-icon>
+                            <div class="md-list-item-text">
+                                <span>IC3 Thứ 3 - Thứ 7</span>
+                                <span>15h - 17h | Quân</span>
+                            </div>
+                        </md-list-item>
+                        <md-list-item class="md-inset">
+                            <div class="md-list-item-text">
+                                <span>IC3 riêng 13</span>
+                                <span>19h - 21h | Nhất</span>
+                            </div>
+                        </md-list-item>
+                    </md-list>
+                </md-card-content>
+            </md-card>
+        </router-link>
         <md-card class="md-course-card" md-with-hover>
             <md-card-content style="text-align: center;">
                 <md-button class="md-icon-button" @click="openNewDialog = true">

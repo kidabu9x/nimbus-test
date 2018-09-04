@@ -1,17 +1,22 @@
 import Api from '@/api/Api.js'
 
+const adminUrl = '/api/member/admin'
+
 export default {
     // --------------For Admin--------------
     fetchMembers () {
-        return Api().get(`/api/member/admin`);
+        return Api().get(`${adminUrl}`);
     },
     createNewMember (member) {
-        return Api().post(`/api/member/admin`, member);
+        return Api().post(`${adminUrl}`, member);
     },
     updateMember (member) {
-        return Api().put(`/api/member/admin`, member);
+        return Api().put(`${adminUrl}`, member);
     },
     deleteMember (memberId) {
-        return Api().delete(`/api/member/admin/${memberId}`);
+        return Api().delete(`${adminUrl}/${memberId}`);
     },
+    fetchTeachers() {
+        return Api().get(`${adminUrl}/teachers`);
+    }
 }

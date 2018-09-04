@@ -12,6 +12,18 @@ router.get('/admin', (req, res) => {
         .then(members => res.json(members));
 });
 
+// @route   GET api/member/admin/teachers
+// @desc    Get teacher
+// @access  Public
+router.get('/admin/teachers', (req, res) => {
+    Member.find({
+        role : {
+            $in: ['general_manager', 'teacher']
+        }
+    })
+        .then(members => res.json(members));
+});
+
 // @route   POST api/member/admin
 // @desc    Create new Member
 // @access  Public

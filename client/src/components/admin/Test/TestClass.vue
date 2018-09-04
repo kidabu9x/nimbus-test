@@ -54,10 +54,12 @@
                         <span>{{ item.total_result }}</span>
                     </md-table-cell>
                     <md-table-cell md-label="Tác vụ">
-                        <md-button class="md-icon-button" @click="$router.push({ path: `/admin/tests/${item.handle}` })">
-                            <md-icon>list_alt</md-icon>
-                            <md-tooltip md-direction="right">Results</md-tooltip>
-                        </md-button>
+                        <router-link :to="{path: `tests/${item.handle}`}">
+                            <md-button class="md-icon-button">
+                                <md-icon>list_alt</md-icon>
+                                <md-tooltip md-direction="right">Results</md-tooltip>
+                            </md-button>
+                        </router-link>
                     </md-table-cell>
                 </md-table-row>
             </md-table>
