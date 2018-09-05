@@ -66,9 +66,15 @@ export default {
       outline: 0;
       box-shadow: 0 0 0 1px #2e7d32;
   }
+}
 
-  input.hidden-input {
+.regular-input-wrapper.hidden-input {
+  input {
     display: none;
+  }
+  .flatpickr-calendar {
+    box-shadow: none;
+    -webkit-box-shadow: none;
   }
 }
 

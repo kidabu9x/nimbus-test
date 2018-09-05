@@ -15,7 +15,7 @@
                 <h2 style="margin-left: 16px;">Thêm lớp học</h2>
             </div>
             <div class="md-layout-item md-size-100">
-                <md-card>
+                <md-card id="general-info">
                     <md-card-content>
                         <div class="md-layout-item md-size-100 regular-input-wrapper">
                             <p class="regular-label">Tên lớp</p>
@@ -29,6 +29,17 @@
                                         <option v-for="teacher in teachers" :key="teacher._id" :value="teacher._id">{{teacher.first_name}} {{teacher.last_name}}</option>
                                     </select>
                                 </div>
+                                <div class="md-layout-item regular-input-wrapper">
+                                    <p class="regular-label">
+                                        Địa điểm học
+                                    </p>
+                                    <input v-model="newGrade.school_address" type="text" class="regular-input">
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <div class="md-layout-item md-size-100">
+                            <div class="md-layout md-gutter">
                                 <div class="md-layout-item regular-input-wrapper">
                                     <p class="regular-label">Ngày khai giảng</p>
                                     <flat-pickr class="regular-input" :config="datePickrConfigs.basic" v-model="newGrade.start_date"></flat-pickr>
@@ -55,7 +66,7 @@
                 </md-card>
             </div>
             <div v-if="newGrade.school_days.length > 0" class="md-layout-item md-size-100" style="margin-top: 15px;">
-                <md-card>
+                <md-card id="estimated-schedule">
                     <md-card-header>
                         <div class="md-title">
                             <div class="md-layout md-gutter">
@@ -80,8 +91,8 @@
                                 </md-button>
                             </div>
                             <div v-else class="md-layout-item md-size-100">
-                                <div class="md-layout-item md-size-100 regular-input-wrapper">
-                                    <flat-pickr class="regular-input hidden-input" :config="datePickrConfigs.multiDate" v-model="estimatedDate"></flat-pickr>
+                                <div class="md-layout-item md-size-100 regular-input-wrapper hidden-input">
+                                    <flat-pickr v-model="estimatedDate" class="regular-input" :config="datePickrConfigs.multiDate" ></flat-pickr>
                                 </div>
                                 <div class="md-layout-item md-size-100" style="text-align: center; margin-top: 20px;">
                                     <md-button class="md-primary" @click="createFinalSchedule">
@@ -103,8 +114,8 @@
                     <md-table-row slot="md-table-row" slot-scope="{ item }">
                         <md-table-cell md-label="Ngày học">
                             <md-button class="md-dense" @click="duplicateSession(item.handle)">
-                                <md-icon>file_copy</md-icon>
                                 {{ item.school_date | moment('DD/MM') }}
+                                <md-icon>file_copy</md-icon>
                                 <md-tooltip>Sao chép</md-tooltip>
                             </md-button>
                         </md-table-cell>
@@ -135,7 +146,7 @@
                 </md-table>
             </div>
             <div v-if="finalSchedule.length > 0" class="md-layout-item md-size-100" style="margin-top: 5px;">
-                <md-button style="width: 100%;" class="md-accent md-dense md-raised">
+                <md-button style="width: 100%;" class="md-accent md-dense md-raised" @click="createGrade">
                     Thêm lớp học
                 </md-button>
             </div>
@@ -209,8 +220,9 @@ export default {
             main_teacher_id: '',
             start_date : new Date(),
             school_days: [new Date().getDay()],
-            number_of_school_days: 4,
-            end_date : null
+            number_of_school_days: 8,
+            end_date : null,
+            school_address: 'Số 15/20 Trương Định'
         },
         estimatedDate : [],
         finalSchedule : [],
@@ -221,7 +233,9 @@ export default {
             altFormat: 'l-d/m',
             altInput: true,
             dateFormat: 'Y-m-d',
-            locale: Vietnamese
+            locale: Vietnamese,
+            enableTime: true,
+            time_24hr: true
           },
           multiDate : {
             dateFormat: 'Y-m-d',
@@ -249,14 +263,19 @@ export default {
         this.newGrade.main_teacher_id = this.teachers[0]._id;
     },
     createEstimatedDate () {
-        this.estimatedDate = [];
-        this.finalSchedule = [];
-        let currentDate = new Date(this.newGrade.start_date);
-        this.estimatedDate.push(new Date(currentDate));
-        while (this.estimatedDate.length < this.newGrade.number_of_school_days) {
-            currentDate = increaseDateTimeByDays(currentDate, 1);
-            if (this.newGrade.school_days.indexOf(currentDate.getDay()) > -1) {
-                this.estimatedDate.push(new Date(currentDate));
+        let err = this.checkGrade(this.newGrade);
+        if (err) {
+            this.noticeError(err);
+        } else {
+            this.estimatedDate = [];
+            this.finalSchedule = [];
+            let currentDate = new Date(this.newGrade.start_date);
+            this.estimatedDate.push(new Date(currentDate));
+            while (this.estimatedDate.length < this.newGrade.number_of_school_days) {
+                currentDate = increaseDateTimeByDays(currentDate, 1);
+                if (this.newGrade.school_days.indexOf(currentDate.getDay()) > -1) {
+                    this.estimatedDate.push(new Date(currentDate));
+                }
             }
         }
     },
@@ -275,8 +294,8 @@ export default {
                     handle  : shortId.generate(),
                     school_date : schoolDate,
                     teacher_id : this.newGrade.main_teacher_id,
-                    start_hour : new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 7, 0, 0),
-                    end_hour : new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 9, 0, 0),
+                    start_hour : new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), new Date(this.newGrade.start_date).getHours(), 0, 0),
+                    end_hour : new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), new Date(this.newGrade.start_date).getHours() + 2, 0, 0),
                 })
             }
         }
@@ -292,6 +311,55 @@ export default {
         newSession.handle = shortId.generate();
         currentSchedule.splice(currentIndex, 0, newSession);
         this.finalSchedule = currentSchedule;
+    },
+    createGrade () {
+        let grade = this.newGrade;
+        let err = this.checkGrade(grade);
+        if (err) {
+            this.noticeError(err);
+        } else {
+            console.log(grade);
+        }
+    },
+    checkGrade (grade) {
+        if (grade.name == '') {
+            return 'Tên lớp học không được bỏ trống !';
+        }
+        if (grade.number_of_school_days <= 0) {
+            return 'Số ngày học phải ít nhất 1 ngày';
+        }
+        if (grade.school_days.length == 0) {
+            return 'Phải học ít nhất 1 ngày trong tuần';
+        }
+        if (grade.start_date == '') {
+            return 'Pick ngày khai giảng !';
+        }
+        return null;
+    },
+    checkLession (listLession) {
+        if (!listLession.some(e => e.teacher_id == '')) {
+            return 'Thiếu thông tin giảng viên !';
+        }
+        if (!listLession.some(e => e.start_hour == '' || e.end_hour == '')) {
+            return 'Giờ học cần được điền. Trường này có thể thay đổi sau !';
+        }
+        return null;
+    },
+    noticeError (msg) {
+        this.$toasted.show(msg, { 
+            theme     : "bubble", 
+            position  : "top-right", 
+            duration  : 3000,
+            type      : 'error'
+        });
+    },
+    noticeSuccess (msg) {
+        this.$toasted.show(msg, { 
+            theme     : "bubble", 
+            position  : "top-right", 
+            duration  : 3000,
+            type      : 'success'
+        });
     }
   },
   components: {
