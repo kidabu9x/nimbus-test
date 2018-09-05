@@ -14,7 +14,7 @@ export default {
 @import "~vue-material/dist/theme/engine"; // Import the theme engine
 
 @include md-register-theme("default", (
-  primary: md-get-palette-color(green, 800), // The primary color of your application
+  primary: md-get-palette-color(green, 800), // The primary color of your application #2e7d32
   accent: md-get-palette-color(orange, 900) // The accent or secondary color
 ));
 
@@ -32,7 +32,6 @@ export default {
 }
 
 .regular-input-wrapper {
-  margin-top: 1rem;
   position: relative;
 
   .regular-label {
@@ -72,6 +71,7 @@ export default {
     display: none;
   }
 }
+
 
 
 </style>

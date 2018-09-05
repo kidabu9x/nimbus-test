@@ -43,10 +43,10 @@
                             <p style="margin-bottom: 0;">Ngày học trong tuần</p>
                         </div>
                         <div class="md-layout-item md-size-100">
-                            <div class="md-layout md-gutter">
-                                <div class="md-layout-item" v-for="i in Math.ceil(dayOfWeeks.length/2)" :key="i">
-                                    <div v-for="(day) in dayOfWeeks.slice((i - 1) * 2, i * 2)" :key="day.index" class="md-layout-item md-size-100">
-                                        <md-checkbox v-model="newGrade.school_days" :value="day.index">{{day.title}}</md-checkbox>
+                            <div class="md-layout-item md-size-100" v-for="i in Math.ceil(dayOfWeeks.length/4)" :key="i">
+                                <div class="md-layout md-gutter">
+                                    <div v-for="(day) in dayOfWeeks.slice((i - 1) * 4, i * 4)" :key="day.index" class="md-layout-item md-size-25">
+                                        <md-checkbox class="md-primary" v-model="newGrade.school_days" :value="day.index">{{day.title}}</md-checkbox>
                                     </div>
                                 </div>
                             </div>
@@ -94,7 +94,7 @@
                     </md-card-content>
                 </md-card>
             </div>
-            <div v-if="finalSchedule.length > 0" class="md-layout-item md-size-100" style="margin-top: 5px;">
+            <div v-if="finalSchedule.length > 0" id="final-schedule" class="md-layout-item md-size-100" style="margin-top: 5px;">
                 <md-table v-model="finalSchedule" md-card>
                     <md-table-toolbar>
                         <h1 class="md-title">Giảng viên và thời gian học</h1>
@@ -102,7 +102,11 @@
 
                     <md-table-row slot="md-table-row" slot-scope="{ item }">
                         <md-table-cell md-label="Ngày học">
-                            {{ item.school_date | moment('DD/MM') }}
+                            <md-button class="md-dense" @click="duplicateSession(item.handle)">
+                                <md-icon>file_copy</md-icon>
+                                {{ item.school_date | moment('DD/MM') }}
+                                <md-tooltip>Sao chép</md-tooltip>
+                            </md-button>
                         </md-table-cell>
                         <md-table-cell md-label="Giảng viên">
                             <div class="regular-input-wrapper">
@@ -120,6 +124,12 @@
                             <div class="md-layout-item md-size-100 regular-input-wrapper">
                                 <flat-pickr class="regular-input" :config="datePickrConfigs.timeConfig" v-model="item.end_hour"></flat-pickr>
                             </div>
+                        </md-table-cell>
+                        <md-table-cell>
+                            <md-button class="md-icon-button md-dense" @click="finalSchedule.splice(finalSchedule.findIndex(e=> e.handle == item.handle), 1)">
+                                <md-icon>delete</md-icon>
+                                <md-tooltip>Xoá</md-tooltip>
+                            </md-button>
                         </md-table-cell>
                     </md-table-row>
                 </md-table>
@@ -140,6 +150,10 @@
 import CourseApi from '@/api/Course/CourseApi';
 import GradeApi from '@/api/Course/GradeApi';
 import MemberApi from '@/api/MemberApi';
+
+
+// External functions
+import shortId from 'shortid';
 
 // Components
 import flatPickr from 'vue-flatpickr-component';
@@ -190,7 +204,7 @@ export default {
   data () {
       return {
         newGrade : {
-            name: '',
+            name: 'IC3/MOS 1.1',
             course_id: '',
             main_teacher_id: '',
             start_date : new Date(),
@@ -210,14 +224,11 @@ export default {
             locale: Vietnamese
           },
           multiDate : {
-            altFormat: 'l-d/m',
-            altInput: true,
             dateFormat: 'Y-m-d',
             locale: Vietnamese,
             mode: 'multiple',
-            defaultDate: [],
             inline : true,
-            showMonths : 2
+            showMonths : 2,
           },
           timeConfig : {
             enableTime: true,
@@ -235,24 +246,33 @@ export default {
     async fetchTeachers () {
         let response = await MemberApi.fetchTeachers();
         this.teachers = response.data;
+        this.newGrade.main_teacher_id = this.teachers[0]._id;
     },
     createEstimatedDate () {
         this.estimatedDate = [];
+        this.finalSchedule = [];
         let currentDate = new Date(this.newGrade.start_date);
-        this.estimatedDate.push(currentDate);
+        this.estimatedDate.push(new Date(currentDate));
         while (this.estimatedDate.length < this.newGrade.number_of_school_days) {
             currentDate = increaseDateTimeByDays(currentDate, 1);
             if (this.newGrade.school_days.indexOf(currentDate.getDay()) > -1) {
-                this.estimatedDate.push(currentDate);
+                this.estimatedDate.push(new Date(currentDate));
             }
         }
     },
     createFinalSchedule () {
         this.finalSchedule = [];
+        if (typeof this.estimatedDate == 'string') {
+            this.estimatedDate = this.estimatedDate.split(',').map(d => {
+                d = new Date(d);
+                return d;
+            });
+        }
         if (this.estimatedDate.length > 0) {
             for (let schoolDate of this.estimatedDate) {
                 let currentDate = new Date(schoolDate);
                 this.finalSchedule.push({
+                    handle  : shortId.generate(),
                     school_date : schoolDate,
                     teacher_id : this.newGrade.main_teacher_id,
                     start_hour : new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 7, 0, 0),
@@ -260,6 +280,18 @@ export default {
                 })
             }
         }
+        let self = this;
+        setTimeout(function () {
+            self.$scrollTo('#final-schedule', { container: 'body' });
+        }, 200)
+    },
+    duplicateSession (handle) {
+        let currentSchedule = this.finalSchedule;
+        let currentIndex = this.finalSchedule.findIndex(e => e.handle == handle);
+        let newSession = this.finalSchedule[currentIndex];
+        newSession.handle = shortId.generate();
+        currentSchedule.splice(currentIndex, 0, newSession);
+        this.finalSchedule = currentSchedule;
     }
   },
   components: {
@@ -268,9 +300,13 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .flatpickr-calendar.inline {
-    margin: auto;
+    width: 100% !important;
+
+    .flatpickr-rContainer {
+        margin: auto;
+    }
 }
 
 </style>
