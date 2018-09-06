@@ -4,7 +4,7 @@ let adminUrl = '/api/grade/admin'
 
 export default {
     // --------------For Admin--------------
-    fetchAllCourses (courseId) {
+    fetchAllGrades (courseId) {
         return Api().get(`${adminUrl}/${courseId}`);
     },
     createNewCourse (newGrade) {

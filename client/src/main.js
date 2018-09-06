@@ -4,9 +4,9 @@ import Vue from 'vue';
 import App from './App';
 import Toasted from 'vue-toasted';
 import VueScrollTo from 'vue-scrollto';
-const Moment = require('moment')
+const moment = require('moment');
 require('moment/locale/vi');
-Moment.locale('vi');
+moment.locale('vi');
 import { MdButton, MdIcon, MdApp, MdDrawer, MdSteppers, MdToolbar, MdMenu, MdList, MdContent, MdTable, MdAutocomplete, MdField, MdDialog, MdDialogConfirm, MdEmptyState, MdCard, MdSubheader, MdTooltip, MdRipple, MdCheckbox, MdRadio, MdDivider, MdProgress, MdAvatar } from 'vue-material/dist/components';
 import 'vue-material/dist/vue-material.min.css';
 
@@ -14,8 +14,9 @@ import router from './router';
 
 Vue.config.productionTip = false;
 Vue.use(require('vue-moment'), {
-  Moment
+  moment
 });
+
 Vue.use(Toasted);
 Vue.use(VueScrollTo);
 

@@ -57,6 +57,7 @@ export default {
     border-radius: .25rem;
     transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     overflow: hidden;
+    height: 36px;
   }
 
   .regular-input:focus {

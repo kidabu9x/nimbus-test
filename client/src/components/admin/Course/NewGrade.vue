@@ -221,7 +221,6 @@ export default {
             start_date : new Date(),
             school_days: [new Date().getDay()],
             number_of_school_days: 8,
-            end_date : null,
             school_address: 'Số 15/20 Trương Định'
         },
         estimatedDate : [],

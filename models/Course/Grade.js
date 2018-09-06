@@ -3,19 +3,15 @@ var Schema = mongoose.Schema;
 var shortId = require("shortid");
 
 var GradeSchema = new Schema(
-    {
+    {   
+        is_in_recruit : {
+            type: Boolean,
+            default: true
+        },
         name: {
             type: String,
             required: true,
             trim: true
-        },
-        start_date: {
-            type: Date,
-            default: new Date()
-        },
-        end_date: {
-            type: Date,
-            default: new Date()
         },
         course_id : {
             type: String
@@ -26,6 +22,12 @@ var GradeSchema = new Schema(
         handle: {
             type: String,
             default: shortId.generate()
+        },
+        school_days : {
+            type: Array
+        },
+        school_address : {
+            type: String
         }
     },
     {

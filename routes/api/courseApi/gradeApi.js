@@ -10,9 +10,9 @@ const Grade = require('../../../models/Course/Grade');
 // @route   GET api/course/admin
 // @desc    Get All Courses
 // @access  Public
-router.get('/admin', (req, res) => {
+router.get('/admin/:courseID', (req, res) => {
     Grade.find({
-        course_id: req.query.course_id
+        course_id: req.params.courseID
     })
         .then(grades => res.json(grades));
 });
@@ -21,11 +21,12 @@ router.get('/admin', (req, res) => {
 // @desc    Create new course
 // @access  Public
 router.post('/admin', (req, res) => {
+    let grade = req.body.newGrade;
     let newGrade = new Grade({
-        name            : req.body.name,
-        main_teacher_id : req.body.main_teacher_id,
-        start_date      : req.body.start_date,
-        end_date        : req.body.end_date
+        name            : grade.name,
+        main_teacher_id : grade.main_teacher_id,
+        school_days     : grade.school_days,
+        school_address  : grade.school_address,
     });
     newGrade.save()
         .then(grade => res.status(200).json(grade))
