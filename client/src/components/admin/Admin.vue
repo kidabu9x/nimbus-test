@@ -22,22 +22,27 @@
           <md-list-item>
             <md-icon>dashboard</md-icon>
             <span class="md-list-item-text">Bảng điều khiển</span>
+            <md-tooltip v-if="!menuVisible" md-direction="right">Bảng điều khiển</md-tooltip>
           </md-list-item>
           <md-list-item to="/admin/courses">
             <md-icon>layers</md-icon>
             <span class="md-list-item-text">Các khoá học</span>
+            <md-tooltip v-if="!menuVisible" md-direction="right">Các khoá học</md-tooltip>
           </md-list-item>
           <md-list-item to="/admin/questions">
             <md-icon >help</md-icon>
             <span class="md-list-item-text">Bộ câu hỏi</span>
+            <md-tooltip v-if="!menuVisible" md-direction="right">Bộ câu hỏi</md-tooltip>
           </md-list-item>
           <md-list-item to="/admin/tests">
             <md-icon>assignment</md-icon>
             <span class="md-list-item-text">Code kiểm tra</span>
+            <md-tooltip v-if="!menuVisible" md-direction="right">Code kiểm tra</md-tooltip>
           </md-list-item>
           <md-list-item to="/admin/members">
             <md-icon>how_to_reg</md-icon>
             <span class="md-list-item-text">Thành viên</span>
+            <md-tooltip v-if="!menuVisible" md-direction="right">Thành viên</md-tooltip>
           </md-list-item>
         </md-list>
       </md-app-drawer>
@@ -63,9 +68,9 @@ export default {
 </script>
 
 <style lang="scss">
-.md-list-item {
-  cursor: pointer;
-}
+// .md-list-item {
+//   cursor: pointer;
+// }
 .md-app.md-fixed .md-app-scroller {
   overflow-x: hidden;
 }

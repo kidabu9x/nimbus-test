@@ -7,7 +7,10 @@ export default {
     fetchAllGrades (courseId) {
         return Api().get(`${adminUrl}/${courseId}`);
     },
-    createNewCourse (newGrade) {
+    createNewGrade (newGrade) {
         return Api().post(`${adminUrl}`, newGrade);
+    },
+    countGrades (courseId) {
+        return Api().get(`${adminUrl}/${courseId}/count`);
     }
 }

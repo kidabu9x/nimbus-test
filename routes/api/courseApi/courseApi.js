@@ -15,6 +15,16 @@ router.get('/admin', (req, res) => {
         .then(courses => res.json(courses));
 });
 
+// @route   GET api/course/admin/handle
+// @desc    Get one Course by it's handle
+// @access  Public
+router.get('/admin/:handle', (req, res) => {
+    Course.findOne({
+        handle : req.params.handle
+    })
+        .then(course => res.json(course));
+});
+
 // @route   Post api/course/admin
 // @desc    Create new course
 // @access  Public

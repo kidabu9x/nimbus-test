@@ -18,6 +18,7 @@ export default {
   accent: md-get-palette-color(orange, 900) // The accent or secondary color
 ));
 
+
 @import "~vue-material/dist/theme/all"; // Apply the theme
 #app {
   font-family: Roboto, Helvetica, Arial, sans-serif;

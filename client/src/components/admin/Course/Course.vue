@@ -16,7 +16,7 @@
         </md-empty-state>
     </div>
     <div v-else class="md-layout-item md-size-100">
-        
+        <h3>Các lớp học ngày hôm nay</h3>
     </div>
   </div>
 </template>
@@ -24,6 +24,9 @@
 <script>
 // Api
 import CourseApi from '@/api/Course/CourseApi';
+import GradeApi from '@/api/Course/GradeApi';
+import LessionApi from '@/api/Course/LessionApi';
+import MemberApi from '@/api/MemberApi';
 
 // Components
 export default {
@@ -32,16 +35,31 @@ export default {
       return {
         isFetching: false,
         grades: [],
+        course : {},
+        teachers : []
       }
   },
+  beforeMount () {
+  },
   mounted () {
+    this.fetchCourseInfo();
   },
   methods: {
-    async fetchAllCourses () {
+    async fetchCourseInfo () {
+        let response = await CourseApi.fetchOneCourse(this.$route.params.handle);
+        this.course = response.data;
+        console.log(this.course);
+        this.fetchAllGrades();
+    },
+    async fetchAllGrades () {
         this.isFetching = true;
-        let response = await CourseApi.fetchAllCourses();
+        let response = await GradeApi.fetchAllGrades(this.course._id);
         this.grades = response.data;
         this.isFetching = false;
+    },
+    async fetchTeachers () {
+        let response = await MemberApi.fetchTeachers();
+        this.teachers = response.data;
     },
     async createNewCourse () {
         let course = this.newCourse;

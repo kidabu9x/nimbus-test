@@ -40,6 +40,9 @@ app.use('/api/course', course)
 const grade = require('./routes/api/courseApi/gradeApi')
 app.use('/api/grade', grade)
 
+const lession = require('./routes/api/courseApi/lessionApi')
+app.use('/api/lession', lession)
+
 // Serve static assets if in production
 if (process.env.NODE_ENV === 'production') {
   // Set static folder
