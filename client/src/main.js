@@ -7,7 +7,7 @@ import VueScrollTo from 'vue-scrollto';
 const moment = require('moment');
 require('moment/locale/vi');
 moment.locale('vi');
-import { MdButton, MdIcon, MdApp, MdDrawer, MdSteppers, MdToolbar, MdMenu, MdList, MdContent, MdTable, MdAutocomplete, MdField, MdDialog, MdDialogConfirm, MdEmptyState, MdCard, MdSubheader, MdTooltip, MdRipple, MdCheckbox, MdRadio, MdDivider, MdProgress, MdAvatar } from 'vue-material/dist/components';
+import { MdButton, MdIcon, MdApp, MdDrawer, MdSteppers, MdToolbar, MdMenu, MdList, MdContent, MdTable, MdAutocomplete, MdField, MdDialog, MdDialogConfirm, MdEmptyState, MdCard, MdSubheader, MdTooltip, MdRipple, MdCheckbox, MdRadio, MdDivider, MdProgress, MdAvatar, MdSpeedDial, MdSwitch } from 'vue-material/dist/components';
 import 'vue-material/dist/vue-material.min.css';
 
 import router from './router';
@@ -44,6 +44,8 @@ Vue.use(MdCard);
 Vue.use(MdProgress);
 Vue.use(MdSubheader);
 Vue.use(MdAvatar);
+Vue.use(MdSpeedDial);
+Vue.use(MdSwitch);
 
 /* eslint-disable no-new */
 new Vue({

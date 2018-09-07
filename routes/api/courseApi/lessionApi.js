@@ -13,7 +13,7 @@ const Lession = require('../../../models/Course/Lession');
 // @access  Public
 router.get('/admin/:gradeId', (req, res) => {
     Lession.find({
-        course_id: req.params.gradeId
+        grade_id: req.params.gradeId
     })
         .then(lessions => res.json(lessions));
 });

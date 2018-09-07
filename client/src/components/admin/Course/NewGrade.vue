@@ -358,6 +358,7 @@ export default {
             });
         }
         if (this.estimatedDate.length > 0) {
+            console.log(this.newGrade.start_date);
             for (let schoolDate of this.estimatedDate) {
                 let currentDate = new Date(schoolDate);
                 this.finalSchedule.push({
@@ -365,7 +366,7 @@ export default {
                     handle  : shortId.generate(),
                     school_date : schoolDate,
                     teacher_id : this.newGrade.main_teacher_id,
-                    start_hour : new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), new Date(this.newGrade.start_date).getHours(), 0, 0),
+                    start_hour : new Date(this.newGrade.start_date),
                     end_hour : new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), new Date(this.newGrade.start_date).getHours() + 2, 0, 0),
                 })
             }
@@ -396,7 +397,7 @@ export default {
                 this.newGrade = response.data;
                 this.creatingMsg = 'Cập nhật lịch học';
                 for (let i = 0; i < this.finalSchedule.length; i++) {
-                    this.finalSchedule[i].grade_id = this.newGrade._id
+                    this.finalSchedule[i].grade_id = this.newGrade._id;
                     var response = await LessionApi.createNewLession(this.finalSchedule[i]);
                     this.finalSchedule[i] = response.data;
                     if (i == this.finalSchedule.length - 1) {

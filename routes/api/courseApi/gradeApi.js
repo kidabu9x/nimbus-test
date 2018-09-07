@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const shortId = require('shortid');
 
 // Course Model
 const Course = require('../../../models/Course/Course');
@@ -37,7 +38,8 @@ router.post('/admin', (req, res) => {
         main_teacher_id : grade.main_teacher_id,
         school_days     : grade.school_days,
         school_address  : grade.school_address,
-        course_id       : grade.course_id
+        course_id       : grade.course_id,
+        handle          : shortId.generate()
     });
     newGrade.save()
         .then(grade => res.status(200).json(grade))
