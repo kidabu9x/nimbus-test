@@ -3,13 +3,10 @@ const path = require('path')
 const utils = require('./utils')
 const config = require('../config')
 const vueLoaderConfig = require('./vue-loader.conf')
-const vueLoaderPlugin = require('vue-loader/lib/plugin')
 
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
 }
-
-
 
 module.exports = {
   context: path.resolve(__dirname, '../'),
@@ -67,11 +64,11 @@ module.exports = {
         }
       },
       {
-        test: /\.css$/,
+        test: /\.s[a|c]ss$/,
         use: [
-            "vue-style-loader", // creates style nodes from JS strings
-            "css-loader", // translates CSS into CommonJS
-            "sass-loader" // compiles Sass to CSS, using Node Sass by default
+          'vue-style-loader',
+          'css-loader',
+          'sass-loader'
         ]
       }
     ]
@@ -87,8 +84,5 @@ module.exports = {
     net: 'empty',
     tls: 'empty',
     child_process: 'empty'
-  },
-  plugins : [
-    new vueLoaderPlugin()
-  ]
+  }
 }
