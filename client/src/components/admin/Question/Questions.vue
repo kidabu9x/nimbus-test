@@ -79,7 +79,7 @@
           <paginate
             v-model="currentPage"
             :page-count="pageCount"
-            :container-class="'pagination'"
+            container-class="pagination"
             :prev-text="'prev'"
             :next-text="'next'"
             :hide-prev-next="true"
@@ -216,7 +216,7 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style>
+<style scoped>
 .md-dialog {
   width: 80%;
 }

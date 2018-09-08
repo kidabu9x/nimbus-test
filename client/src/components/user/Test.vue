@@ -42,7 +42,7 @@
                 <div class="md-layout-item md-size-50">
                     <div class="md-layout md-gutter">
                         <div class="md-layout-item md-size-100">
-                            <md-card v-if="!showMenuQuests">
+                            <md-card v-if="!showMenuQuests" class="md-card-test">
                                 <md-card-header :class="{'is-testing': !isSubmited, 'is-correct': (currentQuest.is_match && isSubmited), 'is-uncorrect': (!currentQuest.is_match && isSubmited)}">
                                     <p>Câu {{currentIndex + 1}}/{{testQuests.length}}</p>
                                 </md-card-header>
@@ -152,7 +152,7 @@
                                     </md-button>
                                 </md-card-actions>
                             </md-card>
-                            <md-card v-else>
+                            <md-card v-else class="md-card-test">
                                 <md-card-content>
                                     <div class="md-layout md-gutter">
                                         <div class="md-layout-item md-size-100" style="border-bottom: 1px solid rgba(0,0,0,0.1)">
@@ -537,16 +537,16 @@ a {
     cursor: zoom-in;
 }
 
-.md-card.md-theme-default {
+.md-card.md-card-test.md-theme-default {
     margin-top: 30px;
 }
 
-.md-card .md-title {
+.md-card.md-card-test .md-title {
     clear: both;
     padding-top: 10px;
 }
 
-.md-card .md-card-header {
+.md-card.md-card-test .md-card-header {
     float: left;
     text-align: center;
     font-size: 18px;
@@ -557,19 +557,19 @@ a {
     padding: 5px 10px;
 }
 
-.md-card .md-card-header.is-testing {
+.md-card.md-card-test .md-card-header.is-testing {
     background: linear-gradient(60deg,#26c6da,#00acc1);
     webkit-box-shadow: 0 12px 20px -10px rgba(0,188,212,.28), 0 4px 20px 0 rgba(0,0,0,.12), 0 7px 8px -5px rgba(0,188,212,.2);
     box-shadow: 0 12px 20px -10px rgba(0,188,212,.28), 0 4px 20px 0 rgba(0,0,0,.12), 0 7px 8px -5px rgba(0,188,212,.2);
 }
 
-.md-card .md-card-header.is-correct {
+.md-card.md-card-test .md-card-header.is-correct {
     background: linear-gradient(60deg,#66bb6a,#43a047);
     -webkit-box-shadow: 0 12px 20px -10px rgba(76,175,80,.28), 0 4px 20px 0 rgba(0,0,0,.12), 0 7px 8px -5px rgba(76,175,80,.2);
     box-shadow: 0 12px 20px -10px rgba(76,175,80,.28), 0 4px 20px 0 rgba(0,0,0,.12), 0 7px 8px -5px rgba(76,175,80,.2);
 }
 
-.md-card .md-card-header.is-uncorrect {
+.md-card.md-card-test .md-card-header.is-uncorrect {
     background: linear-gradient(60deg,#ef5350,#e53935);
     -webkit-box-shadow: 0 12px 20px -10px rgba(244,67,54,.28), 0 4px 20px 0 rgba(0,0,0,.12), 0 7px 8px -5px rgba(244,67,54,.2);
     box-shadow: 0 12px 20px -10px rgba(244,67,54,.28), 0 4px 20px 0 rgba(0,0,0,.12), 0 7px 8px -5px rgba(244,67,54,.2);
