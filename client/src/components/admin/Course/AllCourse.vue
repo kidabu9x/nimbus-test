@@ -188,6 +188,6 @@ export default {
     vertical-align: top;
   }
   .md-content {
-      padding: 24px;
+    padding: 24px;
   }
 </style>
