@@ -77,21 +77,24 @@
       </div>
       <div class="md-layout-item md-size-100" style="padding-bottom: 50px;">
           <paginate
+            class="pagination"
             v-model="currentPage"
             :page-count="pageCount"
-            container-class="pagination"
             :prev-text="'prev'"
             :next-text="'next'"
             :hide-prev-next="true"
             :click-handler="goToPage"
+            :page-class="'page-item'"
+            :next-class="'page-item'"
+            :prev-class="'page-item'"
           >
           </paginate>
       </div>
     </div>
 
-    <md-dialog :md-active.sync="openCreateModal">
+    <md-dialog :md-active.sync="openCreateModal" style="width: 80%;">
       <md-dialog-title>New Question</md-dialog-title>
-      <md-content class="md-scrollbar" style="overflow-y: scroll;">
+      <md-content class="md-scrollbar" style="overflow-y: scroll; padding: 24px; padding-bottom: 0px;">
         <new-quest @close-modal="closeModal" @reload-quests="reload" ref="createQuest"></new-quest>
       </md-content>
       <md-dialog-actions>
@@ -99,9 +102,9 @@
         <md-button class="md-primary" @click="$refs.createQuest.createNewQuestion()">Create</md-button>
       </md-dialog-actions>
     </md-dialog>
-    <md-dialog :md-active.sync="openEditModal" v-if="currentQuestion">
+    <md-dialog :md-active.sync="openEditModal" v-if="currentQuestion" style="width: 80%;">
       <md-dialog-title>Edit Question</md-dialog-title>
-      <md-content class="md-scrollbar" style="overflow-y: scroll;">
+      <md-content class="md-scrollbar"  style="overflow-y: scroll; padding: 24px; padding-bottom: 0px;">
         <edit-quest :question="currentQuestion" @close-modal="closeModal" @reload-quests="reload" ref="editQuest"></edit-quest>
       </md-content>
       <md-dialog-actions>
@@ -216,14 +219,8 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-.md-dialog {
-  width: 80%;
-}
-.md-content {
-  padding: 24px;
-  padding-bottom: 0px;
-}
+
+<style lang="scss">
 .question-content {
   max-width: 250px;
 }
@@ -232,29 +229,33 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
 ul.pagination {
   display: block;
   list-style: none;
   text-align: right;
   padding-right: 48px; 
-}
-ul.pagination li{
-  display: inline-block;
-  padding: 5px;
-  transition: all .3s;
-}
-ul.pagination li a{
-  color: #636e72 !important;
-  transition: all .3s;
+
+  .page-item{
+    display: inline-block;
+    padding: 5px;
+    transition: all .3s;
+  }
+  .page-item a{
+    color: #636e72 !important;
+    transition: all .3s;
+  }
+
+  .page-item.active a{
+    color: #448AFF !important;
+    font-size: 18px;
+  }
+
+  .page-item a:focus{
+    outline: none;
+  }
 }
 
-ul.pagination li.active a{
-  color: #448AFF !important;
-  font-size: 18px;
-}
-ul.pagination li a:focus{
-  outline: none;
-}
 .md-list-item {
   display: block;
 }
