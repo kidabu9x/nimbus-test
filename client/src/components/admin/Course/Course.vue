@@ -18,11 +18,69 @@
     <div v-if="!isFetching && grades.length > 0" class="md-layout-item md-size-100">
         <div class="md-layout md-gutter">
             <div class="md-layout-item md-size-100">
-                <h2 style="text-align: center;">Các lớp sắp khai giảng</h2>
-                <div v-if="isCheckingOpenning" class="md-layout-item md-size-100" style="text-align: center;">
+                <h2 style="text-align: center; margin: 24px 0;">
+                    Các lớp học ngày hôm nay - {{ new Date() | moment('dddd, DD/MM')}}
+                </h2>
+                <div v-if="isCheckingToday" class="md-layout-item md-size-100" style="text-align: center; margin: 36px 0;">
                     <md-progress-spinner class="md-accent" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
                 </div>
-                <div v-if="!isCheckingOpenning && openningGrades.length == 0" class="md-layout-item md-size-100" style="text-align: center;">
+                <div v-if="!isCheckingToday && todayLessions.length == 0" class="md-layout-item md-size-100" style="text-align: center; margin: 36px 0;">
+                    Không có lớp học nào ngày hôm nay
+                </div>
+                <div v-if="!isCheckingToday && todayLessions.length > 0" class="md-layout-item md-size-100" style="margin: 24px 0;">
+                    <md-table v-model="todayLessions">
+                        <md-table-empty-state
+                            md-label="No lession found"
+                        >
+                        </md-table-empty-state>
+                        <md-table-row slot="md-table-row" slot-scope="{ item }">
+                            <md-table-cell md-label="Name" md-sort-by="name">
+                                {{ item.name }}
+                            </md-table-cell>
+                            <md-table-cell md-label="Code">
+                                {{ item.handle }}
+                            </md-table-cell>
+                            <md-table-cell md-label="Giảng viên">
+                                {{getFullTeacherName(item.lessions[0].teacher_id)}}
+                            </md-table-cell>
+                            <md-table-cell md-label="Buổi số">
+                                {{item.lessions[0].index + 1}}/{{item.lessions.length}}
+                            </md-table-cell>
+                            <md-table-cell md-label="Giờ học">
+                                {{item.lessions[0].start_hour | moment('HH:mm')}} - {{item.lessions[0].end_hour | moment('HH:mm')}}
+                            </md-table-cell>
+                            <md-table-cell md-label="Phòng học">
+                                2.1
+                            </md-table-cell>
+                            <md-table-cell md-label="Trạng thái">
+                                <md-button class="md-icon-button md-primary">
+                                    <md-icon>assignment_turned_in</md-icon>
+                                    <md-tooltip>
+                                        Điểm danh
+                                    </md-tooltip>
+                                </md-button>
+                                <md-button class="md-icon-button">
+                                    <md-icon>assignment_late</md-icon>
+                                    <md-tooltip>
+                                        Nghỉ
+                                    </md-tooltip>
+                                </md-button>
+                            </md-table-cell>
+                        </md-table-row>
+                    </md-table>
+                </div>
+            </div>
+            <div class="md-layout-item md-size-100">
+                <md-divider></md-divider>
+            </div>
+            <div class="md-layout-item md-size-100">
+                <h2 style="text-align: center; margin: 24px 0;">
+                    Các lớp sắp khai giảng
+                </h2>
+                <div v-if="isCheckingOpenning" class="md-layout-item md-size-100" style="text-align: center; margin: 36px 0;">
+                    <md-progress-spinner class="md-accent" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
+                </div>
+                <div v-if="!isCheckingOpenning && openningGrades.length == 0" class="md-layout-item md-size-100" style="text-align: center; margin: 36px 0;">
                     Không có lớp nào. Tuyển sinh khoá mới đi !
                 </div>
                 <div v-if="!isCheckingOpenning && openningGrades.length > 0" class="md-layout-item md-size-100" v-for="i in Math.ceil(openningGrades.length/3)" :key="i" style="margin: 10px 0;">
@@ -36,7 +94,8 @@
                                                 {{grade.name}}
                                             </div>
                                             <div class="md-layout-item md-size-50" style="text-align: right;">
-                                                <md-switch class="md-primary" v-model="grade.is_in_recruit"></md-switch>
+                                                <md-switch class="md-primary" v-model="grade.is_in_recruit" :title="grade.is_in_recruit ? 'Đang mở đăng kí' : 'Đóng đăng kí'">
+                                                </md-switch>
                                             </div>
                                         </div>
                                     </div>
@@ -65,64 +124,22 @@
                 </div>
             </div>
             <div class="md-layout-item md-size-100">
-                <md-divider></md-divider>
-            </div>
-            <div class="md-layout-item md-size-100">
-                <h2 style="text-align: center;">Các lớp học ngày hôm nay - {{ new Date() | moment('dddd, DD/MM')}}</h2>
-                <div v-if="isCheckingToday" class="md-layout-item md-size-100" style="text-align: center;">
-                    <md-progress-spinner class="md-accent" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
-                </div>
-                <div v-if="!isCheckingToday && todayLessions.length == 0" class="md-layout-item md-size-100" style="text-align: center;">
-                    Không có lớp học nào ngày hôm nay
-                </div>
-                <div v-if="!isCheckingToday && todayLessions.length > 0" v-for="i in Math.ceil(todayLessions.length/3)" :key="i" class="md-layout-item md-size-100" style="margin: 10px 0;">
-                    <div class="md-layout md-gutter">
-                        <md-card v-for="grade in todayLessions.slice((i - 1) * 3, i * 3)" :key="grade._id" class="md-layout-item md-size-30">
-                            <md-card-header>
-                                <div class="md-title">
-                                    {{grade.name}}
-                                </div>
-                            </md-card-header>
-                            <md-card-content>
-                                <md-list>
-                                    <md-list-item>
-                                        <md-icon>person</md-icon>
-                                        <span class="md-list-item-text">
-                                            {{getFullTeacherName(grade.lessions[0].teacher_id)}}
-                                        </span>
-                                    </md-list-item>
-                                    <md-list-item>
-                                        <md-icon>schedule</md-icon>
-                                        <span class="md-list-item-text">{{grade.lessions[0].start_hour | moment('HH:mm')}} - {{grade.lessions[0].end_hour | moment('HH:mm')}}</span>
-                                    </md-list-item>
-                                    <md-list-item>
-                                        <md-icon>code</md-icon>
-                                        <span class="md-list-item-text">
-                                            Code : {{grade.handle}}
-                                        </span>
-                                    </md-list-item>
-                                </md-list>
-                            </md-card-content>
-                            <md-card-actions>
-                                <md-button>
-                                    Nghỉ
-                                </md-button>
-                                <md-button class="md-primary">
-                                    Điểm danh
-                                </md-button>
-                            </md-card-actions>
-                        </md-card>
-                    </div>
-                </div>
-            </div>
-            <div class="md-layout-item md-size-100">
-                <router-link :to="{path: `${$route.params.handle}/new`}">
-                    <md-speed-dial class="md-bottom-right" style="margin: 24px 10px;" md-direction="bottom">
-                        <md-speed-dial-target>
-                            <md-icon>add</md-icon>
-                        </md-speed-dial-target>
-                    </md-speed-dial>
-                </router-link>
+                <md-speed-dial class="md-bottom-right" style="margin: 24px 10px;" md-direction="top">
+                    <md-speed-dial-target>
+                        <md-icon>my_location</md-icon>
+                    </md-speed-dial-target>
+                    <md-speed-dial-content>
+                        <router-link :to="{path: `${$route.params.handle}/new`}">
+                            <md-button class="md-icon-button">
+                                <md-icon>add</md-icon>
+                                <md-tooltip>Thêm khóa học</md-tooltip>
+                            </md-button>
+                        </router-link>
+                            <md-button class="md-icon-button">
+                                <md-icon>event</md-icon>
+                            </md-button>
+                    </md-speed-dial-content>
+                </md-speed-dial>
             </div>
         </div>
     </div>
@@ -183,12 +200,19 @@ export default {
                 if (new Date(openningDate).getTime() > today) {
                     this.openningGrades.push(grade);
                 }
-                let todayLession = grade.lessions.find(e => {
+                let indexLession;
+                let todayLession = grade.lessions.find((e,index) => {
                     let compareDate = new Date(e.school_date).setHours(0,0,0,0);
-                    return new Date(compareDate).getTime() == today;
+                    if (new Date(compareDate).getTime() == today) {
+                        indexLession = index;
+                        return true;
+                    } else {
+                        return false;
+                    }
                 });
                 if (todayLession) {
                     grade.lessions[0] = todayLession;
+                    grade.lessions[0].index = indexLession;
                     this.todayLessions.push(grade);
                 }
             }
