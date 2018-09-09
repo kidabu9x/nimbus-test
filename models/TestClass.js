@@ -10,19 +10,11 @@ var TestSchema = new Schema(
         name: {
             type: String
         },
-        teacherId: {
-            type: String,
-            default: null
-        },
-        teacher_name: {
+        teacher_id: {
             type: String
         },
         handle: {
             type: String
-        },
-        module: {
-            type: Number,
-            default: 1
         },
         time: {
             type: Number,
@@ -31,10 +23,6 @@ var TestSchema = new Schema(
         number_of_students: {
             type: Number,
             default: 10
-        },
-        results: {
-            type: Array,
-            default: []
         }
     }, 
     {

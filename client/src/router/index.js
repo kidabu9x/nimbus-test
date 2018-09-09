@@ -10,7 +10,8 @@ import ExamSchedules from '@/components/admin/ExamSchedule/Schedule'
 import Member from '@/components/admin/Member/Members'
 import AllCourse from '@/components/admin/Course/AllCourse'
 import Course from '@/components/admin/Course/Course'
-import NewGrade from '@/components/admin/Course/NewGrade';
+import Grade from '@/components/admin/Course/Grade'
+import NewGrade from '@/components/admin/Course/NewGrade'
 import Dev from '@/components/Dev/Dev'
 // User component
 import User from '@/components/user/User'
@@ -72,6 +73,10 @@ export default new Router({
         {
           path: 'courses/:handle/new',
           component: NewGrade
+        },
+        {
+          path: 'courses/:handle/:gradeHandle',
+          component: Grade
         }
       ]
     }

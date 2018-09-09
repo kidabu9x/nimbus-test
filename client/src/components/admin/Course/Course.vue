@@ -44,7 +44,10 @@
                                 {{getFullTeacherName(item.lessions[0].teacher_id)}}
                             </md-table-cell>
                             <md-table-cell md-label="Buổi số">
-                                {{item.lessions[0].index + 1}}/{{item.lessions.length}}
+                                <span v-if="item.lessions[0].index == 0">Khai giảng</span>
+                                <span v-else>
+                                    {{item.lessions[0].index + 1}}/{{item.lessions.length}}
+                                </span>
                             </md-table-cell>
                             <md-table-cell md-label="Giờ học">
                                 {{item.lessions[0].start_hour | moment('HH:mm')}} - {{item.lessions[0].end_hour | moment('HH:mm')}}
@@ -53,12 +56,14 @@
                                 2.1
                             </md-table-cell>
                             <md-table-cell md-label="Trạng thái">
-                                <md-button class="md-icon-button md-primary">
-                                    <md-icon>assignment_turned_in</md-icon>
-                                    <md-tooltip>
-                                        Điểm danh
-                                    </md-tooltip>
-                                </md-button>
+                                <router-link :to="{path: `${$route.params.handle}/${item.handle}`}">
+                                    <md-button class="md-icon-button md-primary">
+                                        <md-icon>assignment_turned_in</md-icon>
+                                        <md-tooltip>
+                                            Điểm danh
+                                        </md-tooltip>
+                                    </md-button>
+                                </router-link>
                                 <md-button class="md-icon-button">
                                     <md-icon>assignment_late</md-icon>
                                     <md-tooltip>
@@ -110,6 +115,12 @@
                                     <md-list-item>
                                         <md-icon>event</md-icon>
                                         <span class="md-list-item-text">{{grade.lessions[0].start_hour | moment('HH:mm')}} - {{grade.lessions[0].end_hour | moment('HH:mm')}} | {{grade.lessions[0].school_date | moment('dddd - DD/MM')}}</span>
+                                    </md-list-item>
+                                    <md-list-item>
+                                        <md-icon>person</md-icon>
+                                        <span class="md-list-item-text">
+                                            {{getFullTeacherName(grade.lessions[0].teacher_id)}}
+                                        </span>
                                     </md-list-item>
                                     <md-list-item>
                                         <md-icon>location_on</md-icon>
@@ -168,11 +179,11 @@ export default {
         isCheckingToday : true
       }
   },
-  beforeMount () {
+  created () {
+    this.fetchTeachers();
   },
   mounted () {
     this.fetchCourseInfo();
-    this.fetchTeachers();
   },
   methods: {
     async fetchCourseInfo () {
@@ -188,39 +199,77 @@ export default {
         this.isFetching = false;
     },
     async fetchLessions () {
-        let today = new Date().setHours(0,0,0,0);
-        today = new Date(today).getTime();
+        let todayCurrent = new Date().getTime();
+        let todayMidnight = new Date().setHours(0,0,0,0);
+        todayMidnight = new Date(todayMidnight).getTime();
         let i = this.grades.length;
         for (let grade of this.grades) {
             let response = await LessionApi.fetchAllLessions(grade._id);
+            grade.lessions = response.data;
             i--;
-            if (response.data.length > 0) {
-                grade.lessions = response.data;
-                let openningDate = new Date(grade.lessions[0].school_date).setHours(0,0,0,0);
-                if (new Date(openningDate).getTime() > today) {
-                    this.openningGrades.push(grade);
-                }
-                let indexLession;
-                let todayLession = grade.lessions.find((e,index) => {
-                    let compareDate = new Date(e.school_date).setHours(0,0,0,0);
-                    if (new Date(compareDate).getTime() == today) {
-                        indexLession = index;
-                        return true;
-                    } else {
-                        return false;
-                    }
-                });
-                if (todayLession) {
-                    grade.lessions[0] = todayLession;
-                    grade.lessions[0].index = indexLession;
-                    this.todayLessions.push(grade);
-                }
-            }
             if (i == 0) {
-                this.isCheckingOpenning = false;
-                this.isCheckingToday = false;
+                let checkGrades = JSON.parse(JSON.stringify(this.grades));
+                checkGrades = await this.checkTodayLession(checkGrades);
+                checkGrades = await this.checkOpenning(checkGrades);
             }
         }
+    },
+    async checkOpenning (grades) {
+        return new Promise(resolve => {
+            let todayCurrent = new Date().getTime();
+            let unUsed = [];
+            for (let i = 0; i < grades.length; i++) {
+                let grade = grades[i];
+                if (grade.lessions.length > 0) {
+                    let openningDate = new Date(grade.lessions[0].start_hour);
+                    if (new Date(openningDate).getTime() > todayCurrent) {
+                        this.openningGrades.push(grade);
+                    } else {
+                        unUsed.push(grade);
+                    }
+                }
+                if (i == grades.length - 1) {
+                    this.isCheckingOpenning = false;
+                    resolve(unUsed);
+                }
+            }
+        });
+        
+    },
+    checkTodayLession (grades) {
+        return new Promise(resolve => {
+            let unUsed = [];
+            let todayMidnight = new Date().setHours(0,0,0,0);
+            todayMidnight = new Date(todayMidnight).getTime();
+            for (let i = 0; i < grades.length; i++) {
+                let grade = grades[i];
+                if (grade.lessions.length > 0) {
+                    let indexLession;
+                    let todayLession = grade.lessions.find((e,index) => {
+                        let compareDate = new Date(e.school_date).setHours(0,0,0,0);
+                        if (new Date(compareDate).getTime() == todayMidnight) {
+                            indexLession = index;
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    });
+                    if (todayLession) {
+                        grade.lessions[0] = todayLession;
+                        grade.lessions[0].index = indexLession;
+                        this.todayLessions.push(grade);
+                    } else {
+                        unUsed.push(grade);
+                    }
+                }
+                if (i == grades.length - 1) {
+                    this.isCheckingToday = false;
+                    resolve(unUsed);
+                }
+            }
+        });
+        
+        
     },
     async fetchTeachers () {
         let response = await MemberApi.fetchTeachers();

@@ -8,12 +8,15 @@ const Grade = require('../../../models/Course/Grade');
 // Test Result Model
 
 // ----------------------------------API for admin----------------------------
-// @route   GET api/grade/admin
+// @route   GET api/grade/admin/fetch-all/:courseId
 // @desc    Get All Grades of course
 // @access  Public
-router.get('/admin/:courseId', (req, res) => {
+router.get('/admin/fetch-all/:courseId', (req, res) => {
     Grade.find({
         course_id: req.params.courseId
+    })
+    .sort({
+        "start_hour" : 1
     })
         .then(grades => res.json(grades));
 });
@@ -26,6 +29,16 @@ router.get('/admin/:courseId/count', (req, res) => {
         course_id: req.params.courseId
     })
         .then(count => res.json(count));
+});
+
+// @route   GET api/grade/admin/fetch-one/:gradeId
+// @desc    Count Grade of course
+// @access  Public
+router.get('/admin/fetch-one/:gradeHandle', (req, res) => {
+    Grade.findOne({
+        handle: req.params.gradeHandle
+    })
+        .then(grade => res.json(grade));
 });
 
 // @route   Post api/grade/admin

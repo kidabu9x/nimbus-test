@@ -4,18 +4,14 @@
             <div class="md-layout md-gutter">
                 <div class="md-layout md-gutter">
                     <div class="md-layout-item md-size-30">
-                        <h5>Teacher</h5>
+                        <h5>Giảng viên</h5>
                     </div>
                     <div class="md-layout-item md-size-70">
                         <md-field>
-                            <md-select v-model="newTest.teacher_name" placeholder="Teacher">
-                                <md-option value="Dương Đẹp Trai">Dương Đẹp Trai</md-option>
-                                <md-option value="Huy Nguyễn">Huy Nguyễn</md-option>
-                                <md-option value="Huy Đỗ">Huy Đỗ</md-option>
-                                <md-option value="Quân">Quân</md-option>
-                                <md-option value="Nhất">Nhất</md-option>
-                                <md-option value="Trưởng">Trưởng</md-option>
-                                <md-option value="Khoa">Khoa</md-option>
+                            <md-select v-model="newTest.teacher_id" placeholder="Teacher">
+                                <md-option v-for="teacher in teachers" :key="teacher._id" :value="teacher._id">
+                                    {{teacher.first_name}} {{teacher.last_name}}
+                                </md-option>
                             </md-select>
                         </md-field>
                     </div>
@@ -27,7 +23,7 @@
             <div class="md-layout md-gutter">
                 <div class="md-layout md-gutter">
                     <div class="md-layout-item md-size-30">
-                        <h5>Name</h5>
+                        <h5>Tên lớp</h5>
                     </div>
                     <div class="md-layout-item md-size-70">
                         <md-field>
@@ -45,23 +41,40 @@ import TestApi from "@/api/TestApi";
 
 export default {
   name: "test",
+  props: ['teachers'],
   data() {
     return {
       newTest: {
-        teacher_name: null,
+        teacher_id: null,
         name: 'New Test',
-        module: 1,
         time: 30,
-        number_of_students: 10
+        number_of_students: 10,
       }
     };
   },
+  mounted () {
+  },
   methods: {
     async createNewTestClass () {
-        let response = await TestApi.createNewTestClass(this.newTest);
-        this.noticeSuccess(`Create '${response.data.name}' success`);
-        this.$emit('reload-test');
-        this.$emit('close-modal');
+        let test = this.newTest;
+        let err = this.checkTest(test);
+        if (err) {
+            this.noticeError(err);
+        } else {
+            let response = await TestApi.createNewTestClass(this.newTest);
+            this.noticeSuccess(`Create '${response.data.name}' success`);
+            this.$emit('reload-test');
+            this.$emit('close-modal');
+        }
+    },
+    checkTest(test) {
+        if (test.name == '') {
+            return 'Tên lớp test không được bỏ trống !';
+        }
+        if (!test.teacher_id) {
+            return 'Ơ kìa, chọn Giảng Viên đi ?'
+        }
+        return null;
     },
     noticeError (msg) {
         this.$toasted.show(msg, {

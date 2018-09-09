@@ -287,9 +287,9 @@ export default {
         dayOfWeeks : dayOfWeeks,
         datePickrConfigs :{
           basic : {
-            altFormat: 'l-d/m',
+            altFormat: 'l-d/m H:i',
             altInput: true,
-            dateFormat: 'Y-m-d',
+            dateFormat: 'Y-m-d H:i',
             locale: Vietnamese,
             enableTime: true,
             time_24hr: true
@@ -302,9 +302,11 @@ export default {
             showMonths : 2,
           },
           timeConfig : {
+            altInput: true,
+            altFormat: 'H:i',
             enableTime: true,
             noCalendar: true,
-            dateFormat: "H:i",
+            dateFormat: "Y-m-d H:i",
             time_24hr: true,
             locale: Vietnamese
           }
