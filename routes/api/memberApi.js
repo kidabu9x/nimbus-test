@@ -45,7 +45,7 @@ router.put('/admin', (req, res) => {
     .then(member => {
         member.username        = req.body.username,
         member.email           = req.body.email,
-        member.password        = req.body.password,
+        member.password        = req.body.password ? req.body.password : 'nimbus123',
         member.phone           = req.body.phone,
         member.identity        = req.body.identity,
         member.first_name      = req.body.first_name,
@@ -75,6 +75,23 @@ router.delete('/admin/:id', (req, res) => {
     Member.findById(req.params.id)
     .then(member => member.remove().then(() => res.json({ success: true })))
     .catch(err => res.status(404).json({ success: false }));
+});
+
+// @route   GET api/member/admin/check-member?email=memberEmail
+// @desc    Check A Member Exist
+// @access  Public
+router.get('/admin/check-member', (req, res) => {
+    Member.findOne({
+        email : req.query.email
+    })
+    .then(member => {
+        if (member) {
+            res.json({ is_match: true, member: member });
+        } else {
+            res.json({ is_match: false });
+        }
+    })
+    .catch(err => res.json({ is_match: false }));
 });
 
 

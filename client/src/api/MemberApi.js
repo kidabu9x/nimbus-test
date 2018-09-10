@@ -18,5 +18,8 @@ export default {
     },
     fetchTeachers() {
         return Api().get(`${adminUrl}/teachers`);
+    },
+    checkMemberExist (memberEmail) {
+        return Api().get(`${adminUrl}/check-member?email=${memberEmail}`);
     }
 }

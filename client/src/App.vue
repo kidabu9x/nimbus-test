@@ -27,9 +27,9 @@ export default {
   color: #2c3e50;
 }
 .md-dialog {
-  -webkit-font-smoothing: antialiased;
-  -webkit-filter: blur(0.00001px);
-  filter: blur(0.00001px);
+  // -webkit-font-smoothing: antialiased;
+  // -webkit-filter: blur(0.00001px);
+  // filter: blur(0.00001px);
 }
 
 .regular-input-wrapper {

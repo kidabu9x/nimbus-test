@@ -1,6 +1,6 @@
 <template>
   <div class="test md-scrollbar">
-    <div v-if="username">
+    <div v-if="startTest">
         <div class="loading" v-if="creatingExam">
             <breeding-rhombus-spinner
                 :animation-duration="2000"
@@ -15,7 +15,7 @@
                         <h3 v-if="settings != null" class="md-title" style="color: #fff;">{{settings.name}} - Module {{module}}</h3>
                     </div>
                     <div class="md-layout-item">
-                        <h3 class="md-title" style="color: #fff; text-align: center;">{{username}}</h3>
+                        <h3 class="md-title" style="color: #fff; text-align: center;">{{user.last_name}}</h3>
                     </div>
                     <div class="md-layout-item">
                         <countdown :time="settings.time*60*1000" :auto-start="false" ref="countdown">
@@ -238,14 +238,13 @@
     <md-dialog :md-active.sync="showStepper" :md-click-outside-to-close="false">
       <md-content style="padding: 25px; width: 600px;">
         <md-steppers :md-active-step.sync="stepActive" md-linear>
-            <md-step id="firstStep" md-label="Nhập tên" :md-done.sync="firstStep">
+            <md-step id="firstStep" md-label="Nhập email" :md-done.sync="firstStep">
                 <md-field>
-                    <label>Nhập tên của bạn vào đây nhé ^^</label>
-                    <md-input v-model="inputName"></md-input>
+                    <label>Nhập email của bạn vào đây nhé</label>
+                    <md-input v-model="user.email"></md-input>
                 </md-field>
-                <md-button style="float: right;" v-if="inputName" class="md-raised md-primary" @click="setDone('firstStep', 'secondStep')">Tiếp tục</md-button>
+                <md-button style="float: right;" v-if="validateEmail(user.email)" class="md-raised md-primary" @click="setDone('firstStep', 'secondStep')">Tiếp tục</md-button>
             </md-step>
-
             <md-step id="secondStep" md-label="Nhập code" :md-done.sync="secondStep">
                 <div class="md-layout md-gutter">
                     <div class="md-layout-item">
@@ -271,7 +270,10 @@
                     </div>
                 </div>
             </md-step>
-            <md-step v-if="codeIsMatch" id="thirdStep" md-label="Chọn module" :md-done.sync="thirdStep">
+            <md-step v-if="codeIsMatch && isNewUser" id="thirdStep" md-label="Tạo tài khoản" :md-done.sync="thirdStep">
+                <h3>Chào người mới :D</h3>
+            </md-step>
+            <md-step v-if="codeIsMatch && user && user._id" id="fourthStep" md-label="Chọn module" :md-done.sync="fourthStep">
                 <div class="md-layout md-gutter">
                     <div class="md-layout-item">
                         <md-button class="md-primary" @click="beginTest(1)">
@@ -300,6 +302,7 @@
 // Api
 import TestApi from '@/api/TestApi';
 import QuestionApi from '@/api/QuestionApi';
+import MemberApi from '@/api/MemberApi';
 
 // Components
 import 'epic-spinners/dist/lib/epic-spinners.min.css';
@@ -318,14 +321,21 @@ export default {
       firstStep: false,
       secondStep: false,
       thirdStep: false,
+      fourthStep: false,
       stepActive: 'firstStep',
-      inputName: null,
+      inputEmail: null,
       code: null,
       isCheckingCode: false,
       codeIsMatch: false,
-      username: null,
+      isNewUser : false,
+      user: {
+        email: '',
+        first_name: '',
+        last_name: ''
+      },
       settings: null,
       creatingExam: false,
+      startTest: false,
       testQuests: [],
       module: null,
       currentQuest: null,
@@ -357,15 +367,25 @@ export default {
             this.settings = response.data;
             this.isCheckingCode = false;
             this.codeIsMatch = true;
+            this.checkUser();
+        }
+    },
+    async checkUser() {
+        let response = await MemberApi.checkMemberExist(this.user.email);
+        console.log(response);
+        if (response.data.is_match) {
+            this.user = response.data.member;
+            this.setDone('secondStep', 'fourthStep');
+        } else {
+            this.isNewUser = true;
             this.setDone('secondStep', 'thirdStep');
         }
     },
     beginTest (module) {
-        this.username = this.inputName;
-        // this.username = "Dương đẹp trai";
         this.module = module;
         this.showStepper = false;
         this.creatingExam = true;
+        this.startTest = true;
         this.createExam(module);
     },
     async createExam (module) {
@@ -419,22 +439,26 @@ export default {
       this.isSubmitting = true;
       let self = this;
       this.answeredQuests.forEach((quest, index, arr) => {
-          checkQuest(quest);
-          async function checkQuest(quest) {
+        checkQuest(quest);
+        async function checkQuest(quest) {
             let response = await QuestionApi.checkQuest(quest);
             quest.is_match = response.data.is_match;
             quest.answers = response.data.answers;
             if (quest.is_match) {
-              self.totalCorrect += 1;
+                self.totalCorrect += 1;
             }
             arr[index] = quest;
             if (index == self.testQuests.length - 1) {
                 self.isSubmitting = false;
-                TestApi.createNewAnswer(self.code, self.username, self.module, self.totalCorrect, self.answeredQuests.length);
+                TestApi.createNewAnswer(self.code, self.user._id, self.module, self.totalCorrect, self.answeredQuests.length);
             }
-          }
+        }
       })
       self.isSubmited = true;
+    },
+    validateEmail(email) {
+        var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(email);
     },
     getClass (question) {
         if (this.isSubmited) {
