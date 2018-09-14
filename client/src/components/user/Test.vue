@@ -1,6 +1,74 @@
 <template>
   <div class="test md-scrollbar">
-    <div v-if="startTest">
+    <div class="md-layout-item md-size-100" style="position: fixed; left: 0; top: 0; width: 100vw; height: 100vh; background-color: white; display: flex;">
+        <md-card style="margin: auto; width: 450px;">
+            <md-card-content class="md-layout md-gutter" style="padding: 20px 40px;">
+                <div class="md-layout-item md-size-100" style="text-align: center;">
+                    <img src="../../assets/nimbus_logo.png" width="100px">
+                </div>
+                <form v-if="!isNewUser && !user._id" @submit.prevent="validateUser">
+                    <div class="md-layout-item md-size-100" style="text-align: center;">
+                        <h3 style="margin-bottom: 0;">Đăng nhập</h3>
+                        <p style="margin-top: 3px;">Với tài khoản tại Nimbus</p>
+                    </div>
+                    <div class="md-layout-item md-size-100">
+                        <md-field
+                            :class="{
+                                'md-invalid': emailInValid
+                            }"
+                        >
+                            <label>Email</label>
+                            <md-input v-model="user.email" type="email" :readonly="isChecking"></md-input>
+                            <span class="md-error">Địa chỉ email không hợp lệ</span>
+                        </md-field>
+                    </div>
+                    <div class="md-layout-item md-size-100">
+                        <p class="md-subhead">Nếu chưa có tài khoản tại Nimbus, bạn sẽ cần bổ sung thông tin ở bước tiếp theo nhé.</p>
+                    </div>
+                    <div class="md-layout-item md-size-100" style="text-align: right; margin: 20px 0;">
+                        <md-button class="md-raised md-primary md-elevation-0 md-dense" @click="validateUser" :disabled="isChecking">
+                            Tiếp theo
+                        </md-button>
+                    </div>
+                </form>
+                <form v-if="!isNewUser && user._id" @click="validateCode" style="width: 100%;">
+                    <div class="md-layout-item md-size-100" style="text-align: center;">
+                        <h3 style="margin-bottom: 0;">{{user.first_name}} {{user.last_name}}</h3>
+                        <div style="margin: 10px 0;">
+                            <md-chip style=" box-shadow: none; background-color: white; border: 1px solid rgba(0,0,0, .12);">
+                                <md-avatar class="md-small" style="padding: 0; margin: -3px 4px 2px -8px;">
+                                    <img :src="'../assets/img/ava_default.png'">
+                                    <!-- <img :src="user.avatar_url != '' ? user.avatar : 'https://pixabay.com/photo-1577909/'"> -->
+                                </md-avatar>
+                                {{user.email}}
+                            </md-chip>
+                        </div>
+                    </div>
+                    <div class="md-layout-item md-size-100">
+                        <md-field
+                            :class="{
+                                'md-invalid': codeInvalid
+                            }"
+                        >
+                            <label>Code</label>
+                            <md-input v-model="code" type="text" :readonly="isChecking"></md-input>
+                            <span class="md-error">Mã code không hợp lệ</span>
+                        </md-field>
+                    </div>
+                    <div class="md-layout-item md-size-100">
+                        <p class="md-subhead">Mã code bao gồm 9 kí tự và được cung cấp bởi Giảng viên/Admin tại Nimbus.</p>
+                    </div>
+                    <div class="md-layout-item md-size-100" style="text-align: right; margin: 20px 0;">
+                        <md-button class="md-raised md-primary md-elevation-0 md-dense" @click="validateCode" :disabled="isChecking">
+                            Tiếp theo
+                        </md-button>
+                    </div>
+                </form>
+            </md-card-content>
+            <md-progress-bar md-mode="indeterminate" v-if="isChecking" />
+        </md-card>
+    </div>
+    <!-- <div v-if="startTest">
         <div class="loading" v-if="creatingExam">
             <breeding-rhombus-spinner
                 :animation-duration="2000"
@@ -294,7 +362,7 @@
             </md-step>
         </md-steppers>
       </md-content>
-    </md-dialog>
+    </md-dialog> -->
   </div>
 </template>
 
@@ -317,6 +385,17 @@ export default {
   name: 'Test',
   data () {
     return {
+      isChecking: false,
+      user: {
+        _id: null,
+        email: '',
+        first_name: '',
+        last_name: ''
+      },
+      emailInValid: false,
+      isNewUser : false,
+      code: null,
+      codeInvalid: false,
       showStepper: true,
       firstStep: false,
       secondStep: false,
@@ -324,15 +403,8 @@ export default {
       fourthStep: false,
       stepActive: 'firstStep',
       inputEmail: null,
-      code: null,
-      isCheckingCode: false,
+      
       codeIsMatch: false,
-      isNewUser : false,
-      user: {
-        email: '',
-        first_name: '',
-        last_name: ''
-      },
       settings: null,
       creatingExam: false,
       startTest: false,
@@ -370,16 +442,34 @@ export default {
             this.checkUser();
         }
     },
-    async checkUser() {
-        let response = await MemberApi.checkMemberExist(this.user.email);
-        console.log(response);
-        if (response.data.is_match) {
-            this.user = response.data.member;
-            this.setDone('secondStep', 'fourthStep');
+    async validateUser() {
+        
+        // if (response.data.is_match) {
+        //     this.user = response.data.member;
+        //     this.setDone('secondStep', 'fourthStep');
+        // } else {
+        //     this.isNewUser = true;
+        //     this.setDone('secondStep', 'thirdStep');
+        // }
+        if (!this.validateEmail(this.user.email)) {
+            this.emailInValid = true;
         } else {
-            this.isNewUser = true;
-            this.setDone('secondStep', 'thirdStep');
+            this.emailInValid = false;
+            this.isChecking = true;
+            let response = await MemberApi.checkMemberExist(this.user.email);
+            console.log(response);
+            if (response.data.is_match) {
+                this.user = response.data.member;
+            }
+            this.isChecking = false;
         }
+    },
+    validateEmail(email) {
+        var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(email);
+    },
+    async validateCode () {
+
     },
     beginTest (module) {
         this.module = module;
@@ -455,10 +545,6 @@ export default {
         }
       })
       self.isSubmited = true;
-    },
-    validateEmail(email) {
-        var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return re.test(email);
     },
     getClass (question) {
         if (this.isSubmited) {
@@ -609,5 +695,12 @@ a {
 }
 .word-box-drag {
   cursor: all-scroll;
+}
+
+.md-progress-bar {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
 }
 </style>
