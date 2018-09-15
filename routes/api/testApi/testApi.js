@@ -100,7 +100,7 @@ router.get('/:code', (req, res) => {
         handle: req.params.code
     }).then(testSettings => {
         if (!testSettings) {
-            res.json({error: 'Sai mã code !'});
+            res.json({error: 'Sai mã code'});
         }
         else if (!testSettings.active) {
             res.json({error: 'Code chưa được kích hoạt !'})

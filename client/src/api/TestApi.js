@@ -27,12 +27,12 @@ export default {
     checkCode(keyClass) {
         return Api().get(`/api/test/${keyClass}`);
     },
-    createNewAnswer(keyClass, username, module, totalCorrect, totalQuestions) {
+    createNewAnswer(keyClass, member_id, module, totalCorrect, totalQuestions) {
         Api().post(`/api/test-result`, {
-            test_code : keyClass,
-            username: username,
-            module: module,
-            total_corrects: totalCorrect,
+            test_code       : keyClass,
+            member_id       : member_id,
+            module          : module,
+            total_corrects  : totalCorrect,
             total_questions : totalQuestions
         })
     }

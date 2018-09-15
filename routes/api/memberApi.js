@@ -5,12 +5,20 @@ const router = express.Router();
 const Member = require('../../models/Member');
 
 // @route   GET api/member/admin
+// @accept  query: member_id
 // @desc    Get members
 // @access  Public
 router.get('/admin', (req, res) => {
-    Member.find()
-        .then(members => res.json(members));
+    if (req.query.member_id) {
+        Member.findById(req.query.member_id)
+            .then(members => res.json(members));
+    } else {
+        Member.find()
+            .then(members => res.json(members));
+    }
+    
 });
+
 
 // @route   GET api/member/admin/teachers
 // @desc    Get teacher
@@ -30,7 +38,7 @@ router.get('/admin/teachers', (req, res) => {
 router.post('/admin', (req, res) => {
   const newMember = new Member({
     email           : req.body.email,
-    password        : req.body.password,
+    password        : req.body.password ? req.body.password : 'nimbus123',
     first_name      : req.body.first_name,
     last_name       : req.body.last_name
   });
@@ -81,10 +89,12 @@ router.delete('/admin/:id', (req, res) => {
 // @desc    Check A Member Exist
 // @access  Public
 router.get('/admin/check-member', (req, res) => {
+    console.log(req.query.email);
     Member.findOne({
         email : req.query.email
     })
     .then(member => {
+        console.log(member);
         if (member) {
             res.json({ is_match: true, member: member });
         } else {

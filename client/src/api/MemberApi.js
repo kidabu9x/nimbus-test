@@ -7,6 +7,9 @@ export default {
     fetchMembers () {
         return Api().get(`${adminUrl}`);
     },
+    getMemberInfo (memberId) {
+        return Api().get(`${adminUrl}?member_id=${memberId}`);
+    },
     createNewMember (member) {
         return Api().post(`${adminUrl}`, member);
     },

@@ -20,7 +20,7 @@
                                     <md-input v-model="search"></md-input>
                                 </md-field>
                             </div>
-                            <div class="md-layout-item">
+                            <!-- <div class="md-layout-item">
                                 <md-field>
                                     <md-select v-model="filterTeacher" placeholder="Giảng viên">
                                         <md-option value="all">Tất cả</md-option>
@@ -29,7 +29,7 @@
                                         </md-option>
                                     </md-select>
                                 </md-field>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                     <div class="md-toolbar-section-end">
@@ -48,7 +48,9 @@
                             {{ item.teacher_name }}
                         </div>
                         <div v-else>
-                            {{getFullTeacherName(item.teacher_id)}}
+                            <p v-if="teachers.length > 0">
+                                {{getFullTeacherName(item.teacher_id)}}
+                            </p>
                         </div>
                     </md-table-cell>
                     <md-table-cell md-label="Code">

@@ -19,8 +19,23 @@
                     <md-table-cell md-label="Thời gian nộp bài" md-numeric>
                         <span>{{ item.createdAt | moment("from", "now") }}</span>
                     </md-table-cell>
-                    <md-table-cell md-label="Học viên">
-                        {{ item.username }}
+                    <md-table-cell md-label="Email">
+                        <div v-if="item.is_fetching_member">
+                            <md-progress-spinner :md-diameter="20" :md-stroke="2" md-mode="indeterminate"></md-progress-spinner>
+                        </div>
+                        <div v-else>
+                            <span v-if="item.member">{{ item.member.email }} {{ item.member.last_name }}</span>
+                            <span v-else>N/A</span>
+                        </div>
+                    </md-table-cell>
+                    <md-table-cell md-label="Họ tên">
+                        <div v-if="item.is_fetching_member">
+                            <md-progress-spinner :md-diameter="20" :md-stroke="2" md-mode="indeterminate"></md-progress-spinner>
+                        </div>
+                        <div v-else>
+                            <span v-if="item.member">{{ item.member.first_name }} {{ item.member.last_name }}</span>
+                            <span v-else>{{item.username}}</span>
+                        </div>
                     </md-table-cell>
                     <md-table-cell md-label="Module">
                         {{ item.module }}
@@ -44,6 +59,7 @@
 <script>
 // Api
 import TestApi from '@/api/TestApi';
+import MemberApi from '@/api/MemberApi';
 
 // Components
 export default {
@@ -61,8 +77,24 @@ export default {
     async getTestResults () {
         this.isFetching = true;
         const response = await TestApi.getTestResults(this.$route.params.code);
-        this.testResults = response.data;
+        this.testResults = response.data.map(e => {
+            e.is_fetching_member = true;
+            return e;
+        });
         this.isFetching = false;
+        for (let result of this.testResults) {
+            if (result.member_id) {
+                getMember();
+                async function getMember () {
+                    let response = await MemberApi.getMemberInfo(result.member_id);
+                    result.member = response.data;
+                    result.is_fetching_member = false;
+                }
+            } else {
+                result.is_fetching_member = false;
+            }
+            
+        }
     },
     noticeError (msg) {
         this.$toasted.show(msg, {

@@ -9,7 +9,7 @@ var TestResultSchema = new Schema(
         test_code : {
             type    : String
         },
-        username : {
+        member_id : {
             type    : String
         },
         total_corrects : {

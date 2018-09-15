@@ -1,12 +1,13 @@
 <template>
   <div class="test md-scrollbar">
-    <div class="md-layout-item md-size-100" style="position: fixed; left: 0; top: 0; width: 100vw; height: 100vh; background-color: white; display: flex;">
+    <div v-if="!startTest" class="md-layout-item md-size-100" style="position: fixed; left: 0; top: 0; width: 100vw; height: 100vh; background-color: white; display: flex;">
         <md-card style="margin: auto; width: 450px;">
-            <md-card-content class="md-layout md-gutter" style="padding: 20px 40px;">
+            <md-card-content class="md-layout md-gutter">
                 <div class="md-layout-item md-size-100" style="text-align: center;">
                     <img src="../../assets/nimbus_logo.png" width="100px">
                 </div>
-                <form v-if="!isNewUser && !user._id" @submit.prevent="validateUser">
+                <!-- Check Email -->
+                <form v-if="!isNewUser && !user._id && !codeIsMatch" @submit.prevent="validateUser" class="md-layout-item md-size-100">
                     <div class="md-layout-item md-size-100" style="text-align: center;">
                         <h3 style="margin-bottom: 0;">Đăng nhập</h3>
                         <p style="margin-top: 3px;">Với tài khoản tại Nimbus</p>
@@ -31,14 +32,74 @@
                         </md-button>
                     </div>
                 </form>
-                <form v-if="!isNewUser && user._id" @click="validateCode" style="width: 100%;">
+                <!-- Check Email -->
+                <form v-if="isNewUser && !user._id && !codeIsMatch" @submit.prevent="validateNewUser" class="md-layout-item md-size-100">
+                    <div class="md-layout-item md-size-100" style="text-align: center;">
+                        <h3 style="margin-bottom: 0;">Chào mừng</h3>
+                        <div style="margin: 10px 0;">
+                            <md-chip style=" box-shadow: none; background-color: white; border: 1px solid rgba(0,0,0, .12);">
+                                <md-avatar class="md-small" style="padding: 0; margin: -3px 4px 2px -8px;">
+                                    <img v-if="!user.avatar_url || user.avatar_url == ''" src="../../assets/img/ava_default.png">
+                                    <img v-else :src="user.avatar_url">
+                                </md-avatar>
+                                {{user.email}}
+                            </md-chip>
+                        </div>
+                    </div>
+                    <div class="md-layout-item md-size-100">
+                        <div class="md-layout md-gutter">
+                            <div class="md-layout-item">
+                                <md-field
+                                    :class="{
+                                        'md-invalid': user.first_name.length == 0
+                                    }"
+                                >
+                                    <label>Họ</label>
+                                    <md-input v-model="user.first_name" type="text" :readonly="isChecking"></md-input>
+                                    <span class="md-error">*Không được để trống</span>
+                                </md-field>
+                            </div>
+                            <div class="md-layout-item">
+                                <md-field
+                                    :class="{
+                                        'md-invalid': user.last_name.length == 0
+                                    }"
+                                >
+                                    <label>Tên</label>
+                                    <md-input v-model="user.last_name" type="text" :readonly="isChecking"></md-input>
+                                    <span class="md-error">*Không được để trống</span>
+                                </md-field>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="md-layout-item md-size-100">
+                        <p class="md-subhead">Hãy nhập đúng họ, tên đệm và tên của bạn nhé.</p>
+                    </div>
+                    <div class="md-layout-item md-size-100">
+                        <div class="md-layout md-gutter">
+                            <div class="md-layout-item" style="margin: 20px 0;">
+                                <md-button class="md-dense" @click="isNewUser = false" :disabled="isChecking">
+                                    Nhập lại Email
+                                </md-button>
+                            </div>
+                            <div class="md-layout-item" style="text-align: right; margin: 20px 0;">
+                                <md-button class="md-raised md-primary md-elevation-0 md-dense" @click="validateNewUser" :disabled="isChecking">
+                                    Tiếp theo
+                                </md-button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <!-- Enter code after user has id -->
+                <form v-if="user._id && !codeIsMatch" @submit.prevent="validateCode" class="md-layout-item md-size-100">
                     <div class="md-layout-item md-size-100" style="text-align: center;">
                         <h3 style="margin-bottom: 0;">{{user.first_name}} {{user.last_name}}</h3>
                         <div style="margin: 10px 0;">
                             <md-chip style=" box-shadow: none; background-color: white; border: 1px solid rgba(0,0,0, .12);">
                                 <md-avatar class="md-small" style="padding: 0; margin: -3px 4px 2px -8px;">
-                                    <img :src="'../assets/img/ava_default.png'">
-                                    <!-- <img :src="user.avatar_url != '' ? user.avatar : 'https://pixabay.com/photo-1577909/'"> -->
+                                    <img v-if="!user.avatar_url || user.avatar_url == ''" src="../../assets/img/ava_default.png">
+                                    <img v-else :src="user.avatar_url">
                                 </md-avatar>
                                 {{user.email}}
                             </md-chip>
@@ -52,7 +113,7 @@
                         >
                             <label>Code</label>
                             <md-input v-model="code" type="text" :readonly="isChecking"></md-input>
-                            <span class="md-error">Mã code không hợp lệ</span>
+                            <span class="md-error">{{codeInvalidMessage}}</span>
                         </md-field>
                     </div>
                     <div class="md-layout-item md-size-100">
@@ -64,11 +125,53 @@
                         </md-button>
                     </div>
                 </form>
+                <!-- Choose module for testing -->
+                <div v-if="user._id && codeIsMatch" class="md-layout-item md-size-100">
+                    <div class="md-layout-item md-size-100" style="text-align: center;">
+                        <h3 style="margin-bottom: 0;">{{user.first_name}} {{user.last_name}}</h3>
+                        <div style="margin: 10px 0;">
+                            <md-chip style=" box-shadow: none; background-color: white; border: 1px solid rgba(0,0,0, .12);">
+                                <md-avatar class="md-small" style="padding: 0; margin: -3px 4px 2px -8px;">
+                                    <img v-if="!user.avatar_url || user.avatar_url == ''" src="../../assets/img/ava_default.png">
+                                    <img v-else :src="user.avatar_url">
+                                </md-avatar>
+                                {{user.email}} - {{settings.name}}
+                            </md-chip>
+                        </div>
+                    </div>
+                    <div class="md-layout-item md-size-100" style="margin: 20px 0;">
+                        <div class="md-layout">
+                            <div class="md-layout-item" style="text-align: center;">
+                                <md-button @click="module = 1" :style="{ 'border-bottom' : module == 1 ? '1px solid #1f7347' : '' }">
+                                    Module 1
+                                </md-button>
+                            </div>
+                            <div class="md-layout-item" style="text-align: center;">
+                                <md-button @click="module = 2" :style="{ 'border-bottom' : module == 2 ? '1px solid #1f7347' : '' }" >
+                                    Module 2
+                                </md-button>
+                            </div>
+                            <div class="md-layout-item" style="text-align: center;">
+                                <md-button @click="module = 3" :style="{ 'border-bottom' : module == 3 ? '1px solid #1f7347' : '' }">
+                                    Module 3
+                                </md-button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="md-layout-item md-size-100">
+                        <p class="md-subhead">Lựa chọn module và test nhé</p>
+                    </div>
+                    <div class="md-layout-item md-size-100" style="text-align: right; margin: 20px 0;">
+                        <md-button class="md-raised md-primary md-elevation-0 md-dense" @click="beginTest">
+                            Tiếp theo
+                        </md-button>
+                    </div>
+                </div>
             </md-card-content>
             <md-progress-bar md-mode="indeterminate" v-if="isChecking" />
         </md-card>
     </div>
-    <!-- <div v-if="startTest">
+    <div v-if="startTest">
         <div class="loading" v-if="creatingExam">
             <breeding-rhombus-spinner
                 :animation-duration="2000"
@@ -77,27 +180,33 @@
             />
         </div>
         <div v-else>
-            <md-toolbar md-elevation="1" style="position: fixed; background-color: #26c6da; min-height: 40px;">
+            <md-toolbar md-elevation="1" style="min-height: 40px;">
                 <div class="md-layout md-gutter" style="width: 100%;">
-                    <div class="md-layout-item">
-                        <h3 v-if="settings != null" class="md-title" style="color: #fff;">{{settings.name}} - Module {{module}}</h3>
+                    <div class="md-layout-item" style="line-height: 51px;">
+                        <h3 v-if="settings != null" class="md-title">{{settings.name}} - Module {{module}}</h3>
                     </div>
-                    <div class="md-layout-item">
-                        <h3 class="md-title" style="color: #fff; text-align: center;">{{user.last_name}}</h3>
-                    </div>
-                    <div class="md-layout-item">
+                    <div class="md-layout-item" style="text-align: center;">
                         <countdown :time="settings.time*60*1000" :auto-start="false" ref="countdown">
                             <template slot-scope="props">
-                                <h3 class="md-title" style="color: #fff; text-align: right;">
+                                <h3 class="md-title" style="line-height: 51px;">
                                     {{ props.minutes }} : {{ props.seconds }}
                                 </h3>
                             </template>
                         </countdown>
                     </div>
+                    <div class="md-layout-item" style="text-align: right;">
+                        <p>
+                            <md-avatar class="md-small" style="padding: 0; margin: -3px 4px 2px -8px;">
+                                <img v-if="!user.avatar_url || user.avatar_url == ''" src="../../assets/img/ava_default.png">
+                                <img v-else :src="user.avatar_url">
+                            </md-avatar>
+                            {{user.first_name}} {{user.last_name}}
+                        </p>
+                    </div>
                 </div>
             </md-toolbar>
             <div class="md-layout md-gutter" style="padding-top: 64px;">
-                <div class="md-layout-item md-size-25" style="position: relative;">
+                <div class="md-layout-item" style="position: relative;">
                     <div style="position: fixed; top: 30%; text-align: center; display: block; margin-left: 10px;">
                         <h3 v-if="isSubmited" style="text-align: left;">
                             Số câu trả lời đúng: <span style="color: #66bb6a">{{totalCorrect}}</span>/{{testQuests.length}}
@@ -107,7 +216,7 @@
                         </h3>
                     </div>
                 </div>
-                <div class="md-layout-item md-size-50">
+                <div class="md-layout-item">
                     <div class="md-layout md-gutter">
                         <div class="md-layout-item md-size-100">
                             <md-card v-if="!showMenuQuests" class="md-card-test">
@@ -289,80 +398,10 @@
                         
                     </div>
                 </div>
-                <div class="md-layout-item md-size-25" style="position: relative;"></div>
+                <div class="md-layout-item" style="position: relative;"></div>
             </div>
         </div>
     </div>
-    
-    <md-dialog :md-active.sync="showExpandImage" v-if="currentImage" style="width: 100%;">
-      <md-content>
-          <img :src="currentImage" style="width: 100%;">
-      </md-content>
-      <md-dialog-actions>
-        <md-button class="md-primary" @click="showExpandImage = false">Đóng</md-button>
-      </md-dialog-actions>
-    </md-dialog>
-
-    <md-dialog :md-active.sync="showStepper" :md-click-outside-to-close="false">
-      <md-content style="padding: 25px; width: 600px;">
-        <md-steppers :md-active-step.sync="stepActive" md-linear>
-            <md-step id="firstStep" md-label="Nhập email" :md-done.sync="firstStep">
-                <md-field>
-                    <label>Nhập email của bạn vào đây nhé</label>
-                    <md-input v-model="user.email"></md-input>
-                </md-field>
-                <md-button style="float: right;" v-if="validateEmail(user.email)" class="md-raised md-primary" @click="setDone('firstStep', 'secondStep')">Tiếp tục</md-button>
-            </md-step>
-            <md-step id="secondStep" md-label="Nhập code" :md-done.sync="secondStep">
-                <div class="md-layout md-gutter">
-                    <div class="md-layout-item">
-                        <md-field>
-                            <label>Code</label>
-                            <md-input v-model="code"></md-input>
-                            <span class="md-helper-text">*Gồm 9 ký tự.</span>
-                        </md-field>
-                    </div>
-                    <div class="md-layout-item">
-                        <md-button v-if="code && code.length == 9 && !isCheckingCode" class="md-raised md-primary" style="margin: auto; display: block; margin-top: 20px;" @click="checkCode()">
-                            Kiểm tra code
-                        </md-button>
-                        <div v-if="isCheckingCode">
-                            <hollow-dots-spinner
-                                :animation-duration="1000"
-                                :dot-size="8"
-                                :dots-num="3"
-                                color="#448AFF"
-                                style="margin-left: 40%; margin-top: 20px;"
-                            />
-                        </div>
-                    </div>
-                </div>
-            </md-step>
-            <md-step v-if="codeIsMatch && isNewUser" id="thirdStep" md-label="Tạo tài khoản" :md-done.sync="thirdStep">
-                <h3>Chào người mới :D</h3>
-            </md-step>
-            <md-step v-if="codeIsMatch && user && user._id" id="fourthStep" md-label="Chọn module" :md-done.sync="fourthStep">
-                <div class="md-layout md-gutter">
-                    <div class="md-layout-item">
-                        <md-button class="md-primary" @click="beginTest(1)">
-                            Module 1
-                        </md-button>
-                    </div>
-                    <div class="md-layout-item">
-                        <md-button class="md-primary" @click="beginTest(2)">
-                            Module 2
-                        </md-button>
-                    </div>
-                    <div class="md-layout-item">
-                        <md-button class="md-primary" @click="beginTest(3)">
-                            Module 3
-                        </md-button>
-                    </div>
-                </div>
-            </md-step>
-        </md-steppers>
-      </md-content>
-    </md-dialog> -->
   </div>
 </template>
 
@@ -396,20 +435,15 @@ export default {
       isNewUser : false,
       code: null,
       codeInvalid: false,
-      showStepper: true,
-      firstStep: false,
-      secondStep: false,
-      thirdStep: false,
-      fourthStep: false,
-      stepActive: 'firstStep',
-      inputEmail: null,
-      
+      codeInvalidMessage: '',
       codeIsMatch: false,
       settings: null,
-      creatingExam: false,
-      startTest: false,
-      testQuests: [],
       module: null,
+      
+      startTest: false,
+      creatingExam: false,
+      
+      testQuests: [],
       currentQuest: null,
       currentIndex: 0,
       markQuests: [],
@@ -429,38 +463,26 @@ export default {
     //   this.beginTest(1)
   },
   methods: {
-    async checkCode() {
-        this.isCheckingCode = true;
-        const response = await TestApi.checkCode(this.code);
-        if (response.data.error) {
-            this.noticeError(response.data.error);
-            this.isCheckingCode = false;
-        } else {
-            this.settings = response.data;
-            this.isCheckingCode = false;
-            this.codeIsMatch = true;
-            this.checkUser();
-        }
-    },
     async validateUser() {
-        
-        // if (response.data.is_match) {
-        //     this.user = response.data.member;
-        //     this.setDone('secondStep', 'fourthStep');
-        // } else {
-        //     this.isNewUser = true;
-        //     this.setDone('secondStep', 'thirdStep');
-        // }
         if (!this.validateEmail(this.user.email)) {
             this.emailInValid = true;
         } else {
             this.emailInValid = false;
             this.isChecking = true;
             let response = await MemberApi.checkMemberExist(this.user.email);
-            console.log(response);
             if (response.data.is_match) {
                 this.user = response.data.member;
+            } else {
+                this.isNewUser = true;
             }
+            this.isChecking = false;
+        }
+    },
+    async validateNewUser () {
+        if (this.user.first_name.length > 0 && this.user.last_name.length > 0) {
+            this.isChecking = true;
+            let response = await MemberApi.createNewMember(this.user);
+            this.user = response.data;
             this.isChecking = false;
         }
     },
@@ -469,17 +491,31 @@ export default {
         return re.test(email);
     },
     async validateCode () {
-
+        if (this.code.length != 9) {
+            this.codeInvalidMessage = 'Mã code phải gồm 9 kí tự';
+            this.codeInvalid = true;
+        } else {
+            this.codeInvalid = false;
+            this.isChecking = true;
+            let response = await TestApi.checkCode(this.code);
+            this.isChecking = false;
+            if (response.data.error) {
+                this.codeInvalid = true;
+                this.codeInvalidMessage = response.data.error;
+            } else {
+                this.settings = response.data;
+                this.isChecking = false;
+                this.codeIsMatch = true;
+            }
+        }
     },
-    beginTest (module) {
-        this.module = module;
-        this.showStepper = false;
+    beginTest () {
         this.creatingExam = true;
         this.startTest = true;
-        this.createExam(module);
+        this.createExam();
     },
-    async createExam (module) {
-      const response = await QuestionApi.createExam(module);
+    async createExam () {
+      const response = await QuestionApi.createExam(this.module);
       this.testQuests = response.data;
       this.goToQuest();
       this.creatingExam = false;

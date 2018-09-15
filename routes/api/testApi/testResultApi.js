@@ -28,7 +28,7 @@ router.get('/admin/count/:code', (req, res) => {
 router.post('/', (req, res) => {
   const newTestResult = new TestResult({
     test_code           : req.body.test_code,
-    username            : req.body.username,
+    member_id           : req.body.member_id,
     module              : req.body.module,
     total_corrects      : req.body.total_corrects,
     total_questions     : req.body.total_questions,
