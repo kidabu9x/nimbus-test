@@ -112,7 +112,7 @@ router.get('/:code', (req, res) => {
 });
 
 // @route   POST api/test
-// @desc    Create A Question
+// @desc    Create A Test
 // @access  Public
 router.post('/', (req, res) => {
   const newTestClass = new Test({

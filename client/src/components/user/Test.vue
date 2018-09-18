@@ -159,7 +159,7 @@
                         </div>
                     </div>
                     <div class="md-layout-item md-size-100">
-                        <p class="md-subhead">Lựa chọn module và test nhé</p>
+                        <p class="md-subhead">Lựa chọn module</p>
                     </div>
                     <div class="md-layout-item md-size-100" style="text-align: right; margin: 20px 0;">
                         <md-button class="md-raised md-primary md-elevation-0 md-dense" @click="beginTest">
@@ -182,8 +182,8 @@
         <div v-else>
             <md-toolbar md-elevation="1" style="min-height: 40px;">
                 <div class="md-layout md-gutter" style="width: 100%;">
-                    <div class="md-layout-item" style="line-height: 51px;">
-                        <h3 v-if="settings != null" class="md-title">{{settings.name}} - Module {{module}}</h3>
+                    <div class="md-layout-item">
+                        <h3 v-if="settings != null" class="md-title"  style="line-height: 51px;">{{settings.name}} - Module {{module}}</h3>
                     </div>
                     <div class="md-layout-item" style="text-align: center;">
                         <countdown :time="settings.time*60*1000" :auto-start="false" ref="countdown">
@@ -739,4 +739,6 @@ a {
     right: 0;
     left: 0;
 }
+
+
 </style>

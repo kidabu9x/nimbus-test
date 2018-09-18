@@ -16,6 +16,7 @@ import Dev from '@/components/Dev/Dev'
 // User component
 import User from '@/components/user/User'
 import Test from '@/components/user/Test'
+import HelloWorld from '@/components/HelloWorld'
 
 Vue.use(Router)
 
@@ -25,13 +26,11 @@ export default new Router({
     {
       path: '/',
       name: 'HelloWorld',
-      component: User,
-      children: [
-        {
-          path: 'test',
-          component: Test
-        }
-      ]
+      component: HelloWorld,
+    },
+    {
+      path: '/test',
+      component: Test
     },
     {
       path: '/dev',

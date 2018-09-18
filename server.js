@@ -43,6 +43,12 @@ app.use('/api/grade', grade)
 const lession = require('./routes/api/courseApi/lessionApi')
 app.use('/api/lession', lession)
 
+// Uncomment when deploy to server
+app.use(express.static('dist'));
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
+});
+
 // Serve static assets if in production
 if (process.env.NODE_ENV === 'production') {
   // Set static folder

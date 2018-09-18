@@ -16,15 +16,12 @@
         <div v-else class="md-layout-item md-size-100">
             <md-table v-model="testResults">
                 <md-table-row slot="md-table-row" slot-scope="{ item }">
-                    <md-table-cell md-label="Thời gian nộp bài" md-numeric>
-                        <span>{{ item.createdAt | moment("from", "now") }}</span>
-                    </md-table-cell>
                     <md-table-cell md-label="Email">
                         <div v-if="item.is_fetching_member">
                             <md-progress-spinner :md-diameter="20" :md-stroke="2" md-mode="indeterminate"></md-progress-spinner>
                         </div>
                         <div v-else>
-                            <span v-if="item.member">{{ item.member.email }} {{ item.member.last_name }}</span>
+                            <span v-if="item.member">{{ item.member.email }}</span>
                             <span v-else>N/A</span>
                         </div>
                     </md-table-cell>
@@ -37,17 +34,33 @@
                             <span v-else>{{item.username}}</span>
                         </div>
                     </md-table-cell>
+                    <md-table-cell md-label="Số lần test">
+                        <p>{{item.results.length}}</p>
+                    </md-table-cell>
+                    <md-table-cell md-label="Thời gian nộp bài" md-numeric>
+                        <p v-for="(result, index) in item.results" :key="index">
+                            {{ result.createdAt | moment("from", "now") }}
+                        </p>
+                    </md-table-cell>
                     <md-table-cell md-label="Module">
-                        {{ item.module }}
+                        <p v-for="(result, index) in item.results" :key="index">
+                            {{ result.module}}
+                        </p>
                     </md-table-cell>
                     <md-table-cell md-label="Số câu đúng">
-                        {{ item.total_corrects }}
+                        <p v-for="(result, index) in item.results" :key="index">
+                            {{ result.total_corrects}}
+                        </p>
                     </md-table-cell>
                     <md-table-cell md-label="Tổng số câu">
-                        {{ item.total_questions }}
+                        <p v-for="(result, index) in item.results" :key="index">
+                            {{ result.total_questions}}
+                        </p>
                     </md-table-cell>
                     <md-table-cell md-label="Điểm số">
-                        {{ item.score }}
+                        <p v-for="(result, index) in item.results" :key="index">
+                            {{ result.score}}
+                        </p>
                     </md-table-cell>
                 </md-table-row>
             </md-table>
@@ -67,7 +80,7 @@ export default {
   data () {
     return {
       testResults : [],
-      isFetching  : true
+      isFetching  : true,
     }
   },
   mounted () {
@@ -77,10 +90,13 @@ export default {
     async getTestResults () {
         this.isFetching = true;
         const response = await TestApi.getTestResults(this.$route.params.code);
+        console.log(response.data);
+        let data = response.data;
         this.testResults = response.data.map(e => {
             e.is_fetching_member = true;
             return e;
         });
+        
         this.isFetching = false;
         for (let result of this.testResults) {
             if (result.member_id) {
@@ -93,7 +109,6 @@ export default {
             } else {
                 result.is_fetching_member = false;
             }
-            
         }
     },
     noticeError (msg) {

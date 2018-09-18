@@ -1,7 +1,5 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    
+  <div class="hello" style="height: 100vh; width: 100vw; background-image: url('http://o2computing.com/images/under-construction.gif');">
   </div>
 </template>
 

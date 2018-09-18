@@ -62,11 +62,11 @@ export default {
   }
 
   .regular-input:focus {
-      color: #495057;
-      background-color: #fff;
-      border-color: #2e7d32;
-      outline: 0;
-      box-shadow: 0 0 0 1px #2e7d32;
+    color: #495057;
+    background-color: #fff;
+    border-color: #2e7d32;
+    outline: 0;
+    box-shadow: 0 0 0 1px #2e7d32;
   }
 }
 
@@ -78,5 +78,9 @@ export default {
     box-shadow: none;
     -webkit-box-shadow: none;
   }
+}
+
+.md-checkbox .md-checkbox-label {
+  height: auto;
 }
 </style>

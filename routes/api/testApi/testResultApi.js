@@ -6,12 +6,38 @@ const TestResult = require('../../../models/TestResult');
 
 // ----------------------------------API for admin----------------------------
 
-// @route   GET api/test-result/admin
+// @route   GET api/test-result/admin/:code
 // @desc    Get All Test Results
 // @access  Public
 router.get('/admin/:code', (req, res) => {
     TestResult.find({ test_code : req.params.code})
-        .then(testResult => res.json(testResult));
+        .then(testResult => {
+          let response = [];
+          for (let result of testResult) {
+            let index = response.findIndex(e => e.member_id == result.member_id);
+            if (index == -1) {
+              response.push({
+                member_id: result.member_id,
+                results: [{
+                  createdAt: result.createdAt,
+                  module: result.module,
+                  total_corrects: result.total_corrects,
+                  total_questions: result.total_questions,
+                  score: result.score
+                }]
+              })
+            } else {
+              response[index].results.push({
+                createdAt: result.createdAt,
+                module: result.module,
+                total_corrects: result.total_corrects,
+                total_questions: result.total_questions,
+                score: result.score
+              })
+            }
+          }
+          res.json(response);
+        });
 });
 
 // @route   GET api/test-result/admin

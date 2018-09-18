@@ -111,8 +111,12 @@ router.get('/:module', (req, res) => {
               content : null
             })
           }
-          // Shuffle all arrays
-          dragItems = shuffleArr(dragItems);
+          // Check if content of first item doesnt start with 'Bước',
+          // Shuffle all content
+          let firstItem = dragItems[0].content.trim().split(' ');
+          if (firstItem[0].toLowerCase() != 'bước') {
+            dragItems = shuffleArr(dragItems);
+          }
           dragItems.push({
             id: null,
             content : null
