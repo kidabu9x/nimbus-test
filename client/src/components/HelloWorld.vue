@@ -1,5 +1,5 @@
 <template>
-  <div class="hello" style="height: 100vh; width: 100vw; background-image: url('http://o2computing.com/images/under-construction.gif');">
+  <div class="hello" style="height: 100vh; width: 100vw; background-image: url('http://o2computing.com/images/under-construction.gif'); background-size: cover; background-repeat: no-repeat;">
   </div>
 </template>
 
