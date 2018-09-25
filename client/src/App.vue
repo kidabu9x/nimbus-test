@@ -58,7 +58,14 @@ export default {
     border-radius: .25rem;
     transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     overflow: hidden;
+  }
+
+  input.regular-input {
     height: 36px;
+  }
+
+  textarea.regular-input {
+    height: 140px;
   }
 
   .regular-input:focus {
@@ -82,5 +89,16 @@ export default {
 
 .md-checkbox .md-checkbox-label {
   height: auto;
+}
+
+.md-button div {
+  color: rgba(0,0,0, .5);
+}
+
+.no-uppercase {
+  text-transform: none;
+}
+.uppercase {
+  text-transform: uppercase;
 }
 </style>

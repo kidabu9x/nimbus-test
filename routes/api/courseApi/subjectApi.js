@@ -1,18 +1,17 @@
 const express = require('express');
 const router = express.Router();
-const shortId = require('shortid');
 
 // Course Model
-const Course = require('../../../models/Course/Course');
+const Subject = require('../../../models/Course/Subject');
 // Test Result Model
 
 // ----------------------------------API for admin----------------------------
-// @route   GET api/course/admin
+// @route   GET api/subject/admin
 // @desc    Get All Courses
 // @access  Public
 router.get('/admin', (req, res) => {
-    Course.find()
-        .then(courses => res.json(courses));
+    Subject.find()
+        .then(subjects => res.json(subjects));
 });
 
 // @route   GET api/course/admin/handle
@@ -29,11 +28,9 @@ router.get('/admin/:handle', (req, res) => {
 // @desc    Create new course
 // @access  Public
 router.post('/admin', (req, res) => {
-    let newCourse = new Course({
+    let newCourse = new Subject({
         name: req.body.name,
-        img_url: req.body.img_url,
         original_price : req.body.original_price,
-        discount_anchors : req.body.discount_anchors ? req.body.discount_anchors : []
     });
     newCourse.save()
         .then(course => res.status(200).json(course))

@@ -1,22 +1,27 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-// Admin component
+//------------- Admin component -------------
 import Admin from '@/components/admin/Admin'
 import Questions from '@/components/admin/Question/Questions'
 import AdminTestClass from '@/components/admin/Test/TestClass'
 import AdminTestResults from '@/components/admin/Test/TestResults'
 import ExamSchedules from '@/components/admin/ExamSchedule/Schedule'
 import Member from '@/components/admin/Member/Members'
+// Course
 import AllCourse from '@/components/admin/Course/AllCourse'
+import NewCourse from '@/components/admin/Course/NewCourse'
 import Course from '@/components/admin/Course/Course'
 import Grade from '@/components/admin/Course/Grade'
 import NewGrade from '@/components/admin/Course/NewGrade'
 import Dev from '@/components/Dev/Dev'
-// User component
+// ---------- end admin component ------------
+
+// ------------- User component --------------
 import User from '@/components/user/User'
 import Test from '@/components/user/Test'
-import HelloWorld from '@/components/HelloWorld'
+import Homepage from '@/components/user/Homepage'
+// ----------- end user component ------------
 
 Vue.use(Router)
 
@@ -25,8 +30,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'HelloWorld',
-      component: HelloWorld,
+      name: 'Homepage',
+      component: Homepage,
     },
     {
       path: '/test',
@@ -64,6 +69,10 @@ export default new Router({
         {
           path: 'courses',
           component: AllCourse
+        },
+        {
+          path: 'courses/new-course',
+          component: NewCourse
         },
         {
           path: 'courses/:handle',

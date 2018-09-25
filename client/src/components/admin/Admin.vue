@@ -26,8 +26,8 @@
           </md-list-item>
           <md-list-item to="/admin/courses">
             <md-icon>layers</md-icon>
-            <span class="md-list-item-text">Các khoá học</span>
-            <md-tooltip v-if="!menuVisible" md-direction="right">Các khoá học</md-tooltip>
+            <span class="md-list-item-text">Khoá học và môn học</span>
+            <md-tooltip v-if="!menuVisible" md-direction="right">Khoá học và môn học</md-tooltip>
           </md-list-item>
           <md-list-item to="/admin/questions">
             <md-icon >help</md-icon>

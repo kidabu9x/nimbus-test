@@ -1,7 +1,7 @@
 <template>
   <div class="md-layout md-gutter">
     <div v-if="isFetching" class="md-layout-item md-size-100" style="text-align: center;">
-        <md-progress-spinner class="md-accent" :md-diameter="30" md-mode="indeterminate"></md-progress-spinner>
+        <md-progress-spinner class="md-accent" :md-diameter="30" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
     </div>
     <div v-if="!isFetching && courses.length == 0" class="md-layout-item md-size-100">
         <md-empty-state
@@ -14,87 +14,37 @@
         </md-empty-state>
     </div>
     <div v-else class="md-layout-item md-size-100">
-        <router-link v-for="course in courses" :key="course.id" :to="{path: `courses/${course.handle}`}">
-            <md-card class="md-course-card md-elevation-1" md-with-hover >
-                <md-card-header>
-                    <md-card-header-text>
-                        <div class="md-title">{{course.name}}</div>
-                        <div class="md-subhead">7 lớp đang trong thời gian học</div>
-                    </md-card-header-text>
-                    <md-card-media>
-                        <img :src="course.img_url" :alt="course.name">
-                    </md-card-media>
-                </md-card-header>
-                <md-card-content>
-                    <md-divider></md-divider>
-                    <md-list class="md-double-line">
-                        <md-subheader>Lớp học ngày hôm nay</md-subheader>
-                        <md-list-item>
-                            <md-icon class="md-primary">access_time</md-icon>
-                            <div class="md-list-item-text">
-                                <span>IC3 Thứ 3 - Thứ 7</span>
-                                <span>15h - 17h | Quân</span>
-                            </div>
-                        </md-list-item>
-                        <md-list-item class="md-inset">
-                            <div class="md-list-item-text">
-                                <span>IC3 riêng 13</span>
-                                <span>19h - 21h | Nhất</span>
-                            </div>
-                        </md-list-item>
-                    </md-list>
+        <md-card class="course-card md-elevation-0" md-with-hover>
+            <md-card-content>
+                <p class="md-headline">
+                    Khoá học tháng 9
+                </p>
+            </md-card-content>
+        </md-card>
+        <md-card class="course-card md-elevation-0" md-with-hover>
+            <md-card-content>
+                <p class="md-headline">
+                    Khoá học tháng 10
+                </p>
+            </md-card-content>
+        </md-card>
+        <md-card class="course-card md-elevation-0" md-with-hover>
+            <md-card-content>
+                <p class="md-headline">
+                    Khoá học cuối tháng 11
+                </p>
+            </md-card-content>
+        </md-card>
+        <router-link :to="{path : 'courses/new-course'}">
+            <md-card class="course-card md-elevation-0" md-with-hover>
+                <md-card-content >
+                    <p class="md-headline" style="text-align: center;">
+                        <md-icon>add</md-icon>
+                    </p>
                 </md-card-content>
             </md-card>
         </router-link>
-        <md-card class="md-course-card" md-with-hover>
-            <md-card-content style="text-align: center;">
-                <md-button class="md-icon-button" @click="openNewDialog = true">
-                    <md-icon>add</md-icon>
-                </md-button>
-            </md-card-content>
-        </md-card>
-    </div>
-    <div class="md-layout-item md-size-100">
-        <md-dialog :md-active.sync="openNewDialog">
-            <md-dialog-title>Khoá học mới</md-dialog-title>
-
-            <md-content class="md-scrollbar" style="overflow-y: scroll; overflow-x: hidden;">
-                <div class="md-layout md-gutter">
-                    <div class="md-layout-item md-size-100">
-                        <md-field>
-                            <label>Tên khoá học</label>
-                            <md-input type="text" v-model="newCourse.name"></md-input>
-                        </md-field>
-                    </div>
-                    <div class="md-layout-item md-size-100">
-                        <div class="md-layout md-gutter">
-                            <div class="md-layout-item">
-                                <md-field>
-                                    <label>Giá gốc</label>
-                                    <md-input type="number" v-model="newCourse.original_price"></md-input>
-                                </md-field>
-                            </div>
-                            <div class="md-layout-item">
-                                <p v-html="formatPrice(newCourse.original_price)" style="line-height: 48px; text-align: right;">
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="md-layout-item md-size-100">
-                        <md-field>
-                            <label>Link ảnh khoá học</label>
-                            <md-input v-model="newCourse.img_url"></md-input>
-                        </md-field>
-                    </div>
-                </div>
-            </md-content>
-
-            <md-dialog-actions>
-                <md-button class="md-primary" @click="openNewDialog = false">Close</md-button>
-                <md-button class="md-primary" @click="createNewCourse">Save</md-button>
-            </md-dialog-actions>
-        </md-dialog>
-
+        
     </div>
   </div>
 </template>
@@ -181,11 +131,29 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .md-course-card {
+  .course-card {
     width: 320px;
+    height: 160px;
     margin: 4px;
     display: inline-block;
     vertical-align: top;
+    border-radius: 5px;
+    border: 1px dotted rgba(0,0,0, .54);
+
+    .md-card-content {
+        height: 100%;
+        display: table;
+        width: 100%;
+
+        p {
+            display: table-cell; 
+            vertical-align: middle; 
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+        }
+    }
   }
   .md-content {
     padding: 24px;
