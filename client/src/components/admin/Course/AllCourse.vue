@@ -14,27 +14,15 @@
         </md-empty-state>
     </div>
     <div v-else class="md-layout-item md-size-100">
-        <md-card class="course-card md-elevation-0" md-with-hover>
-            <md-card-content>
-                <p class="md-headline">
-                    Khoá học tháng 9
-                </p>
-            </md-card-content>
-        </md-card>
-        <md-card class="course-card md-elevation-0" md-with-hover>
-            <md-card-content>
-                <p class="md-headline">
-                    Khoá học tháng 10
-                </p>
-            </md-card-content>
-        </md-card>
-        <md-card class="course-card md-elevation-0" md-with-hover>
-            <md-card-content>
-                <p class="md-headline">
-                    Khoá học cuối tháng 11
-                </p>
-            </md-card-content>
-        </md-card>
+        <router-link v-for="course in courses" :key="course._id" :to="{path : `courses/${course.handle}`}">
+            <md-card  class="course-card md-elevation-0" md-with-hover>
+                <md-card-content>
+                    <p class="md-headline">
+                        {{course.name}}
+                    </p>
+                </md-card-content>
+            </md-card>
+        </router-link>
         <router-link :to="{path : 'courses/new-course'}">
             <md-card class="course-card md-elevation-0" md-with-hover>
                 <md-card-content >
@@ -44,7 +32,6 @@
                 </md-card-content>
             </md-card>
         </router-link>
-        
     </div>
   </div>
 </template>
@@ -71,7 +58,7 @@ export default {
   methods: {
     async fetchAllCourses () {
         this.isFetching = true;
-        let response = await CourseApi.fetchAllCourses();
+        let response = await CourseApi.fetchCourses();
         this.courses = response.data;
         this.isFetching = false;
     },

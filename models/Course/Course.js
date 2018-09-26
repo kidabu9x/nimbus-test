@@ -3,22 +3,31 @@ var Schema = mongoose.Schema;
 
 var CourseSchema = new Schema(
     {
-        name: {
+        name : {
             type: String,
         },
-        handle: {
-            type : String,
-
+        handle : {
+            type    : String,
+            unique  : true
         },
-        original_price : {
-            type: Number
+        description: {
+            type    : String
         },
-        discount_anchors: {
-            type: Array,
-            default: []
+        is_recruit : {
+            type    : Boolean,
+            default : false,
         },
-        img_url: {
-            type: String
+        enable_create_private_grade : {
+            type    : Boolean,
+            default : true,
+        },
+        maximum_private_grade : {
+            type    : Number,
+            default : 0
+        },
+        visited_count: {
+            type    : Number,
+            default :  0
         }
     },
     {

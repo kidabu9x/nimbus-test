@@ -11,7 +11,7 @@ const Course = require('../../../models/Course/Course');
 // @desc    Get All Courses
 // @access  Public
 router.get('/admin', (req, res) => {
-    Course.find()
+    Course.find(req.query)
         .then(courses => res.json(courses));
 });
 
@@ -30,14 +30,24 @@ router.get('/admin/:handle', (req, res) => {
 // @access  Public
 router.post('/admin', (req, res) => {
     let newCourse = new Course({
-        name: req.body.name,
-        img_url: req.body.img_url,
-        original_price : req.body.original_price,
-        discount_anchors : req.body.discount_anchors ? req.body.discount_anchors : []
+        name                        : req.body.name,
+        description                 : req.body.description,
+        is_recruit                  : req.body.is_recruit,
+        enable_create_private_grade : req.body.enable_create_private_grade,
+        maximum_private_grade       : req.body.maximum_private_grade
     });
     newCourse.save()
-        .then(course => res.status(200).json(course))
-        .catch(err => res.status(404).json(null));
+        .then((err,course) => {
+            if (!err) {
+                res.status(200).json(course);
+            } else {
+                res.status(200).json(err);
+            }
+        })
+        .catch(err => res.status(200).json({
+            error: true,
+            message: 'Tên khóa học không được trùng lặp'
+        }));
 });
 
 

@@ -15,7 +15,7 @@ export default {
 
 @include md-register-theme("default", (
   primary: #1f7347, // The primary color of your application #2e7d32
-  accent: md-get-palette-color(orange, 900) // The accent or secondary color
+  accent: #B4654A // The accent or secondary color
 ));
 
 

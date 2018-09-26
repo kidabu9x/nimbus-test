@@ -4,8 +4,14 @@ let adminUrl = '/api/course/admin'
 
 export default {
     // --------------For Admin--------------
-    fetchAllCourses () {
-        return Api().get(`${adminUrl}`);
+    fetchCourses (query) {
+        if (query) {
+            return Api().get(`${adminUrl}`, {
+                params: query
+            });
+        } else {
+            return Api().get(`${adminUrl}`);
+        }
     },
     fetchOneCourse (handle) {
         return Api().get(`${adminUrl}/${handle}`);  
