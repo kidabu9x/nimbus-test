@@ -64,6 +64,10 @@ export default {
     height: 36px;
   }
 
+  select.regular-input {
+    height: 36px;
+  }
+
   textarea.regular-input {
     height: 140px;
   }

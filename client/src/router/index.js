@@ -13,7 +13,7 @@ import AllCourse from '@/components/admin/Course/AllCourse'
 import NewCourse from '@/components/admin/Course/NewCourse'
 import CourseDetails from '@/components/admin/Course/CourseDetails'
 import Grade from '@/components/admin/Course/Grade'
-import NewGrade from '@/components/admin/Course/NewGrade'
+import NewClass from '@/components/admin/Course/NewClass'
 import Dev from '@/components/Dev/Dev'
 // ---------- end admin component ------------
 
@@ -79,8 +79,8 @@ export default new Router({
           component: CourseDetails
         },
         {
-          path: 'courses/:handle/new',
-          component: NewGrade
+          path: 'courses/:handle/new-class',
+          component: NewClass
         },
         {
           path: 'courses/:handle/:gradeHandle',

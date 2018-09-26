@@ -53,7 +53,33 @@
            </div>
            <div class="md-layout-item md-size-70">
                <div class="md-layout-item md-size-100">
-                   <full-calendar :events="events" :config="config"></full-calendar>
+                   <md-table v-model="grades" md-sort="name" md-sort-order="asc" md-card>
+                        <md-table-toolbar>
+                            <div class="md-toolbar-section-start">
+                                <h1 class="md-title">Danh sách lớp</h1>
+                            </div>
+
+                            <div class="md-toolbar-section-end">
+                                <router-link :to="{path : `${course.handle}/new-class?c=${course._id}`}">
+                                    <md-button>
+                                        Tạo lớp
+                                    </md-button>
+                                </router-link>
+                            </div>
+                        </md-table-toolbar>
+
+                        <md-table-empty-state
+                            md-label="Danh sách lớp trống"
+                        >
+                        </md-table-empty-state>
+
+                        <md-table-row slot="md-table-row" slot-scope="{ item }">
+                            <md-table-cell md-label="Môn học" md-sort-by="email">{{ item.email }}</md-table-cell>
+                            <md-table-cell md-label="Tên lớp" md-sort-by="name">{{ item.name }}</md-table-cell>
+                            <md-table-cell md-label="Lịch khai giảng" md-sort-by="gender">{{ item.gender }}</md-table-cell>
+                            <md-table-cell md-label="Trạng thái" md-sort-by="title">{{ item.title }}</md-table-cell>
+                        </md-table-row>
+                    </md-table>
                </div>
            </div>
        </div>
@@ -95,7 +121,8 @@ export default {
         ],
         config : {
             defaultView: 'month'
-        }
+        },
+        grades: []
       }
   },
   created () {

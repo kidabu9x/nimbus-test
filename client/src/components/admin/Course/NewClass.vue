@@ -1,8 +1,8 @@
 <template>
-  <div class="md-layout md-gutter">
+  <div class="md-layout">
     <div class="md-layout-item md-size-25"></div>
     <div class="md-layout-item md-size-50 md-small-size-100">
-        <div class="md-layout md-gutter">
+        <div class="md-layout">
             <div class="md-layout-item md-size-100">
                 <router-link :to="{path: `/admin/courses/${$route.params.handle}`}">
                     <md-button style="color: #637381; text-transform: none;">
@@ -11,63 +11,62 @@
                     </md-button>
                 </router-link>
             </div>
-            <div v-if="!isCreating && !isCreated" ref="newGrade" class="md-layout-item md-size-100">
-                <div class="md-layout md-gutter">
+            <div v-if="!isCreating && !isCreated" ref="newClass" class="md-layout-item md-size-100">
+                <div class="md-layout">
                     <div class="md-layout-item md-size-100">
-                        <h2 style="margin-left: 16px;">Thêm lớp học - {{course.name}}</h2>
+                        <h2 style="margin-left: 16px;">Tạo lớp học</h2>
                     </div>
                     <div class="md-layout-item md-size-100">
                         <md-card id="general-info">
                             <md-card-content>
-                                <div class="md-layout-item md-size-100 regular-input-wrapper">
-                                    <p class="regular-label">Tên lớp</p>
-                                    <input class="regular-input" type="text" v-model="newGrade.name" placeholder="IC3/MOS x.x">
-                                </div>
                                 <div class="md-layout-item md-size-100">
                                     <div class="md-layout md-gutter">
                                         <div class="md-layout-item regular-input-wrapper">
-                                            <p class="regular-label">Giảng viên chính</p>
-                                            <select v-model="newGrade.main_teacher_id" class="regular-input" >
-                                                <option v-for="teacher in teachers" :key="teacher._id" :value="teacher._id">{{teacher.first_name}} {{teacher.last_name}}</option>
+                                            <p class="regular-label" style="margin-top: 0;">Môn học</p>
+                                            <select class="regular-input" v-model="newClass.subject_id" placeholder="IC3/MOS x.x">
+                                                <option v-for="subject in subjects" :key="subject._id" :value="subject._id">{{subject.name}}</option>
                                             </select>
                                         </div>
                                         <div class="md-layout-item regular-input-wrapper">
-                                            <p class="regular-label">
-                                                Địa điểm học
-                                            </p>
-                                            <input v-model="newGrade.school_address" type="text" class="regular-input">
+                                            <p class="regular-label" style="margin-top: 0;">Tên lớp</p>
+                                            <input class="regular-input" type="text" v-model="newClass.name" placeholder="IC3/MOS x.x">
                                         </div>
-                                        
+                                    </div>
+                                </div>
+                                <div class="md-layout-item md-size-100">
+                                    <p style="margin-bottom: 0;">Ngày học</p>
+                                </div>
+                                <div class="md-layout-item md-size-100">
+                                    <div class="md-layout-item md-size-100" v-for="i in Math.ceil(dayOfWeeks.length/4)" :key="i">
+                                        <div class="md-layout md-gutter">
+                                            <div v-for="(day) in dayOfWeeks.slice((i - 1) * 4, i * 4)" :key="day.index" class="md-layout-item md-size-25">
+                                                <md-checkbox class="md-primary" v-model="newClass.school_days" :value="day.index">{{day.title}}</md-checkbox>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="md-layout-item md-size-100">
                                     <div class="md-layout md-gutter">
                                         <div class="md-layout-item regular-input-wrapper">
                                             <p class="regular-label">Ngày khai giảng</p>
-                                            <flat-pickr class="regular-input" :config="datePickrConfigs.basic" v-model="newGrade.start_date"></flat-pickr>
+                                            <flat-pickr class="regular-input" :config="datePickrConfigs.basic" v-model="newClass.start_date"></flat-pickr>
                                         </div>
                                         <div class="md-layout-item regular-input-wrapper">
                                             <p class="regular-label">Số ngày học</p>
-                                            <input v-model="newGrade.number_of_school_days" class="regular-input" type="number" min=0>
+                                            <input v-model="newClass.number_of_school_days" class="regular-input" type="number" min=0>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="md-layout-item md-size-100">
-                                    <p style="margin-bottom: 0;">Ngày học trong tuần</p>
-                                </div>
-                                <div class="md-layout-item md-size-100">
-                                    <div class="md-layout-item md-size-100" v-for="i in Math.ceil(dayOfWeeks.length/4)" :key="i">
-                                        <div class="md-layout md-gutter">
-                                            <div v-for="(day) in dayOfWeeks.slice((i - 1) * 4, i * 4)" :key="day.index" class="md-layout-item md-size-25">
-                                                <md-checkbox class="md-primary" v-model="newGrade.school_days" :value="day.index">{{day.title}}</md-checkbox>
-                                            </div>
-                                        </div>
-                                    </div>
+                                <div class="md-layout-item md-size-100 regular-input-wrapper">
+                                    <p class="regular-label">Địa điểm học</p>
+                                    <select v-model="newClass.school_address" class="regular-input">
+                                        <option value="Số 15/20 Trương Định, Hai Bà Trưng, Hà Nội">Số 15/20 Trương Định, Hai Bà Trưng, Hà Nội</option>
+                                    </select>
                                 </div>
                             </md-card-content>
                         </md-card>
                     </div>
-                    <div v-if="newGrade.school_days.length > 0" class="md-layout-item md-size-100" style="margin-top: 15px;">
+                    <div v-if="newClass.school_days.length > 0" class="md-layout-item md-size-100" style="margin-top: 15px;">
                         <md-card id="estimated-schedule">
                             <md-card-header>
                                 <div class="md-title">
@@ -87,7 +86,7 @@
                             <md-card-content>
                                 <div class="md-layout md-gutter">
                                     <div v-if="estimatedDate.length == 0" class="md-layout-item md-size-100" style="text-align: center;">
-                                        <md-button v-if="newGrade.school_days.length > 0" class="md-primary" @click="createEstimatedDate">
+                                        <md-button v-if="newClass.school_days.length > 0" class="md-primary" @click="createEstimatedDate">
                                             <md-icon>schedule</md-icon>
                                             Tạo lịch dự kiến
                                         </md-button>
@@ -121,13 +120,6 @@
                                         <md-tooltip>Sao chép</md-tooltip>
                                     </md-button>
                                 </md-table-cell>
-                                <md-table-cell md-label="Giảng viên">
-                                    <div class="regular-input-wrapper">
-                                        <select v-model="item.teacher_id" class="regular-input" >
-                                            <option v-for="teacher in teachers" :key="teacher._id" :value="teacher._id">{{teacher.first_name}} {{teacher.last_name}}</option>
-                                        </select>
-                                    </div>
-                                </md-table-cell>
                                 <md-table-cell md-label="Giờ bắt đầu">
                                     <div class="md-layout-item md-size-100 regular-input-wrapper">
                                         <flat-pickr class="regular-input" :config="datePickrConfigs.timeConfig" v-model="item.start_hour"></flat-pickr>
@@ -147,9 +139,9 @@
                             </md-table-row>
                         </md-table>
                     </div>
-                    <div v-if="finalSchedule.length > 0" class="md-layout-item md-size-100" style="margin-top: 5px;">
-                        <md-button style="width: 100%;" class="md-accent md-dense md-raised" @click="createGrade">
-                            Thêm lớp học
+                    <div v-if="finalSchedule.length > 0" class="md-layout-item md-size-100" style="margin: 20px 0; text-align: right;">
+                        <md-button style="width: 20%;" class="md-accent md-dense md-raised" @click="createGrade">
+                            <span style="color: white;">Tạo lớp học</span>
                         </md-button>
                     </div>
                 </div>
@@ -162,7 +154,7 @@
                 <md-card>
                     <md-card-area md-inset>
                         <md-card-header>
-                            <h2 class="md-title">{{newGrade.name}}</h2>
+                            <h2 class="md-title">{{newClass.name}}</h2>
                         </md-card-header>
                     </md-card-area>
 
@@ -173,7 +165,7 @@
                             </md-subheader>
                             <md-list-item>
                                 <md-icon>code</md-icon>
-                                <span class="md-list-item-text" style="color: #2e7d32;">{{newGrade.handle}}</span>
+                                <span class="md-list-item-text" style="color: #2e7d32;">{{newClass.handle}}</span>
                                 <md-tooltip md-direction="right">Mã lớp</md-tooltip>
                             </md-list-item>
                             <md-list-item>
@@ -192,13 +184,8 @@
                                 <md-tooltip md-direction="right">Số buổi học</md-tooltip>
                             </md-list-item>
                             <md-list-item>
-                                <md-icon>person</md-icon>
-                                <span class="md-list-item-text">{{getTeacherInfo(newGrade.main_teacher_id, 'first_name')}} {{getTeacherInfo(newGrade.main_teacher_id, 'last_name')}}</span>
-                                <md-tooltip md-direction="right">Giảng viên chính</md-tooltip>
-                            </md-list-item>
-                            <md-list-item>
                                 <md-icon>location_on</md-icon>
-                                <span class="md-list-item-text">{{newGrade.school_address}}</span>
+                                <span class="md-list-item-text">{{newClass.school_address}}</span>
                                 <md-tooltip md-direction="right">Địa điểm học</md-tooltip>
                             </md-list-item>
                         </md-list>
@@ -215,10 +202,7 @@
 <script>
 // Api
 import CourseApi from '@/api/Course/CourseApi';
-import GradeApi from '@/api/Course/GradeApi';
-import LessionApi from '@/api/Course/LessionApi';
-import MemberApi from '@/api/MemberApi';
-
+import SubjectApi from '@/api/Course/SubjectApi';
 // External functions
 import shortId from 'shortid';
 
@@ -270,20 +254,20 @@ export default {
   name: 'all-courses',
   data () {
       return {
+        subjects: [],
         course : {},
-        newGrade : {
+        newClass : {
             name: '',
             course_id: '',
-            main_teacher_id: '',
+            subject_id: '',
             start_date : new Date(),
             school_days: [new Date().getDay()],
             number_of_school_days: 8,
-            school_address: 'Số 15/20 Trương Định',
+            school_address: 'Số 15/20 Trương Định, Hai Bà Trưng, Hà Nội',
             handle: ''
         },
         estimatedDate : [],
         finalSchedule : [],
-        teachers : [],
         dayOfWeeks : dayOfWeeks,
         datePickrConfigs :{
           basic : {
@@ -316,36 +300,29 @@ export default {
         isCreated: false
       }
   },
+  created () {
+      this.fetchSubjects();
+  },
   mounted () {
-    this.fetchCourseInfo();
-    this.fetchTeachers();
+      console.log(this.$route.query);
   },
   methods: {
-    async fetchCourseInfo () {
-        var response = await CourseApi.fetchOneCourse(this.$route.params.handle);
-        this.course = response.data;
-
-        var response = await GradeApi.countGrades(this.course._id);
-        this.newGrade.name = this.course.name + ' ' + response.data;
-        this.newGrade.course_id = this.course._id;
-    },
-    async fetchTeachers () {
-        let response = await MemberApi.fetchTeachers();
-        this.teachers = response.data;
-        this.newGrade.main_teacher_id = this.teachers[0]._id;
+    async fetchSubjects () {
+        var response = await SubjectApi.fetchAllSubjects();
+        this.subjects = response.data;
     },
     createEstimatedDate () {
-        let err = this.checkGrade(this.newGrade);
+        let err = this.checkClass(this.newClass);
         if (err) {
             this.noticeError(err);
         } else {
             this.estimatedDate = [];
             this.finalSchedule = [];
-            let currentDate = new Date(this.newGrade.start_date);
+            let currentDate = new Date(this.newClass.start_date);
             this.estimatedDate.push(new Date(currentDate));
-            while (this.estimatedDate.length < this.newGrade.number_of_school_days) {
+            while (this.estimatedDate.length < this.newClass.number_of_school_days) {
                 currentDate = increaseDateTimeByDays(currentDate, 1);
-                if (this.newGrade.school_days.indexOf(currentDate.getDay()) > -1) {
+                if (this.newClass.school_days.indexOf(currentDate.getDay()) > -1) {
                     this.estimatedDate.push(new Date(currentDate));
                 }
             }
@@ -360,16 +337,15 @@ export default {
             });
         }
         if (this.estimatedDate.length > 0) {
-            console.log(this.newGrade.start_date);
+            console.log(this.newClass.start_date);
             for (let schoolDate of this.estimatedDate) {
                 let currentDate = new Date(schoolDate);
                 this.finalSchedule.push({
                     grade_id : '',
                     handle  : shortId.generate(),
                     school_date : schoolDate,
-                    teacher_id : this.newGrade.main_teacher_id,
-                    start_hour : new Date(this.newGrade.start_date),
-                    end_hour : new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), new Date(this.newGrade.start_date).getHours() + 2, 0, 0),
+                    start_hour : new Date(this.newClass.start_date),
+                    end_hour : new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), new Date(this.newClass.start_date).getHours() + 2, 0, 0),
                 })
             }
         }
@@ -386,20 +362,20 @@ export default {
         currentSchedule.splice(currentIndex, 0, newSession);
         this.finalSchedule = currentSchedule;
     },
-    async createGrade () {
-        let grade = this.newGrade;
-        let err = this.checkGrade(grade);
+    async createClass () {
+        let grade = this.newClass;
+        let err = this.checkClass(grade);
         if (err) {
             this.noticeError(err);
         } else {
             this.isCreating = true;
             this.creatingMsg = 'Tạo lớp học';
             setTimeout( async ()=> {
-                var response = await GradeApi.createNewGrade(grade);
-                this.newGrade = response.data;
+                var response = await GradeApi.createNewClass(grade);
+                this.newClass = response.data;
                 this.creatingMsg = 'Cập nhật lịch học';
                 for (let i = 0; i < this.finalSchedule.length; i++) {
-                    this.finalSchedule[i].grade_id = this.newGrade._id;
+                    this.finalSchedule[i].grade_id = this.newClass._id;
                     var response = await LessionApi.createNewLession(this.finalSchedule[i]);
                     this.finalSchedule[i] = response.data;
                     if (i == this.finalSchedule.length - 1) {
@@ -410,39 +386,29 @@ export default {
             }, 1000);
         }
     },
-    getTeacherInfo (teacherId, field) {
-        let teacher = this.teachers.find(e => e._id == teacherId);
-        return teacher[field];
-    },
-    checkGrade (grade) {
-        if (grade.name == '') {
-            return 'Tên lớp học không được bỏ trống !';
+    checkClass (newClass) {
+        if (newClass.subject_id == '') {
+            return 'Chọn môn học đi';
         }
-        if (grade.number_of_school_days <= 0) {
+        if (newClass.name == '') {
+            return 'Tên lớp không được bỏ trống !';
+        }
+        if (newClass.number_of_school_days <= 0) {
             return 'Số ngày học phải ít nhất 1 ngày';
         }
-        if (grade.school_days.length == 0) {
+        if (newClass.school_days.length == 0) {
             return 'Phải học ít nhất 1 ngày trong tuần';
         }
-        if (grade.start_date == '') {
+        if (newClass.start_date == '') {
             return 'Pick ngày khai giảng !';
         }
         return null;
     },
     checkLession (listLession) {
-        if (!listLession.some(e => e.teacher_id == '')) {
-            return 'Thiếu thông tin giảng viên !';
-        }
         if (!listLession.some(e => e.start_hour == '' || e.end_hour == '')) {
             return 'Giờ học cần được điền. Trường này có thể thay đổi sau !';
         }
         return null;
-    },
-    getHeight () {
-        if (this.$refs.newGrade) {
-            return this.$refs.newGrade.clientHeight + 'px';
-        }
-        return '12px';
     },
     noticeError (msg) {
         this.$toasted.show(msg, { 
