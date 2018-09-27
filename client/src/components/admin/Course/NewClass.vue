@@ -72,12 +72,12 @@
                                 <div class="md-title">
                                     <div class="md-layout md-gutter">
                                         <div class="md-layout-item md-size-50">
-                                            Lịch học
+                                            <span class="md-title">Ngày học dự kiến</span>
                                         </div>
                                         <div class="md-layout-item md-size-50" style="text-align: right;">
                                             <md-button v-if="estimatedDate.length > 0" @click="createEstimatedDate">
                                                 <md-icon>schedule</md-icon>
-                                                Cập nhật lịch dự kiến
+                                                Cập nhật lại ngày
                                             </md-button>
                                         </div>
                                     </div>
@@ -109,14 +109,14 @@
                     <div v-if="finalSchedule.length > 0" id="final-schedule" class="md-layout-item md-size-100" style="margin-top: 5px;">
                         <md-table v-model="finalSchedule" md-card>
                             <md-table-toolbar>
-                                <h1 class="md-title">Giảng viên và thời gian học</h1>
+                                <h1 class="md-title">Lịch học dự kiến</h1>
                             </md-table-toolbar>
 
                             <md-table-row slot="md-table-row" slot-scope="{ item }">
                                 <md-table-cell md-label="Ngày học">
                                     <md-button class="md-dense" @click="duplicateSession(item.handle)">
-                                        {{ item.school_date | moment('DD/MM') }}
-                                        <md-icon>file_copy</md-icon>
+                                        {{ item.school_date | moment('dddd, DD/MM') }}
+                                        <md-icon style="min-width: 18px; min-height: 18px; font-size: 18px !important;">file_copy</md-icon>
                                         <md-tooltip>Sao chép</md-tooltip>
                                     </md-button>
                                 </md-table-cell>
@@ -140,7 +140,7 @@
                         </md-table>
                     </div>
                     <div v-if="finalSchedule.length > 0" class="md-layout-item md-size-100" style="margin: 20px 0; text-align: right;">
-                        <md-button style="width: 20%;" class="md-accent md-dense md-raised" @click="createGrade">
+                        <md-button style="width: 20%;" class="md-accent md-dense md-raised" @click="createClass">
                             <span style="color: white;">Tạo lớp học</span>
                         </md-button>
                     </div>
@@ -202,6 +202,8 @@
 <script>
 // Api
 import CourseApi from '@/api/Course/CourseApi';
+import ClassApi from '@/api/Course/ClassApi';
+import LessionApi from '@/api/Course/LessionApi';
 import SubjectApi from '@/api/Course/SubjectApi';
 // External functions
 import shortId from 'shortid';
@@ -264,7 +266,7 @@ export default {
             school_days: [new Date().getDay()],
             number_of_school_days: 8,
             school_address: 'Số 15/20 Trương Định, Hai Bà Trưng, Hà Nội',
-            handle: ''
+            handle: shortId.generate()
         },
         estimatedDate : [],
         finalSchedule : [],
@@ -304,7 +306,7 @@ export default {
       this.fetchSubjects();
   },
   mounted () {
-      console.log(this.$route.query);
+      this.newClass.course_id = this.$route.query.c;
   },
   methods: {
     async fetchSubjects () {
@@ -337,15 +339,14 @@ export default {
             });
         }
         if (this.estimatedDate.length > 0) {
-            console.log(this.newClass.start_date);
             for (let schoolDate of this.estimatedDate) {
                 let currentDate = new Date(schoolDate);
                 this.finalSchedule.push({
-                    grade_id : '',
-                    handle  : shortId.generate(),
-                    school_date : schoolDate,
-                    start_hour : new Date(this.newClass.start_date),
-                    end_hour : new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), new Date(this.newClass.start_date).getHours() + 2, 0, 0),
+                    class_id    : '',
+                    handle      : shortId.generate(),
+                    school_date : currentDate,
+                    start_hour  : new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), new Date(this.newClass.start_date).getHours(), new Date(this.newClass.start_date).getMinutes(), 0),
+                    end_hour    : new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), new Date(this.newClass.start_date).getHours() + 2, new Date(this.newClass.start_date).getMinutes(), 0)
                 })
             }
         }
@@ -371,11 +372,12 @@ export default {
             this.isCreating = true;
             this.creatingMsg = 'Tạo lớp học';
             setTimeout( async ()=> {
-                var response = await GradeApi.createNewClass(grade);
+                var response = await ClassApi.createNewClass(grade);
                 this.newClass = response.data;
-                this.creatingMsg = 'Cập nhật lịch học';
+                console.log(response);
+                this.creatingMsg = 'Tạo lịch học';
                 for (let i = 0; i < this.finalSchedule.length; i++) {
-                    this.finalSchedule[i].grade_id = this.newClass._id;
+                    this.finalSchedule[i].class_id = this.newClass._id;
                     var response = await LessionApi.createNewLession(this.finalSchedule[i]);
                     this.finalSchedule[i] = response.data;
                     if (i == this.finalSchedule.length - 1) {
@@ -391,7 +393,7 @@ export default {
             return 'Chọn môn học đi';
         }
         if (newClass.name == '') {
-            return 'Tên lớp không được bỏ trống !';
+            return 'Tên lớp không được bỏ trống và cần dễ nhận biết';
         }
         if (newClass.number_of_school_days <= 0) {
             return 'Số ngày học phải ít nhất 1 ngày';
@@ -414,7 +416,7 @@ export default {
         this.$toasted.show(msg, { 
             theme     : "bubble", 
             position  : "top-right", 
-            duration  : 3000,
+            duration  : 5000,
             type      : 'error'
         });
     },

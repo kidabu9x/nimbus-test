@@ -14,7 +14,7 @@
 <script>
 // Api
 import CourseApi from '@/api/Course/CourseApi';
-import GradeApi from '@/api/Course/GradeApi';
+import ClassApi from '@/api/Course/ClassApi';
 import LessionApi from '@/api/Course/LessionApi';
 import MemberApi from '@/api/MemberApi';
 

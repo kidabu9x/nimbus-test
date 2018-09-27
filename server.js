@@ -40,11 +40,11 @@ app.use('/api/course', course)
 const subject = require('./routes/api/courseApi/subjectApi')
 app.use('/api/subject', subject)
 
-// const grade = require('./routes/api/courseApi/gradeApi')
-// app.use('/api/grade', grade)
+const classes = require('./routes/api/courseApi/classApi')
+app.use('/api/class', classes)
 
-// const lession = require('./routes/api/courseApi/lessionApi')
-// app.use('/api/lession', lession)
+const lession = require('./routes/api/courseApi/lessionApi')
+app.use('/api/lession', lession)
 
 // Uncomment when deploy to server
 // app.use(express.static('dist'));

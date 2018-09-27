@@ -4,7 +4,7 @@ var shortId = require("shortid");
 
 var LessionSchema = new Schema(
     {   
-        grade_id : {
+        class_id : {
             type: String
         },
         teacher_id : {

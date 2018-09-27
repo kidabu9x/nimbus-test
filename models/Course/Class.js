@@ -2,9 +2,9 @@ var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 var shortId = require("shortid");
 
-var GradeSchema = new Schema(
+var ClassSchema = new Schema(
     {   
-        is_in_recruit : {
+        is_recruit : {
             type: Boolean,
             default: true
         },
@@ -16,7 +16,7 @@ var GradeSchema = new Schema(
         course_id : {
             type: String
         },
-        main_teacher_id : {
+        subject_id : {
             type: String
         },
         handle: {
@@ -38,5 +38,5 @@ var GradeSchema = new Schema(
     }
 );
 
-var Grade = mongoose.model("grade", GradeSchema);
-module.exports = Grade;
+var Class = mongoose.model("class", ClassSchema);
+module.exports = Class;

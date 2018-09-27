@@ -4,8 +4,10 @@ let adminUrl = '/api/lession/admin'
 
 export default {
     // --------------For Admin--------------
-    fetchAllLessions (gradeId) {
-        return Api().get(`${adminUrl}/${gradeId}`);
+    fetchLessions (query) {
+        return Api().get(`${adminUrl}`, {
+            params : query
+        });
     },
     createNewLession (newLession) {
         return Api().post(`${adminUrl}`, newLession);
