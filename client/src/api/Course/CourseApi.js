@@ -16,6 +16,9 @@ export default {
     fetchOneCourse (handle) {
         return Api().get(`${adminUrl}/${handle}`);  
     },
+    updateCourse (course) {
+        return Api().put(`${adminUrl}`, course);  
+    },
     createNewCourse (newCourse) {
         return Api().post(`${adminUrl}`, newCourse);
     }

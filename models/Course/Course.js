@@ -17,11 +17,11 @@ var CourseSchema = new Schema(
             type    : Boolean,
             default : false,
         },
-        enable_create_private_grade : {
+        enable_create_private_class : {
             type    : Boolean,
             default : true,
         },
-        maximum_private_grade : {
+        maximum_private_class : {
             type    : Number,
             default : 0
         },

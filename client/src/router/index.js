@@ -30,15 +30,23 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'Homepage',
-      component: Homepage,
+      component: User,
+      children: [
+        {
+          path: '',
+          name: 'Homepage',
+          component: Homepage
+        }
+      ]
     },
     {
       path: '/test',
+      name: 'Test',
       component: Test
     },
     {
       path: '/dev',
+      name: 'Dev',
       component: Dev
     },
     {
@@ -48,14 +56,17 @@ export default new Router({
       children: [
         {
           path: 'questions',
+          name: 'adminQuestions',
           component: Questions
         },
         {
           path: 'tests',
+          name: 'adminTests',
           component: AdminTestClass
         },
         {
           path: 'tests/:code',
+          name: 'adminTestResults',
           component: AdminTestResults
         },
         {
@@ -64,22 +75,27 @@ export default new Router({
         },
         {
           path: 'members',
+          name: 'adminMembers',
           component: Member
         },
         {
           path: 'courses',
+          name: 'adminCourses',
           component: AllCourse
         },
         {
           path: 'courses/new-course',
+          name: 'adminNewCourse',
           component: NewCourse
         },
         {
           path: 'courses/:handle',
+          name: 'adminCourseDetails',
           component: CourseDetails
         },
         {
           path: 'courses/:handle/new-class',
+          name : 'adminNewClass',
           component: NewClass
         },
         {

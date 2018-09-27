@@ -33,8 +33,8 @@ router.post('/admin', (req, res) => {
         name                        : req.body.name,
         description                 : req.body.description,
         is_recruit                  : req.body.is_recruit,
-        enable_create_private_grade : req.body.enable_create_private_grade,
-        maximum_private_grade       : req.body.maximum_private_grade
+        enable_create_private_class : req.body.enable_create_private_class,
+        maximum_private_class       : req.body.maximum_private_class
     });
     newCourse.save()
         .then((err,course) => {
@@ -50,5 +50,20 @@ router.post('/admin', (req, res) => {
         }));
 });
 
+// @route   Put api/course/admin
+// @desc    Update a course
+// @access  Public
+router.put('/admin', (req, res) => {
+    Course.findById(req.body._id)
+        .then(course => {
+            course.description                  = req.body.description;
+            course.is_recruit                   = req.body.is_recruit;
+            course.enable_create_private_class  = req.body.enable_create_private_class;
+            course.maximum_private_class        = req.body.maximum_private_class;
+            course.save()
+                .then(doc => res.status(200).json(doc));
+        })
+    
+});
 
 module.exports = router;

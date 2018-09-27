@@ -46,4 +46,16 @@ router.post('/admin', (req, res) => {
         .catch(err => res.status(404).json(null));
 });
 
+// @route   Put api/class/admin
+// @desc    update a class
+// @access  Public
+router.put('/admin', (req, res) => {
+    Class.findById(req.body._id)
+        .then(doc => {
+            doc.is_recruit = req.body.is_recruit;
+            doc.save()
+                .then(e => res.status(200).json(e));
+        })
+});
+
 module.exports = router;

@@ -12,6 +12,9 @@ export default {
     createNewClass (newClass) {
         return Api().post(`${adminUrl}`, newClass);
     },
+    updateClass (Class) {
+        return Api().put(`${adminUrl}`, Class);
+    },
     countClass (courseId) {
         return Api().get(`${adminUrl}/${courseId}/count`);
     },
