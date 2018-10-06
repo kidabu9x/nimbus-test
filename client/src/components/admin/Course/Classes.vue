@@ -52,10 +52,42 @@
                     <md-table-empty-state
                     >
                         <div v-if="fetchingRegisters">
-                            <md-progress-spinner class="md-accent" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
+                            <md-progress-spinner class="md-accent" :md-diameter="30" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
                         </div>
-                        <div v-else>
-                            <strong class="md-empty-state-label">Danh sách lớp trống</strong>
+                        <div v-else class="md-layout">
+                            <div class="md-layout-item md-size-100">
+                                <strong class="md-empty-state-label">Danh sách lớp trống</strong>
+                            </div>
+                            <div class="md-layout-item md-size-100">
+                                <md-button class="md-primary md-raised">
+                                    <span style="color: #fff;">Tạo đăng ký</span>
+                                </md-button>
+                            </div>
+                            <div class="md-layout-item md-size-100">
+                                <p style="padding: 20px 0 0 0;">
+                                    Hoặc
+                                </p>
+                            </div>
+                            <div class="md-layout-item md-size-100">
+                                <input type="file" @change="updateFile">
+                            </div>
+                            <div class="md-layout-item md-size-100">
+                                <md-button
+                                    :class="{
+                                        'md-primary': registeredFile ? true : false,
+                                        'md-raised': registeredFile ? true : false
+                                    }"
+                                    @click="parseExcelFile"
+                                >
+                                    <span
+                                        :style="{
+                                            color: registeredFile ? '#fff' : 'rgba(0, 0, 0, 0.5);'
+                                        }"
+                                    >Xác nhận</span>
+                                </md-button>
+                            </div>
+                            
+                            
                         </div>
                     </md-table-empty-state>
 
@@ -106,29 +138,39 @@ export default {
       return {
         currentClass : null,
         registers: [],
-        fetchingRegisters : false
+        fetchingRegisters : false,
+        registeredFile : null
       }
   },
   created () {
   },
   mounted () {
-    console.log(this.classes);
   },
   methods: {
-    logClasses () {
-        console.log(this.classes)
+    parseExcelFile () {
+        console.log(this.registeredFile)
     },
     changeClass (obj) {
         this.currentClass = JSON.parse(JSON.stringify(obj));
         this.fetchRegisters();
     },
     fetchRegisters () {
-        this.fetchRegisters = true;
-        console.log(123);
+        this.fetchingRegisters = false;
     },
     async updateClass () {
         let response = await ClassApi.updateClass(this.currentClass);
         this.currentClass = response.data;
+    },
+    test (fileList) {
+    },
+    updateFile (event) {
+        var input = event.target;
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            this.registeredFile = input.files[0];
+            reader.readAsDataURL(input.files[0]);
+            console.log(this.registeredFile);
+        }
     }
   },
   components: {
