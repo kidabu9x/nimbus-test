@@ -1,9 +1,9 @@
 <template>
   <div class="md-layout">
-   <div class="md-layout-item md-size-100">
-       <!-- <p class="md-display-1">{{course.name}}</p> -->
-   </div>
-   <div class="md-layout-item md-size-100">
+    <div class="md-layout-item md-size-100">
+       <!-- <p class="md-body-1">{{course.name}}</p> -->
+    </div>
+    <div class="md-layout-item md-size-100">
         <md-tabs md-alignment="centered">
             <md-tab id="tab-enroll" md-label="Tuyển sinh">
                 <div class="md-layout">
@@ -106,8 +106,11 @@
             <md-tab id="tab-schedule" md-label="Lịch học">
                 <full-calendar :events="events" :config="config"></full-calendar>
             </md-tab>
+            <md-tab id="tab-classes" md-label="Các lớp học">
+                <classes :course="course" :classes="classes"></classes>
+            </md-tab>
         </md-tabs>
-   </div>
+    </div>
   </div>
 </template>
 
@@ -117,12 +120,14 @@ import CourseApi from '@/api/Course/CourseApi';
 import ClassApi from '@/api/Course/ClassApi';
 import LessionApi from '@/api/Course/LessionApi';
 import SubjectApi from '@/api/Course/SubjectApi';
+
 // External functions
 
 // Components
-import { FullCalendar } from 'vue-full-calendar'
-import 'fullcalendar/dist/fullcalendar.min.css'
-import 'fullcalendar/dist/locale/vi'
+import Classes from '@/components/admin/Course/Classes';
+import { FullCalendar } from 'vue-full-calendar';
+import 'fullcalendar/dist/fullcalendar.min.css';
+import 'fullcalendar/dist/locale/vi';
 export default {
   name: 'all-courses',
   data () {
@@ -206,6 +211,7 @@ export default {
   },
   components: {
     FullCalendar,
+    Classes
   },
 }
 </script>

@@ -8,9 +8,11 @@
             md-icon="layers_clear"
             md-description="Chưa có khoá học nào à. Tù thế"
         >
-            <md-button class="md-dense md-raised md-primary" @click="openNewDialog = true">
-                Ấn đây cho bớt tù
-            </md-button>
+            <router-link :to="{path : 'courses/new-course'}">
+                <md-button class="md-dense md-raised md-primary">
+                    Ấn đây cho bớt tù
+                </md-button>
+            </router-link>
         </md-empty-state>
     </div>
     <div v-else class="md-layout-item md-size-100">
@@ -44,12 +46,6 @@ export default {
       return {
         isFetching: false,
         courses: [],
-        openNewDialog: false,
-        newCourse : {
-            name: '',
-            img_url: '',
-            original_price: 8888
-        }
       }
   },
   mounted () {
@@ -61,22 +57,6 @@ export default {
         let response = await CourseApi.fetchCourses();
         this.courses = response.data;
         this.isFetching = false;
-    },
-    async createNewCourse () {
-        let course = this.newCourse;
-        let err = this.checkCourse(course);
-        if (err) {
-            this.noticeError(err);
-        } else {
-            let response = await CourseApi.createNewCourse(course);
-            if (response.status == 200) {
-                this.courses.push(response.data);
-                this.noticeSuccess(`Thêm khoá học ${course.name} thành công !`);
-                this.openNewDialog = false;
-            } else {
-                this.noticeError(`Lỗi mạng`);
-            }
-        }
     },
     checkCourse (course) {
         if (course.name == '') {

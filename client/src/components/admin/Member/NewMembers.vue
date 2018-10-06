@@ -69,6 +69,7 @@ export default {
         last_name     : '',
         password      : '',
         confirm_pass  : '',
+        role: 'teacher'
       }
     };
   },

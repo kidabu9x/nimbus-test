@@ -104,8 +104,10 @@ export default {
   },
   methods: {
     async fetchMembers () {
+        this.isFetching = true;
         let response = await MemberApi.fetchMembers();
         this.members = response.data;
+        this.isFetching = false;
     },
     async createMember (member) {
         let error = this.checkMember(member);

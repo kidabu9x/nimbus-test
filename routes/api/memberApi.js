@@ -13,10 +13,13 @@ router.get('/admin', (req, res) => {
         Member.findById(req.query.member_id)
             .then(members => res.json(members));
     } else {
-        Member.find()
+        Member.find({
+            role: {
+                $ne: 'student'
+            }
+        })
             .then(members => res.json(members));
     }
-    
 });
 
 

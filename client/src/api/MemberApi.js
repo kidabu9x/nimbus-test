@@ -4,8 +4,10 @@ const adminUrl = '/api/member/admin'
 
 export default {
     // --------------For Admin--------------
-    fetchMembers () {
-        return Api().get(`${adminUrl}`);
+    fetchMembers (query) {
+        return Api().get(`${adminUrl}`, {
+            params : query
+        });
     },
     getMemberInfo (memberId) {
         return Api().get(`${adminUrl}?member_id=${memberId}`);
