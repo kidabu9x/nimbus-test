@@ -34,16 +34,8 @@
                 <md-table-cell md-label="Email">
                     {{ item.email }}
                 </md-table-cell>
-                <md-table-cell md-label="CMND/Passport">
-                    <span v-if="item.identity">{{item.identity}}</span>
-                    <span v-else>N/A</span>
-                </md-table-cell>
                 <md-table-cell md-label="Phone">
                     <span v-if="item.phone">{{item.phone}}</span>
-                    <span v-else>N/A</span>
-                </md-table-cell>
-                <md-table-cell md-label="Địa chỉ">
-                    <span v-if="item.address">{{item.address}}</span>
                     <span v-else>N/A</span>
                 </md-table-cell>
                 <md-table-cell md-label="Tác vụ">

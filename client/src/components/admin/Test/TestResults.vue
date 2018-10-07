@@ -14,6 +14,14 @@
             </md-empty-state>
         </div>
         <div v-else class="md-layout-item md-size-100">
+            <div class="md-layout-item md-size-100">
+                <router-link :to="{path: `/admin/tests`}">
+                    <md-button style="color: #637381; text-transform: none;">
+                        <md-icon>keyboard_arrow_left</md-icon>
+                        Danh sách test
+                    </md-button>
+                </router-link>
+            </div>
             <md-table v-model="testResults">
                 <md-table-row slot="md-table-row" slot-scope="{ item }">
                     <md-table-cell md-label="Email">
@@ -47,14 +55,24 @@
                             {{ result.module}}
                         </p>
                     </md-table-cell>
+                    <md-table-cell md-label="Số câu sai">
+                        <div v-for="(result, index) in item.results" :key="index">
+                            <p>
+                                <span>{{ result.total_questions - result.total_corrects}}</span>
+                                <router-link :to="{path: `/admin/tests/${$route.params.handle}/${result._id}`}">
+                                    <span v-if="new Date(result.createdAt).getTime() > new Date('Mon Oct 08 2018 03:30:00 GMT+0700 (Indochina Time)').getTime()">
+                                        <md-icon style="font-size: 13px !important; float: right; cursor: pointer; line-height: 24px;">
+                                            visibility
+                                        </md-icon>
+                                        <md-tooltip md-direction="bottom">Xem câu sai</md-tooltip>
+                                    </span>
+                                </router-link>
+                            </p>
+                        </div>
+                    </md-table-cell>
                     <md-table-cell md-label="Số câu đúng">
                         <p v-for="(result, index) in item.results" :key="index">
                             {{ result.total_corrects}}
-                        </p>
-                    </md-table-cell>
-                    <md-table-cell md-label="Tổng số câu">
-                        <p v-for="(result, index) in item.results" :key="index">
-                            {{ result.total_questions}}
                         </p>
                     </md-table-cell>
                     <md-table-cell md-label="Điểm số">
@@ -89,7 +107,7 @@ export default {
   methods: {
     async getTestResults () {
         this.isFetching = true;
-        const response = await TestApi.getTestResults(this.$route.params.code);
+        const response = await TestApi.getTestResults(this.$route.params.handle);
         console.log(response.data);
         let data = response.data;
         this.testResults = response.data.map(e => {

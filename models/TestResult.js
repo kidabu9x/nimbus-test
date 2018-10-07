@@ -20,6 +20,10 @@ var TestResultSchema = new Schema(
         },
         score   : {
             type    : Number
+        },
+        incorrect_answers: {
+            type    : Array,
+            default : []
         }
     }, 
     {

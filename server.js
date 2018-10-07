@@ -47,22 +47,22 @@ const lession = require('./routes/api/courseApi/lessionApi')
 app.use('/api/lession', lession)
 
 // Uncomment when deploy to server
-// app.use(express.static('dist'));
-// app.get('*', (req, res) => {
-//   res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
-// });
+app.use(express.static('dist'));
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
+});
 
 // Serve static assets if in production
-if (process.env.NODE_ENV === 'production') {
-  // Set static folder
-  app.use(express.static('dist'));
+// if (process.env.NODE_ENV === 'production') {
+//   // Set static folder
+//   app.use(express.static('dist'));
 
-  app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
-  });
-}
+//   app.get('*', (req, res) => {
+//     res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
+//   });
+// }
 
-// const port = process.env.PORT || 8080;
-const port = process.env.PORT || 6969;
+const port = process.env.PORT || 8080;
+// const port = process.env.PORT || 6969;
 
 app.listen(port, () => console.log(`Server started on port ${port}`));

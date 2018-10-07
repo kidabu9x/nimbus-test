@@ -564,6 +564,7 @@ export default {
       this.$refs.countdown.stop();
       this.isSubmitting = true;
       let self = this;
+      let incorrectAnswers = [];
       this.answeredQuests.forEach((quest, index, arr) => {
         checkQuest(quest);
         async function checkQuest(quest) {
@@ -572,11 +573,14 @@ export default {
             quest.answers = response.data.answers;
             if (quest.is_match) {
                 self.totalCorrect += 1;
+            } else {
+                quest.index = index;
+                incorrectAnswers.push(quest);
             }
             arr[index] = quest;
             if (index == self.testQuests.length - 1) {
                 self.isSubmitting = false;
-                TestApi.createNewAnswer(self.code, self.user._id, self.module, self.totalCorrect, self.answeredQuests.length);
+                TestApi.createNewAnswer(self.code, self.user._id, self.module, self.totalCorrect, self.answeredQuests.length, incorrectAnswers);
             }
         }
       })
