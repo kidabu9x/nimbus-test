@@ -407,9 +407,9 @@
 
 <script>
 // Api
-import TestApi from '@/api/TestApi';
-import QuestionApi from '@/api/QuestionApi';
-import MemberApi from '@/api/MemberApi';
+import TestApi from '@/Api/User/TestApi';
+import QuestionApi from '@/Api/User/Question';
+import MemberApi from '@/Api/User/Member';
 
 // Components
 import 'epic-spinners/dist/lib/epic-spinners.min.css';

@@ -1,6 +1,6 @@
 import Api from '@/api/Api.js'
 
-let adminUrl = '/api/lession/admin'
+let adminUrl = 'admin/lession'
 
 export default {
     // --------------For Admin--------------

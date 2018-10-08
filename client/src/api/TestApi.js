@@ -11,13 +11,13 @@ export default {
         return Api().post(`${adminUrl}`, newTest);
     },
     updateTest(keyClass, updateField) {
-        return Api().put(`adminUrl/${keyClass}`, updateField);
+        return Api().put(`${adminUrl}/${keyClass}`, updateField);
     },
     deleteTest(id) {
         return Api().delete(`${adminUrl}/${id}`);
     },
     countTestResults (keyClass) {
-        return Api().get(`/api/test-result/admin/count/${keyClass}`);
+        return Api().get(`/api/test-result/admin/${keyClass}/count`);
     },
     getTestResults (keyClass) {
         return Api().get(`/api/test-result/admin/${keyClass}`);

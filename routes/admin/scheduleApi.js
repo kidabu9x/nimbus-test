@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 // Test Model
-const ExamSchedule = require('../../models/ExamSchedule');
+const ExamSchedule = require('../../../models/ExamSchedule');
 
 
 // ----------------------------------API for admin----------------------------

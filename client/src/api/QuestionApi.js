@@ -1,15 +1,17 @@
 import Api from '@/api/Api.js'
 
+let adminUrl = 'admin/questions';
+
 export default {
     countTotalQuestion (module) {
       if (module && module != 'null') {
-        return Api().get(`/api/questions/count?module=${module}`);
+        return Api().get(`${adminUrl}/count?module=${module}`);
       } else {
-        return Api().get(`/api/questions/count`);
+        return Api().get(`${adminUrl}/count`);
       }
     },
     fetchQuestions (page, perPage, module) {
-      return Api().get('/api/questions', {
+      return Api().get(`${adminUrl}`, {
         params : {
           page: page,
           perPage: perPage,

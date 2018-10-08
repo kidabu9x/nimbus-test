@@ -50,7 +50,7 @@ router.get('/admin/:code', (req, res) => {
 });
 
 // @route   GET api/test-result/admin/:code:/:id
-// @desc    Get All Test Results
+// @desc    Get a Test Results
 // @access  Public
 router.get('/admin/:code/:id', (req, res) => {
   TestResult.findById(req.params.id)
@@ -62,9 +62,9 @@ router.get('/admin/:code/:id', (req, res) => {
 // @route   GET api/test-result/admin
 // @desc    Count Test Results of a Key
 // @access  Public
-router.get('/admin/count/:code', (req, res) => {
+router.get('/admin/:code/count', (req, res) => {
   TestResult.countDocuments({ test_code : req.params.code})
-      .then(count => res.json(count));
+    .then(count => res.json(count));
 });
 
 // @route   POST  api/test-result

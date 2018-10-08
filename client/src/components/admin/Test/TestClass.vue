@@ -89,8 +89,8 @@
         <new-test ref="newClass" :teachers="teachers" @reload-test="fetchTests" @close-modal="openTestModal = false"></new-test>
       </md-content>
       <md-dialog-actions>
-        <md-button class="md-primary" @click="openTestModal = false">Close</md-button>
-        <md-button class="md-primary" @click="createNewTestClass">Create</md-button>
+        <md-button class="md-primary" @click="openTestModal = false">Đóng</md-button>
+        <md-button class="md-primary" @click="createNewTestClass">Tạo</md-button>
       </md-dialog-actions>
     </md-dialog>
     <md-dialog-confirm

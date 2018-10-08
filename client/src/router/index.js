@@ -3,7 +3,7 @@ import Router from 'vue-router'
 
 //------------- Admin component -------------
 import Admin from '@/components/admin/Admin'
-import Questions from '@/components/admin/Question/Questions'
+import Questions from '@/components/admin/Questions'
 import AdminTests from '@/components/admin/Test/TestClass'
 import AdminTestResults from '@/components/admin/Test/TestResults'
 import IncorrectAns from '@/components/admin/Test/IncorrectAns'
@@ -74,11 +74,6 @@ export default new Router({
           path: 'tests/:handle/:answerId',
           name: 'adminTestIncorrectAns',
           component: IncorrectAns
-        },
-        {
-          path: 'tests/:handle/:answerId',
-          name: 'adminTestResults',
-          component: AdminTestResults
         },
         {
           path: 'schedules',

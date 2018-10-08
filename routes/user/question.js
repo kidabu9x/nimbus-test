@@ -1,75 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const shortId = require('shortid');
 
 // Question Model
 const Question = require('../../models/Question');
-
-// @route   GET api/questions
-// @desc    Get All Questions
-// @access  Public
-router.get('/', (req, res) => {
-  // Question.find({
-  //     "answer_type" : 'multi_choice'
-  //   }
-  // )
-  //   .then(questions => {
-  //     questions.forEach(q => {
-  //       for (let i = 0; i < q.answers.length; i++) {
-  //         let answerIndex = `answers`;
-  //         Question.update(
-  //           {
-  //             _id: q._id
-  //           },
-  //           {
-  //             $set : {
-  //               [answerIndex] : shortId.generate()
-  //             }
-  //           }
-  //         ).then(res => console.log(res));
-  //       }
-        
-  //     })
-  //   })
-  let perPage = Number(req.query.perPage);
-  let page = Number(req.query.page);
-  Question.find(
-    {
-      module : req.query && req.query.module ? req.query.module : {$exists : true}
-    }
-  )
-    .sort({incorrect_times : -1})
-    .skip(page > 0 ? ( ( page - 1 ) * perPage ) : 0 )
-    .limit(perPage)
-    .then(questions => res.json(questions));
-});
-
-// @route   GET api/questions/search
-// @desc    Search Questions by content
-// @access  Public
-router.get('/search', (req, res) => {
-  let search = req.query.search.toLowerCase();
-  Question.find({
-    content : {
-      $regex : search,
-      $options : 'i'
-    }
-  })
-    .limit(5)
-    .then(questions => {
-      res.json(questions);
-    });
-});
-
-// @route   GET api/questions
-// @desc    Count number of Questions
-// @access  Public
-router.get('/count', (req, res) => {
-  Question.countDocuments({
-    module : req.query && req.query.module ? req.query.module : {$exists : true}
-  })
-   .then(quantities => res.json(quantities));
-});
 
 // @route   GET api/questions/:module
 // @desc    Create an examl
@@ -145,21 +78,6 @@ router.get('/:module', (req, res) => {
     }
 });
 
-// @route   POST api/questions
-// @desc    Create A Question
-// @access  Public
-router.post('/', (req, res) => {
-  const newQuest = new Question({
-    module      : req.body.module,
-    content     : req.body.content,
-    answer_type : req.body.answer_type,
-    answers     : req.body.answers,
-    description : req.body.description,
-    definitely_appear: req.body.definitely_appear
-  });
-  newQuest.save().then(question => res.json(question));
-});
-
 // @route   POST api/questions/:id
 // @desc    Check A Question
 // @access  Public
@@ -195,34 +113,5 @@ router.post('/:id', (req, res) => {
       })
     })
 });
-
-// @route   UPDATE api/questions
-// @desc    Update A Question
-// @access  Public
-router.put('/:id', (req, res) => {
-  Question.findById(req.params.id)
-    .then(question => {
-      question.module      = req.body.module,
-      question.content     = req.body.content,
-      question.answer_type = req.body.answer_type,
-      question.answers     = req.body.answers,
-      question.description = req.body.description,
-      question.definitely_appear = req.body.definitely_appear
-      question.save()
-        .then(() => res.json({success: true}))
-        .catch(err => res.json({success: false}))
-    })
-    .catch(err => res.status(404).json({ success: false }));
-});
-
-// @route   DELETE api/questions/:id
-// @desc    Delete A Question
-// @access  Public
-router.delete('/:id', (req, res) => {
-  Question.findById(req.params.id)
-    .then(question => question.remove().then(() => res.json({ success: true })))
-    .catch(err => res.status(404).json({ success: false }));
-});
-
 
 module.exports = router;

@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 // Question Model
-const Member = require('../../models/Member');
+const Member = require('../../../models/Member');
 
 // @route   GET api/member/admin
 // @accept  query: member_id
