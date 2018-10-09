@@ -407,10 +407,10 @@
 
 <script>
 // Api
-import TestApi from '@/Api/User/Test';
-import TestResultApi from '@/Api/User/TestResult';
-import QuestionApi from '@/Api/User/Question';
-import MemberApi from '@/Api/User/Member';
+import TestApi from '@/api/User/Test';
+import TestResultApi from '@/api/User/TestResult';
+import QuestionApi from '@/api/User/Question';
+import MemberApi from '@/api/User/Member';
 
 
 // Components
