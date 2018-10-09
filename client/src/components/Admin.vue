@@ -2,10 +2,19 @@
   <div class="page-container">
     <md-app md-waterfall md-mode="fixed" class="md-scrollbar">
       <md-app-toolbar class="md-primary">
-        <md-button class="md-icon-button" @click="menuVisible = !menuVisible" v-if="!menuVisible">
-          <md-icon>menu</md-icon>
-        </md-button>
-        <span class="md-title">Admin</span>
+        <div class="md-toolbar-section-start">
+          <md-button class="md-icon-button" @click="menuVisible = !menuVisible" v-if="!menuVisible">
+            <md-icon>menu</md-icon>
+          </md-button>
+          <span class="md-title">Admin</span>
+        </div>
+        <div v-if="user" class="md-toolbar-section-end" style="text-align: right;">
+          <md-avatar class="md-small" style="margin: 0; margin-right: 12px;">
+            <img v-if="!user.avatar_url || user.avatar_url == ''" src="../assets/img/ava_default.png">
+            <img v-else :src="user.avatar_url">
+          </md-avatar>
+            {{user.first_name}} {{user.last_name}}
+        </div>
       </md-app-toolbar>
 
       <md-app-drawer :md-active.sync="menuVisible" md-persistent="mini">
@@ -65,7 +74,13 @@ export default {
   name: 'Admin',
   data () {
     return {
-      menuVisible : false
+      menuVisible : false,
+      user: null
+    }
+  },
+  mounted () {
+    if (localStorage.getItem('member') != null) {
+      this.user = JSON.parse(localStorage.getItem('member'));
     }
   },
   components : {

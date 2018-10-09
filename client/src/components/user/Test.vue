@@ -407,9 +407,11 @@
 
 <script>
 // Api
-import TestApi from '@/Api/User/TestApi';
+import TestApi from '@/Api/User/Test';
+import TestResultApi from '@/Api/User/TestResult';
 import QuestionApi from '@/Api/User/Question';
 import MemberApi from '@/Api/User/Member';
+
 
 // Components
 import 'epic-spinners/dist/lib/epic-spinners.min.css';
@@ -580,7 +582,7 @@ export default {
             arr[index] = quest;
             if (index == self.testQuests.length - 1) {
                 self.isSubmitting = false;
-                TestApi.createNewAnswer(self.code, self.user._id, self.module, self.totalCorrect, self.answeredQuests.length, incorrectAnswers);
+                TestResultApi.createNewAnswer(self.code, self.user._id, self.module, self.totalCorrect, self.answeredQuests.length, incorrectAnswers);
             }
         }
       })

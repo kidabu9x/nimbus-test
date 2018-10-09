@@ -1,14 +1,12 @@
 
 import Api from '@/api/User'
 
-let baseUrl = 'test';
+let baseUrl = 'test-results';
 
 export default {
-    checkCode(keyClass) {
-        return Api().get(`${baseUrl}/${keyClass}`);
-    },
+    
     createNewAnswer(keyClass, member_id, module, totalCorrect, totalQuestions, incorrectAnswers) {
-        Api().post(`/api/test-result`, {
+        Api().post(`${baseUrl}`, {
             test_code           : keyClass,
             member_id           : member_id,
             module              : module,

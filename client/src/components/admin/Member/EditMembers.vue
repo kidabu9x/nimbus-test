@@ -37,9 +37,9 @@
         </div>
         <div class="md-layout-item">
             <md-field>
-                <label>Tên đăng nhập</label>
+                <label>Biệt danh</label>
                 <md-input type="text" v-model="member.username"></md-input>
-                <span class="md-helper-text">Sử dụng đăng nhập thay cho email</span>
+                <span class="md-helper-text">Hiển thị thay thế cho họ và tên</span>
             </md-field>
         </div>
         <div class="md-layout-item">

@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const jwt = require('jsonwebtoken');
+const secret = require('../../config.json').secret;
 
 // Question Model
 const Member = require('../../models/Member');
@@ -127,9 +129,10 @@ router.post('/auth', (req, res) => {
     })
         .then(member => {
             if (member) {
-                res.json({is_match : true, member : member});
+                let token = jwt.sign({ id: member._id }, secret, {expiresIn: 86400});
+                res.status(200).send({ auth: true, token: token, member: member })
             } else {
-                res.json({is_match : false});
+                res.json({auth : false});
             }
         });
 });

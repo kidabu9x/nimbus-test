@@ -10,4 +10,7 @@ router.use('/member', member);
 const test = require('./user/test');
 router.use('/test', test);
 
+const testResult = require('./user/testResult');
+router.use('/test-results', testResult);
+
 module.exports = router;

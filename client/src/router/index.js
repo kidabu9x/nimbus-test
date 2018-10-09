@@ -31,7 +31,7 @@ import Homepage from '@/components/user/Homepage';
 
 Vue.use(Router)
 
-export default new Router({
+let router = new Router({
   mode: 'history',
   routes: [
     {
@@ -64,6 +64,9 @@ export default new Router({
       path: '/admin',
       name: 'admin',
       component: Admin,
+      meta : {
+        requiresAuth: true
+      },
       children: [
         {
           path: 'questions',
@@ -122,4 +125,21 @@ export default new Router({
     }
     
   ]
-})
+});
+
+router.beforeEach((to, from, next) => {
+  if(to.matched.some(record => record.meta.requiresAuth)) {
+    if (localStorage.getItem('jwt') == null) {
+        next({
+            path: '/admin/auth',
+            query: { nextUrl: to.fullPath }
+        });
+    } else {
+        next();
+    }
+  } else {
+    next() 
+  }
+});
+
+export default router;

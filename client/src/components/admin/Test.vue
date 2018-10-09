@@ -107,7 +107,9 @@
 // Api
 import TestApi from "@/api/Admin/Test";
 import ResultApi from "@/api/Admin/TestResult";
-import MemberApi from '@/api/Admin/Member';
+import MemberApi from "@/api/Admin/Member";
+
+console.log(ResultApi);
 
 // Components
 import NewTest from "@/components/admin/Test/NewTest";
@@ -125,11 +127,13 @@ export default {
       teachers: [],
       currentTest: null,
       openConfirmDelete: false
-    };
+    }
+  },
+  created () {
+    this.fetchTeachers();
   },
   mounted() {
     this.fetchTests();
-    this.fetchTeachers();
   },
   computed: {
       filteredList() {
@@ -137,17 +141,6 @@ export default {
             return [];
         }
         return this.testClass.filter(test => {
-            // if (this.teacher && this.search != '') {
-            //     return test.name.toLowerCase().indexOf(this.search.toLowerCase()) > -1 && test.teacher_name == this.teacher;
-            // } else if (this.teacher && this.teacher != 'all') {
-            //     return test.teacher_name == this.teacher;
-            // } else if (this.teacher && this.teacher != 'all') {
-            //     return test;
-            // } else if (this.search != '') {
-            //     return test.name.toLowerCase().indexOf(this.search.toLowerCase()) > -1;
-            // } else {
-            //     return true;
-            // }
             return true;
         })
       }
@@ -185,18 +178,30 @@ export default {
         if (response.data) {
             this.noticeSuccess('Xoá thành công !');
             this.testClass.splice(this.testClass.findIndex(e => e._id == this.currentTest._id), 1);
+            this.deleteResults();
         } else {
             this.noticeError('Xoá thất bại !');
         }
+    },
+    async deleteResults() {
+        let response = await ResultApi.deleteResults(this.currentTest.handle);
     },
     async updateTest(code, updateField){
         let response = await TestApi.updateTest(code, updateField);
         this.noticeSuccess(response.data.msg);
     },
     getFullTeacherName (teacherId) {
-        let teacher = this.teachers.find(e => e._id == teacherId);
-
-        return teacher.first_name + ' ' + teacher.last_name;
+        let teacher = this.teachers.find(e => e._id == `${teacherId}`);
+        if (teacher) {
+            if (teacher.username) {
+                return teacher.username;
+            } else {
+                return teacher.first_name + ' ' + teacher.last_name;
+            }
+        } else {
+            return '';
+        }
+        
     },
     noticeError (msg) {
         this.$toasted.show(msg, { 

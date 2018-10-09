@@ -128,9 +128,17 @@ export default {
         this.passwordInValid = false;
         this.isChecking      = true;
         let response         = await MemberApi.auth(this.user);
-        console.log(response.data);
-        if (response.data.is_match) {
-            this.user    = response.data.member;
+        if (response.data.auth) {
+            localStorage.setItem('member',JSON.stringify(response.data.member));
+            localStorage.setItem('jwt',response.data.token);
+            if (localStorage.getItem('jwt') != null){
+                this.$emit('loggedIn');
+                if(this.$route.query.nextUrl != null){
+                    this.$router.push(this.$route.query.nextUrl);
+                } else {
+                    this.$router.push('adminQuestions');
+                }
+            }
         } else {
             this.passwordInValid   = true;
             this.errMsg         = 'Sai mật khẩu';

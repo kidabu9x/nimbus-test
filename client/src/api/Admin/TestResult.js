@@ -3,7 +3,6 @@ import Api from '@/api/Admin.js';
 const baseUrl = 'test-results';
 
 export default {
-    // --------------For Admin--------------
     countTestResults (keyClass) {
         return Api().get(`${baseUrl}/${keyClass}/count`);
     },
@@ -11,7 +10,9 @@ export default {
         return Api().get(`${baseUrl}/${keyClass}`);
     },
     getIncorrectAnswers (keyClass, answerId) {
-        return Api().get(`${baseUrl}/${keyClass}/${answerId}`);
+        return Api().get(`${baseUrl}/${keyClass}/results?id=${answerId}`);
     },
-    
+    deleteResults (keyClass) {
+        return Api().delete(`${baseUrl}/${keyClass}`);
+    }
 }

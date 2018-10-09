@@ -49,15 +49,25 @@ router.get('/:code', (req, res) => {
       });
 });
 
-// @route   GET api/admin/test-results/:code:/:id
+// @route   GET api/admin/test-results/:code
+// @desc    Remove Test Results has Pass code
+// @access  Public
+router.delete('/:code', (req, res) => {
+  TestResult.remove({ test_code : req.params.code})
+    .then(doc => {
+      res.json(doc);
+    });
+});
+
+// @route   GET api/admin/test-results/:code:/results?id=
 // @desc    Get a Test Results
 // @access  Public
-// router.get('/:code/:id', (req, res) => {
-//   TestResult.findById(req.params.id)
-//     .then(testResult => {
-//       res.json(testResult);
-//     });
-// });
+router.get('/:code/results', (req, res) => {
+  TestResult.findById(req.query.id)
+    .then(testResult => {
+      res.json(testResult);
+    });
+});
 
 // @route   GET api/admin/test-results
 // @desc    Count Test Results of a Key

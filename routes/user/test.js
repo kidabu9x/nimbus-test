@@ -6,7 +6,7 @@ const Test = require('../../models/Test');
 
 // ----------------------------------API for user---------------------------------
 
-// @route   GET api/test
+// @route   GET api/test/:code
 // @desc    Get a test
 // @access  Public
 router.get('/:code', (req, res) => {
