@@ -27,9 +27,9 @@
 </template>
 
 <script>
-import CourseApi from '@/api/Course/CourseApi';
+import CourseApi from '@/api/Admin/Course';
 export default {
-  name: 'all-courses',
+  name: 'courses',
   data () {
       return {
         isFetching: false,

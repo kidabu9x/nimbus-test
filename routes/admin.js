@@ -4,28 +4,30 @@ const router = express.Router();
 const question = require('./admin/question');
 router.use('/questions', question);
 
-// const test = require('./admin/testApi/testApi');
-// router.use('/test', test);
+const test = require('./admin/test');
+router.use('/tests', test);
+
+const testResult = require('./admin/testResult');
+router.use('/test-results', testResult);
+
+const member = require('./admin/member');
+router.use('/members', member);
+
+const course = require('./admin/course');
+router.use('/courses', course);
+
+const subject = require('./admin/subject');
+router.use('/subjects', subject);
+
+const classes = require('./admin/class');
+router.use('/classes', classes);
+
+const lession = require('./admin/lession');
+router.use('/lessions', lession);
 
 // const schedule = require('./admin/scheduleApi');
 // router.use('/schedule', schedule);
 
-// const testResult = require('./admin/testApi/testResultApi');
-// router.use('/test-result', testResult);
 
-// const member = require('./admin/memberApi');
-// router.use('/member', member);
-
-// const course = require('./admin/courseApi/courseApi');
-// router.use('/course', course);
-
-// const subject = require('./admin/courseApi/subjectApi');
-// router.use('/subject', subject);
-
-// const classes = require('./admin/courseApi/classApi');
-// router.use('/class', classes);
-
-// const lession = require('./admin/courseApi/lessionApi');
-// router.use('/lession', lession);
 
 module.exports = router;

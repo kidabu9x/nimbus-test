@@ -1,5 +1,5 @@
 import axios from 'axios';
-import ApiConfig from '@/Api/ApiConfig';
+import ApiConfig from '@/api/ApiConfig';
 
 export default () => {
   return axios.create({

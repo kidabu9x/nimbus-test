@@ -197,8 +197,8 @@
 </template>
 
 <script>
-import QuestApi from '@/api/QuestionApi'
-import shortId from 'shortid'
+import QuestApi from '@/api/Admin/Question';
+import shortId from 'shortid';
 
 // Components 
 import { Container, Draggable } from "vue-smooth-dnd";

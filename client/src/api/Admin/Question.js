@@ -1,4 +1,4 @@
-import Api from '@/Api/Admin.js'
+import Api from '@/api/Admin.js';
 
 let baseUrl = 'questions';
 

@@ -5,7 +5,9 @@ var MemberSchema = new Schema(
     {
         email: {
             type: String,
-            unique: true
+            unique: true,
+            lowercase: true,
+            trim: true
         },
         username : {
             type: String,

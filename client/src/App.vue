@@ -95,8 +95,16 @@ export default {
   height: auto;
 }
 
-.md-button div {
+.md-button:not(.md-primary):not(.md-accent) div {
   color: rgba(0,0,0, .5);
+}
+
+.md-raised.md-button.md-primary div {
+  color: #fff;
+}
+
+.md-raised.md-button.md-accent div {
+  color: #fff;
 }
 
 .no-uppercase {

@@ -2,14 +2,14 @@ const express = require('express');
 const router = express.Router();
 
 // Course Model
-const Lession = require('../../../models/Course/Lession');
+const Lession = require('../../models/Lession');
 // Test Result Model
 
 // ----------------------------------API for admin----------------------------
-// @route   GET api/lession/admin
+// @route   GET api/admin/lessions
 // @desc    Get All Lessions of a grade
 // @access  Public
-router.get('/admin', (req, res) => {
+router.get('/', (req, res) => {
     Lession.find(req.query)
         .sort({
             'start_hour' : 1
@@ -17,10 +17,10 @@ router.get('/admin', (req, res) => {
         .then(lessions => res.json(lessions));
 });
 
-// @route   Post api/lession/admin
+// @route   Post api/admin/lessions
 // @desc    Create new course
 // @access  Public
-router.post('/admin', (req, res) => {
+router.post('/', (req, res) => {
     let newLession = new Lession(req.body);
     newLession.save()
         .then(lession => res.status(200).json(lession))

@@ -94,7 +94,7 @@
 
 <script>
 // Api
-import QuestApi from "@/api/QuestionApi";
+import QuestApi from "@/api/Admin/Question";
 
 // Drag and Drop
 import { Container, Draggable } from "vue-smooth-dnd";

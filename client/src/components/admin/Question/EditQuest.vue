@@ -187,7 +187,7 @@
 </template>
 
 <script>
-import QuestApi from '@/api/QuestionApi';
+import QuestApi from '@/api/Admin/Question';
 import shortId from 'shortid';
 
 // Components 

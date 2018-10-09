@@ -17,10 +17,10 @@
 
 <script>
 // Api
-import CourseApi from '@/api/Course/CourseApi';
-import ClassApi from '@/api/Course/ClassApi';
-import LessionApi from '@/api/Course/LessionApi';
-import SubjectApi from '@/api/Course/SubjectApi';
+import CourseApi from '@/api/Admin/Course';
+import ClassApi from '@/api/Admin/Class';
+import LessionApi from '@/api/Admin/Lession';
+import SubjectApi from '@/api/Admin/Subject';
 
 // External functions
 

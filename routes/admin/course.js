@@ -1,34 +1,32 @@
 const express = require('express');
 const router = express.Router();
-const shortId = require('shortid');
 
 // Course Model
-const Course = require('../../../models/Course/Course');
+const Course = require('../../models/Course');
 // Test Result Model
 
-// ----------------------------------API for admin----------------------------
-// @route   GET api/course/admin
+// @route   GET api/admin/course
 // @desc    Get All Courses
 // @access  Public
-router.get('/admin', (req, res) => {
+router.get('/', (req, res) => {
     Course.find(req.query)
         .then(courses => res.json(courses));
 });
 
-// @route   GET api/course/admin/handle
+// @route   GET api/admin/course/handle
 // @desc    Get one Course by it's handle
 // @access  Public
-router.get('/admin/:handle', (req, res) => {
+router.get('/:handle', (req, res) => {
     Course.findOne({
         handle : req.params.handle
     })
         .then(course => res.json(course));
 });
 
-// @route   Post api/course/admin
+// @route   Post api/admin/course
 // @desc    Create new course
 // @access  Public
-router.post('/admin', (req, res) => {
+router.post('/', (req, res) => {
     let newCourse = new Course({
         name                        : req.body.name,
         description                 : req.body.description,
@@ -50,10 +48,10 @@ router.post('/admin', (req, res) => {
         }));
 });
 
-// @route   Put api/course/admin
+// @route   Put api/admin/course
 // @desc    Update a course
 // @access  Public
-router.put('/admin', (req, res) => {
+router.put('/', (req, res) => {
     Course.findById(req.body._id)
         .then(course => {
             course.description                  = req.body.description;

@@ -89,8 +89,9 @@
 
 <script>
 // Api
-import TestApi from '@/api/TestApi';
-import MemberApi from '@/api/MemberApi';
+import TestApi from "@/api/Admin/Test";
+import TestResultApi from "@/api/Admin/TestResult";
+import MemberApi from '@/api/Admin/Member';
 
 // Components
 export default {
@@ -107,7 +108,7 @@ export default {
   methods: {
     async getTestResults () {
         this.isFetching = true;
-        const response = await TestApi.getTestResults(this.$route.params.handle);
+        const response = await TestResultApi.getTestResults(this.$route.params.handle);
         console.log(response.data);
         let data = response.data;
         this.testResults = response.data.map(e => {

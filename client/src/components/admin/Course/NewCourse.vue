@@ -83,7 +83,8 @@
 
 <script>
 // Api
-import CourseApi from '@/api/Course/CourseApi';
+import CourseApi from '@/api/Admin/Course';
+
 // External functions
 
 export default {

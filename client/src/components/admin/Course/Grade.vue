@@ -13,10 +13,12 @@
 
 <script>
 // Api
-import CourseApi from '@/api/Course/CourseApi';
-import ClassApi from '@/api/Course/ClassApi';
-import LessionApi from '@/api/Course/LessionApi';
-import MemberApi from '@/api/MemberApi';
+import CourseApi from '@/api/Admin/Course';
+import ClassApi from '@/api/Admin/Class';
+import LessionApi from '@/api/Admin/Lession';
+import SubjectApi from '@/api/Admin/Subject';
+import MemberApi from '@/api/Admin/Member';
+
 
 // Components
 export default {

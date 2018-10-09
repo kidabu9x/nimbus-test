@@ -9,7 +9,7 @@
                 <md-autocomplete 
                   v-model="search" 
                   :md-options="searched" 
-                  @md-changed="getContent" 
+                  @md-changed="getContent"
                   @md-selected="editSearchedQuestion"
                   @md-opened="getContent"
                 >
@@ -126,7 +126,7 @@
 
 <script>
 // Api
-import QuestAction from "@/api/QuestionApi";
+import QuestApi from "@/api/Admin/Question";
 
 // Components
 import NewQuest from "@/components/admin/Question/NewQuest";
@@ -158,11 +158,11 @@ export default {
   },
   methods: {
     async countTotalQuestion (module) {
-      const response = await QuestAction.countTotalQuestion(module);
+      const response = await QuestApi.countTotalQuestion(module);
       this.pageCount = Math.ceil(Number(response.data)/this.perPage);
     },
     async fetchQuestions(page, perPage, module) {
-      const response = await QuestAction.fetchQuestions(page, perPage, module);
+      const response = await QuestApi.fetchQuestions(page, perPage, module);
       this.questions = response.data;
     },
     goToPage (pageNum) {
@@ -178,7 +178,7 @@ export default {
       this.openDeleteConfirm = true;
     },
     async confirmDelete(question) {
-      const response = await QuestAction.deleteQuestion(question._id);
+      const response = await QuestApi.deleteQuestion(question._id);
       if (response) {
         this.fetchQuestions(this.currentPage, this.perPage, this.module);
         this.openDeleteConfirm = false;
@@ -186,7 +186,7 @@ export default {
     },
     getContent (searchTerm) {
       this.searched = new Promise(async function (resolve) {
-        let response = await QuestAction.searchContent(searchTerm ? searchTerm : '');
+        let response = await QuestApi.searchContent(searchTerm ? searchTerm : '');
         resolve(response.data);
       })
     },

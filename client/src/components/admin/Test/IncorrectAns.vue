@@ -78,8 +78,9 @@
 
 <script>
 // Api
-import TestApi from '@/api/TestApi';
-import MemberApi from '@/api/MemberApi';
+import TestApi from "@/api/Admin/Test";
+import TestResultApi from "@/api/Admin/TestResult";
+import MemberApi from '@/api/Admin/Member';
 
 // Components
 
@@ -101,7 +102,7 @@ export default {
   methods: {
     async getIncorrectAnswers () {
         this.isFetching = true;
-        const response = await TestApi.getIncorrectAnswers(this.$route.params.handle, this.$route.params.answerId);
+        const response = await TestResultApi.getIncorrectAnswers(this.$route.params.handle, this.$route.params.answerId);
         this.result = response.data;
         this.result.incorrect_answers.sort((e1, e2) => {
             return e1.index - e2.index;

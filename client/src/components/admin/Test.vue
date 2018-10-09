@@ -105,8 +105,9 @@
 </template>
 <script>
 // Api
-import TestApi from "@/api/TestApi";
-import MemberApi from '@/api/MemberApi';
+import TestApi from "@/api/Admin/Test";
+import ResultApi from "@/api/Admin/TestResult";
+import MemberApi from '@/api/Admin/Member';
 
 // Components
 import NewTest from "@/components/admin/Test/NewTest";
@@ -169,7 +170,7 @@ export default {
         for (let test of this.testClass) {
             countResult();
             async function countResult () {
-                let response = await TestApi.countTestResults(test.handle);
+                let response = await ResultApi.countTestResults(test.handle);
                 test.total_result = response.data;
                 test.is_fetching_result = false;
             }

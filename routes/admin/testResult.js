@@ -2,14 +2,14 @@ const express = require('express');
 const router = express.Router();
 
 // Test Result Model
-const TestResult = require('../../../models/TestResult');
+const TestResult = require('../../models/TestResult');
 
 // ----------------------------------API for admin----------------------------
 
-// @route   GET api/test-result/admin/:code
+// @route   GET api/admin/test-results/:code
 // @desc    Get All Test Results
 // @access  Public
-router.get('/admin/:code', (req, res) => {
+router.get('/:code', (req, res) => {
     TestResult.find({ test_code : req.params.code}, {
       createdAt: 1,
       module: 1,
@@ -49,40 +49,23 @@ router.get('/admin/:code', (req, res) => {
       });
 });
 
-// @route   GET api/test-result/admin/:code:/:id
+// @route   GET api/admin/test-results/:code:/:id
 // @desc    Get a Test Results
 // @access  Public
-router.get('/admin/:code/:id', (req, res) => {
-  TestResult.findById(req.params.id)
-    .then(testResult => {
-      res.json(testResult);
-    });
-});
+// router.get('/:code/:id', (req, res) => {
+//   TestResult.findById(req.params.id)
+//     .then(testResult => {
+//       res.json(testResult);
+//     });
+// });
 
-// @route   GET api/test-result/admin
+// @route   GET api/admin/test-results
 // @desc    Count Test Results of a Key
 // @access  Public
-router.get('/admin/:code/count', (req, res) => {
+router.get('/:code/count', (req, res) => {
   TestResult.countDocuments({ test_code : req.params.code})
     .then(count => res.json(count));
 });
-
-// @route   POST  api/test-result
-// @desc    Create A Test Result
-// @access  Public
-router.post('/', (req, res) => {
-  const newTestResult = new TestResult({
-    test_code           : req.body.test_code,
-    member_id           : req.body.member_id,
-    module              : req.body.module,
-    total_corrects      : req.body.total_corrects,
-    total_questions     : req.body.total_questions,
-    score               : Math.floor(req.body.total_corrects*(1000/req.body.total_questions)),
-    incorrect_answers   : req.body.incorrect_answers
-  });
-  newTestResult.save();
-});
-
 
 // ----------------------------------End API for user----------------------------
 

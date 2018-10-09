@@ -3,7 +3,7 @@
     <md-app md-mode="reveal">
         <md-app-toolbar md-elevation="1" class="page-navbar">
             <div class="md-toolbar-section-start">
-                <img src="../../assets/nimbus_logo.png" width="75px;">
+                <img src="../assets/nimbus_logo.png" width="75px;">
                 <md-button class="no-uppercase">Trang chủ</md-button>
                 <md-button class="no-uppercase">Các khoá học</md-button>
                 <md-button class="no-uppercase">Test Online</md-button>
@@ -23,7 +23,7 @@
         <div class="page-footer-content md-layout-item md-size-100">
             <div class="page-footer-element md-layout md-gutter">
                 <div class="md-layout-item">
-                    <img src="../../assets/nimbus_logo.png" width="75px;" style="margin-right: 20px;">
+                    <img src="../assets/nimbus_logo.png" width="75px;" style="margin-right: 20px;">
                     <span class="md-body-1">Copyright © 2018 Nimbus Corp.</span>
                 </div>
                 <div class="md-layout-item" style="text-align: right;">

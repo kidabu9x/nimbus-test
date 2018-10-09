@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 // Test Model
-const Test = require('../../models/TestClass');
+const Test = require('../../models/Test');
 
 // ----------------------------------API for user---------------------------------
 

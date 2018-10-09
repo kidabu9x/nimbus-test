@@ -5,7 +5,7 @@
 </template>
 <script>
 //Api
-import ScheduleApi from "@/api/ExamScheduleApi";
+// import ScheduleApi from "@/api/ExamScheduleApi";
 
 //Components
 export default {

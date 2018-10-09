@@ -2,13 +2,13 @@ const express = require('express');
 const router = express.Router();
 
 // Question Model
-const Member = require('../../../models/Member');
+const Member = require('../../models/Member');
 
-// @route   GET api/member/admin
+// @route   GET api/admin/member
 // @accept  query: member_id
 // @desc    Get members
 // @access  Public
-router.get('/admin', (req, res) => {
+router.get('/', (req, res) => {
     if (req.query.member_id) {
         Member.findById(req.query.member_id)
             .then(members => res.json(members));
@@ -22,11 +22,10 @@ router.get('/admin', (req, res) => {
     }
 });
 
-
-// @route   GET api/member/admin/teachers
+// @route   GET api/admin/member/teachers
 // @desc    Get teacher
 // @access  Public
-router.get('/admin/teachers', (req, res) => {
+router.get('/teachers', (req, res) => {
     Member.find({
         role : {
             $in: ['general_manager', 'teacher']
@@ -35,10 +34,10 @@ router.get('/admin/teachers', (req, res) => {
         .then(members => res.json(members));
 });
 
-// @route   POST api/member/admin
+// @route   POST api/admin/member
 // @desc    Create new Member
 // @access  Public
-router.post('/admin', (req, res) => {
+router.post('/', (req, res) => {
   const newMember = new Member({
     email           : req.body.email,
     password        : req.body.password ? req.body.password : 'nimbus123',
@@ -48,10 +47,10 @@ router.post('/admin', (req, res) => {
   newMember.save().then(member => res.json(member));
 });
 
-// @route   UPDATE api/member/admin
+// @route   UPDATE api/admin/member
 // @desc    Update A Member
 // @access  Public
-router.put('/admin', (req, res) => {
+router.put('/', (req, res) => {
     Member.findById(req.body._id)
     .then(member => {
         member.username        = req.body.username,
@@ -79,32 +78,60 @@ router.put('/admin', (req, res) => {
     .catch(err => res.status(404).json({ success: false }));
 });
 
-// @route   DELETE api/member/admin/:id
+// @route   DELETE api/admin/member/:id
 // @desc    Delete A Member
 // @access  Public
-router.delete('/admin/:id', (req, res) => {
+router.delete('/:id', (req, res) => {
     Member.findById(req.params.id)
     .then(member => member.remove().then(() => res.json({ success: true })))
     .catch(err => res.status(404).json({ success: false }));
 });
 
-// @route   GET api/member/admin/check-member?email=memberEmail
+// @route   GET api/admin/member/check-member?email=memberEmail
 // @desc    Check A Member Exist
 // @access  Public
-router.get('/admin/check-member', (req, res) => {
-    console.log(req.query.email);
+router.get('/check-member', (req, res) => {
     Member.findOne({
-        email : req.query.email
+        email : req.query.email,
+        role : {
+            $nin: ['student']
+        }
     })
     .then(member => {
-        console.log(member);
         if (member) {
-            res.json({ is_match: true, member: member });
+            res.json({ 
+                is_match: true,
+                member : {
+                    first_name  : member.first_name,
+                    last_name   : member.last_name,
+                    avatar_url  : member.avatar_url
+                } 
+            });
         } else {
             res.json({ is_match: false });
         }
     })
     .catch(err => res.json({ is_match: false }));
+});
+
+// @route   GET api/admin/member/auth
+// @desc    Post Login
+// @access  Public
+router.post('/auth', (req, res) => {
+    Member.findOne({
+        email: (req.body.email).toLowerCase(),
+        password: req.body.password,
+        role : {
+            $nin: ['student']
+        }
+    })
+        .then(member => {
+            if (member) {
+                res.json({is_match : true, member : member});
+            } else {
+                res.json({is_match : false});
+            }
+        });
 });
 
 

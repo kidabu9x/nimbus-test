@@ -37,7 +37,9 @@
 </template>
 <script>
 // Api
-import TestApi from "@/api/TestApi";
+import TestApi from "@/api/Admin/Test";
+import TestResultApi from "@/api/Admin/TestResult";
+import MemberApi from '@/api/Admin/Member';
 
 export default {
   name: "test",

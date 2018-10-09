@@ -56,7 +56,7 @@
 </template>
 <script>
 // Api
-import MemberApi from "@/api/MemberApi";
+import MemberApi from "@/api/Admin/Member";
 
 // Components
 export default {

@@ -1,5 +1,5 @@
 
-import Api from '@/Api/User.js'
+import Api from '@/api/User'
 
 let baseUrl = 'test';
 

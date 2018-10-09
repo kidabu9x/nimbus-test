@@ -54,7 +54,7 @@
     
     <md-dialog :md-active.sync="openNewDialog">
       <md-dialog-title>
-          <img src="../../../assets/nimbus_logo.png" width="50px">
+          <img src="../../assets/nimbus_logo.png" width="50px">
           <p>Tạo Tài khoản Nimbus</p>
       </md-dialog-title>
       <md-content class="md-scrollbar" style="overflow-y: scroll;">
@@ -63,7 +63,7 @@
     </md-dialog>
     <md-dialog :md-active.sync="openEditDialog" v-if="currentMember">
       <md-dialog-title>
-          <img src="../../../assets/nimbus_logo.png" width="50px">
+          <img src="../../assets/nimbus_logo.png" width="50px">
           <p>Cập nhật thông tin tài khoản</p>
       </md-dialog-title>
       <md-content class="md-scrollbar" style="overflow-y: scroll;">
@@ -74,7 +74,7 @@
 </template>
 <script>
 // Api
-import MemberApi from "@/api/MemberApi";
+import MemberApi from "@/api/Admin/Member";
 
 // Components
 import NewMember from "@/components/admin/Member/NewMembers";

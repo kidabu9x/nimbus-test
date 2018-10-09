@@ -6,7 +6,7 @@ const ExamSchedule = require('../../../models/ExamSchedule');
 
 
 // ----------------------------------API for admin----------------------------
-// @route   GET api/test/admin
+// @route   GET api/admin/schedules
 // @desc    Get All Tests
 // @access  Public
 router.get('/admin', (req, res) => {
@@ -16,7 +16,7 @@ router.get('/admin', (req, res) => {
         });
 });
 
-// @route   GET api/test/admin
+// @route   GET api/admin/schedules
 // @desc    Get All Tests
 // @access  Public
 router.get('/admin/:handle', (req, res) => {
@@ -24,7 +24,7 @@ router.get('/admin/:handle', (req, res) => {
         .then(test => res.json(test));
 });
 
-// @route   POST  api/test/admin
+// @route   POST  api/admin/schedules
 // @desc    Create A Test
 // @access  Public
 router.post('/admin', (req, res) => {
@@ -39,7 +39,7 @@ router.post('/admin', (req, res) => {
   newTest.save().then(test => res.json(test));
 });
 
-// @route   UPDATE  api/test/admin
+// @route   UPDATE  api/admin/schedules
 // @desc    Update A Test
 // @access  Public
 router.put('/admin/:key', (req, res) => {

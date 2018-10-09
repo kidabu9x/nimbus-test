@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import SubjectApi from '@/api/Course/SubjectApi';
+import SubjectApi from '@/api/Admin/Subject';
 export default {
   name: 'HelloWorld',
   data () {
