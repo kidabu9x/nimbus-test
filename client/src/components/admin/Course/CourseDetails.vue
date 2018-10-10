@@ -4,7 +4,7 @@
             <enrollments :course="course" :classes="classes" :subjects="subjects"></enrollments>
         </md-tab>
         <md-tab id="tab-classes" md-label="Các lớp học">
-            <classes :course="course" :classes="classes"></classes>
+            <class :course="course" :classes="classes"></class>
         </md-tab>
         <md-tab id="tab-schedule" md-label="Lịch học">
             <schedules :lessions="lessions" :classes="classes" :teachers="teachers"></schedules>
@@ -24,8 +24,9 @@ import MemberApi from '@/api/Admin/Member';
 
 // Components
 import Enrollments from '@/components/admin/Course/Enrollments';
-import Classes from '@/components/admin/Course/Classes';
+import Class from '@/components/admin/Course/Class';
 import Schedules from '@/components/admin/Course/Schedules';
+
 export default {
   name: 'all-courses',
   data () {
@@ -115,7 +116,7 @@ export default {
     }
   },
   components: {
-    Classes,
+    Class,
     Schedules,
     Enrollments
   },

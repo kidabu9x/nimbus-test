@@ -28,6 +28,7 @@ import SubjectApi from '@/api/Admin/Subject';
 import { FullCalendar } from 'vue-full-calendar';
 import 'fullcalendar/dist/fullcalendar.min.css';
 import 'fullcalendar/dist/locale/vi';
+
 export default {
   name: 'course-schedules',
   props : ['lessions', 'classes', 'teachers'],

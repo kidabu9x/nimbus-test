@@ -72,6 +72,7 @@
     "vue-style-loader": "^3.0.1",
     "vue-template-compiler": "^2.5.17",
     "vue-toasted": "^1.1.24",
+    "vue2-dropzone": "^3.5.2",
     "vuejs-dialog": "^0.9.0",
     "vuejs-paginate": "^2.0.1",
     "webpack": "^3.12.0",
