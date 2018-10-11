@@ -5,7 +5,7 @@ const question = require('./user/question');
 router.use('/questions', question);
 
 const member = require('./user/member');
-router.use('/member', member);
+router.use('/members', member);
 
 const test = require('./user/test');
 router.use('/test', test);

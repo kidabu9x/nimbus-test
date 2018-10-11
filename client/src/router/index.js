@@ -11,7 +11,6 @@ import Questions from '@/components/admin/Questions';
 import AdminTests from '@/components/admin/Test';
 import AdminTestResults from '@/components/admin/Test/TestResults';
 import IncorrectAns from '@/components/admin/Test/IncorrectAns';
-import ExamSchedules from '@/components/admin/ExamSchedule/Schedule';
 // --Members
 import Member from '@/components/admin/Members';
 // --Course
@@ -87,10 +86,6 @@ let router = new Router({
           path: 'tests/:handle/:answerId',
           name: 'adminTestIncorrectAns',
           component: IncorrectAns
-        },
-        {
-          path: 'schedules',
-          component: ExamSchedules
         },
         {
           path: 'members',
