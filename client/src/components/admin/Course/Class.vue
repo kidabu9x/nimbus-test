@@ -56,7 +56,7 @@
                         <div v-else>
                             <strong class="md-empty-state-label">Chưa có đăng ký</strong>
                             <div class="md-empty-state-description">
-                                <md-button class="md-primary" @click="$modal.show('importExcelFile')">
+                                <md-button class="md-primary" @click="showImportModal">
                                     Nhập File Excel
                                 </md-button>
                                 <span style="line-height: 50px;">hoặc</span>
@@ -91,11 +91,6 @@
                         </md-table-cell>
                     </md-table-row>
                 </md-table>
-            </div>
-            <div class="md-layout-item md-size-100">
-                <vmodal name="importExcelFile">
-                    <import-enrollments></import-enrollments>
-                </vmodal>
             </div>
            </div>
        </div>
@@ -144,10 +139,16 @@ export default {
     },
     test (fileList) {
     },
-    
+    showImportModal () {
+        this.$modal.show(ImportEnrollments,null, {
+            name: 'import-excel-file',
+            resizable: true,
+            height: 'auto',
+            adaptive: true
+        })
+    }
   },
   components: {
-      ImportEnrollments
   },
 }
 </script>

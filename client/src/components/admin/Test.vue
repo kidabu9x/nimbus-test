@@ -109,7 +109,6 @@ import TestApi from "@/api/Admin/Test";
 import ResultApi from "@/api/Admin/TestResult";
 import MemberApi from "@/api/Admin/Member";
 
-console.log(ResultApi);
 
 // Components
 import NewTest from "@/components/admin/Test/NewTest";

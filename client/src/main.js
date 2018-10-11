@@ -24,7 +24,10 @@ Vue.use(Toasted);
 Vue.use(VueScrollTo);
 
 Vue.use(VueMaterial);
-Vue.use(VModal, { componentName: 'vmodal' });
+Vue.use(VModal, {
+  dynamic: true,
+  injectModalsContainer: true
+});
 
 
 
