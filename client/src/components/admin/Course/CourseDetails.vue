@@ -1,13 +1,13 @@
 <template>
     <md-tabs md-alignment="centered">
-        <md-tab id="tab-enroll" md-label="Tuyển sinh">
-            <enrollments :course="course" :classes="classes" :subjects="subjects"></enrollments>
-        </md-tab>
         <md-tab id="tab-classes" md-label="Các lớp học">
-            <class :course="course" :classes="classes"></class>
+            <class :course="course" :teachers="teachers"></class>
+        </md-tab>
+        <md-tab id="tab-enroll" md-label="Tuyển sinh">
+            <!-- <enrollments :course="course" :teachers="teachers" :subjects="subjects"></enrollments> -->
         </md-tab>
         <md-tab id="tab-schedule" md-label="Lịch học">
-            <schedules :lessions="lessions" :classes="classes" :teachers="teachers"></schedules>
+            <!-- <schedules :course="course" :teachers="teachers"></schedules> -->
         </md-tab>
     </md-tabs>
 </template>
@@ -23,7 +23,7 @@ import MemberApi from '@/api/Admin/Member';
 // External functions
 
 // Components
-import Enrollments from '@/components/admin/Course/Enrollments';
+import Enrollments from '@/components/admin/Course/CourseEnrollments';
 import Class from '@/components/admin/Course/Class';
 import Schedules from '@/components/admin/Course/Schedules';
 
@@ -32,15 +32,11 @@ export default {
   data () {
       return {
         course : {},
-        classes: [],
-        lessions: [],
-        subjects: [],
-        teachers : []
+        teachers: []
       }
   },
   created () {
       this.fetchCourseDetail();
-      this.fetchSubjects();
       this.fetchTeachers();
   },
   mounted () {
@@ -52,7 +48,6 @@ export default {
             handle: this.$route.params.handle
         });
         this.course = response.data[0];
-        this.fetchClasses();
     },
     async fetchClasses () {
         let response = await ClassApi.fetchClasses({
@@ -65,7 +60,6 @@ export default {
         this.fetchLessions();
     },
     async fetchLessions () {
-        let colors = ["#240d00", "#f28500", "#ffca00", "#648e00", "#005100"];
         for (let e of this.classes) {
             let response = await LessionApi.fetchLessions({
                 class_id: e._id
@@ -85,7 +79,7 @@ export default {
                     textColor       : 'white',
                     backgroundColor : new Date(lession.start_hour).getTime() < new Date().getTime() ? '#dedede' : '#1f7347',
                     borderColor     : new Date(lession.start_hour).getTime() < new Date().getTime() ? '#dedede' : '#1f7347',
-                })
+                });
             }
             e.is_fetching_lession = false;
         }

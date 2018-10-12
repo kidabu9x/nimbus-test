@@ -3,6 +3,7 @@ const router = express.Router();
 
 // Course Model
 const Class = require('../../models/Class');
+const Lession = require('../../models/Lession');
 // Test Result Model
 
 // @route   GET api/admin/class/fetch-all/:courseId
@@ -50,6 +51,17 @@ router.put('/', (req, res) => {
     Class.findById(req.body._id)
         .then(doc => {
             doc.is_recruit = req.body.is_recruit;
+            if (!doc.main_teacher_id || (doc.main_teacher_id != req.body.main_teacher_id)) {
+                doc.main_teacher_id = req.body.main_teacher_id;
+                Lession.find({
+                    class_id : req.body._id
+                }).then(lessions => {
+                    lessions.forEach(lession => {
+                        lession.teacher_id = req.body.main_teacher_id;
+                        lession.save();
+                    });
+                });
+            }
             doc.save()
                 .then(e => res.status(200).json(e));
         })

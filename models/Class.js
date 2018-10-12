@@ -13,6 +13,10 @@ var ClassSchema = new Schema(
             required: true,
             trim: true
         },
+        main_teacher_id : {
+            type: String,
+            default: null
+        },
         course_id : {
             type: String
         },

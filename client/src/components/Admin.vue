@@ -34,15 +34,16 @@
             <md-tooltip v-if="!menuVisible" md-direction="right">Bảng điều khiển</md-tooltip>
           </md-list-item>
           <md-list-item to="/admin/courses">
-            <md-icon>assignment_turned_in</md-icon>
+            <md-icon>layers</md-icon>
             <span class="md-list-item-text">Tuyển sinh khóa học</span>
             <md-tooltip v-if="!menuVisible" md-direction="right">Tuyển sinh khóa học</md-tooltip>
           </md-list-item>
-          <!-- <md-list-item to="/admin/classes">
-            <md-icon>layers</md-icon>
-            <span class="md-list-item-text">Lớp học</span>
-            <md-tooltip v-if="!menuVisible" md-direction="right">Lớp học</md-tooltip>
-          </md-list-item> -->
+          <md-list-item>
+            <md-icon>assignment_turned_in</md-icon>
+            <span class="md-list-item-text">Chấm công giảng viên</span>
+            <md-tooltip v-if="!menuVisible" md-direction="right">Chấm công giảng viên</md-tooltip>
+          </md-list-item>
+          
           <md-list-item to="/admin/members">
             <md-icon>how_to_reg</md-icon>
             <span class="md-list-item-text">Thành viên</span>

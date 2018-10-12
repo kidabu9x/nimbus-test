@@ -1,7 +1,10 @@
 <template>
   <div class="md-layout">
-   <div class="md-layout-item md-size-100" style="text-align: center;">
-        <md-chip v-for="obj in classes" :key="obj._id" md-clickable @click="changeClass(obj)" 
+   <div v-if="fetchingClasses" class="md-layout-item md-size-100" style="text-align: center;">
+       <md-progress-spinner class="md-accent" :md-diameter="30" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
+   </div>
+   <div v-else class="md-layout-item md-size-100" style="text-align: center;">
+        <md-chip v-for="obj in classes" :key="obj._id" md-clickable @click="currentClass = JSON.parse(JSON.stringify(obj))" 
             :class="{
                 'md-primary' : currentClass && currentClass._id == obj._id
             }"
@@ -33,65 +36,29 @@
                         </md-list>
                     </md-card>
                 </div>
+                <div class="md-layout-item md-size-100" style="margin-top: 20px;">
+                    <div class="md-layout md-gutter">
+                        <div class="md-layout-item">
+                            <class-main-teacher :currentClass="currentClass" :teachers="teachers" @update-class="updateClass"></class-main-teacher>
+                        </div>
+                        <div class="md-layout-item">
+                            <md-card>
+                                <md-card-content>
+                                    <div class="md-body-1">Sĩ số lớp</div>
+                                    <div class="md-display-3" style="width: 100%; text-align: right;">0</div>
+                                </md-card-content>
+                            </md-card>
+                        </div>
+                    </div>
+                </div>
            </div>
            <div class="md-layout-item md-size-70">
                <div class="md-layout-item md-size-100">
-                <md-table v-model="enrollments" md-card>
-                    <md-table-toolbar>
-                        <div class="md-toolbar-section-start">
-                            <h1 class="md-title">Danh sách đăng ký</h1>
-                        </div>
-
-                        <div class="md-toolbar-section-end">
-                            <md-button>
-                                Tạo đăng ký
-                            </md-button>
-                        </div>
-                    </md-table-toolbar>
-
-                    <md-table-empty-state>
-                        <div v-if="fetchingEnrollments">
-                            <md-progress-spinner class="md-accent" :md-diameter="30" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
-                        </div>
-                        <div v-else>
-                            <strong class="md-empty-state-label">Chưa có đăng ký</strong>
-                            <div class="md-empty-state-description">
-                                <md-button class="md-primary" @click="showImportModal">
-                                    Nhập File Excel
-                                </md-button>
-                                <span style="line-height: 50px;">hoặc</span>
-                                <md-button class="md-primary">
-                                    Tạo 1 đăng ký mới
-                                </md-button>
-                            </div>
-                        </div>
-                    </md-table-empty-state>
-
-                    <md-table-row slot="md-table-row" slot-scope="{ item }">
-                        <md-table-cell md-label="Môn học">
-                            <span v-if="subjects.length > 0">{{ subjects.find(e => e._id == item.subject_id).name }}</span>
-                        </md-table-cell>
-                        <md-table-cell md-label="Tên lớp">{{ item.name }}</md-table-cell>
-                        <md-table-cell md-label="Ngày khai giảng">
-                            <div v-if="item.is_fetching_lession">
-                                <md-progress-spinner :md-diameter="20" :md-stroke="2" md-mode="indeterminate"></md-progress-spinner>
-                            </div>
-                            <div v-else>
-                                <span>{{item.lessions[0].start_hour | moment('HH:mm')}} - {{item.lessions[0].end_hour | moment('HH:mm')}} {{item.lessions[0].start_hour | moment('dddd, DD/MM')}}</span>
-                            </div>
-                        </md-table-cell>
-                        <md-table-cell md-label="Số lượng đăng kí" md-sort-by="gender">
-                            0
-                        </md-table-cell>
-                        <md-table-cell md-label="Trạng thái">
-                            <md-switch class="md-primary" v-model="item.is_recruit" @change="updateClass(item)">
-                                <span v-if="item.is_recruit">Mở đăng ký</span>
-                                <span v-else>Đóng đăng ký</span>
-                            </md-switch>
-                        </md-table-cell>
-                    </md-table-row>
-                </md-table>
-            </div>
+                    <class-lessions ref="lessions" v-if="currentClass" :currentClass="currentClass"></class-lessions>
+               </div>
+               <div class="md-layout-item md-size-100" style="margin-top: 20px;">
+                    <!-- <class-enrollments ref="enrollments"  :currentClass="currentClass"></class-enrollments> -->
+               </div>
            </div>
        </div>
    </div>
@@ -109,46 +76,50 @@ import MemberApi from '@/api/Admin/Member';
 // External functions
 
 // Components
-import ImportEnrollments from '@/components/admin/Course/ImportEnrollments';
+import ClassEnrollments from '@/components/admin/Course/Class/ClassEnrollments';
+import ClassLessions from '@/components/admin/Course/Class/ClassLessions';
+import ClassMainTeacher from '@/components/admin/Course/Class/ClassMainTeacher';
 
 export default {
   name: 'classes',
-  props: ['course', 'classes'],
+  props: ['course', 'teachers'],
   data () {
-      return {
+    return {
+        fetchingClasses: false,
+        classes: [],
         currentClass : null,
-        enrollments: [],
-        fetchingEnrollments : false,
-      }
+    }
   },
   created () {
   },
   mounted () {
   },
+  watch : {
+    course: function (val) {
+        this.fetchClasses();
+    }
+  },
   methods: {
-    changeClass (obj) {
-        this.currentClass = JSON.parse(JSON.stringify(obj));
-        this.fetchRegisters();
-    },
-    fetchRegisters () {
-        this.fetchingEnrollments = false;
-    },
     async updateClass () {
         let response = await ClassApi.updateClass(this.currentClass);
         this.currentClass = response.data;
     },
-    test (fileList) {
+    async fetchClasses () {
+        this.fetchingClasses = true;
+        let response = await ClassApi.fetchClasses({
+            course_id : this.course._id
+        });
+        this.classes = response.data;
+        if (this.classes.length > 0) {
+            this.currentClass = JSON.parse(JSON.stringify(this.classes[0]));
+        }
+        this.fetchingClasses = false;
     },
-    showImportModal () {
-        this.$modal.show(ImportEnrollments,null, {
-            name: 'import-excel-file',
-            resizable: true,
-            height: 'auto',
-            adaptive: true
-        })
-    }
   },
   components: {
+      ClassEnrollments,
+      ClassLessions,
+      ClassMainTeacher
   },
 }
 </script>
