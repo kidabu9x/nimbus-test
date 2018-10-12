@@ -12,6 +12,12 @@
         >
             {{obj.name}}
         </md-chip>
+        <router-link :to="{path : `${course.handle}/new-class?c=${course._id}`}">
+            <md-chip md-clickable>
+                <md-icon>add</md-icon>
+            </md-chip>
+        </router-link>
+        
    </div>
    <div v-if="currentClass" class="md-layout-item md-size-100" style="margin-top: 50px;">
        <div class="md-layout md-gutter">
@@ -29,32 +35,24 @@
                                 <span class="md-list-item-text">Mã lớp học</span>
                                 <span>{{currentClass.handle}}</span>
                             </md-list-item>
-                            <md-list-item>
-                                <span class="md-list-item-text">Địa chỉ học</span>
-                                <span>{{currentClass.school_address}}</span>
-                            </md-list-item>
                         </md-list>
                     </md-card>
                 </div>
                 <div class="md-layout-item md-size-100" style="margin-top: 20px;">
-                    <div class="md-layout md-gutter">
-                        <div class="md-layout-item">
-                            <class-main-teacher :currentClass="currentClass" :teachers="teachers" @update-class="updateClass"></class-main-teacher>
-                        </div>
-                        <div class="md-layout-item">
-                            <md-card>
-                                <md-card-content>
-                                    <div class="md-body-1">Sĩ số lớp</div>
-                                    <div class="md-display-3" style="width: 100%; text-align: right;">0</div>
-                                </md-card-content>
-                            </md-card>
-                        </div>
-                    </div>
+                    <class-main-teacher :currentClass="currentClass" :teachers="teachers" @update-class="updateClass"></class-main-teacher>
+                </div>
+                <div class="md-layout-item md-size-100" style="margin-top: 20px;">
+                    <md-card>
+                        <md-card-content>
+                            <div class="md-body-1">Sĩ số lớp</div>
+                            <div class="md-display-3" style="width: 100%; text-align: right;">0</div>
+                        </md-card-content>
+                    </md-card>
                 </div>
            </div>
            <div class="md-layout-item md-size-70">
                <div class="md-layout-item md-size-100">
-                    <class-lessions ref="lessions" v-if="currentClass" :currentClass="currentClass"></class-lessions>
+                    <class-lessions ref="lessions" v-if="currentClass" :currentClass="currentClass" :teachers="teachers"></class-lessions>
                </div>
                <div class="md-layout-item md-size-100" style="margin-top: 20px;">
                     <!-- <class-enrollments ref="enrollments"  :currentClass="currentClass"></class-enrollments> -->

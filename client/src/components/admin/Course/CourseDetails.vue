@@ -3,12 +3,13 @@
         <md-tab id="tab-classes" md-label="Các lớp học">
             <class :course="course" :teachers="teachers"></class>
         </md-tab>
+        <md-tab id="tab-schedule" md-label="Lịch học chung">
+            <!-- <schedules v-if="course" :course="course" :teachers="teachers"></schedules> -->
+        </md-tab>
         <md-tab id="tab-enroll" md-label="Tuyển sinh">
             <!-- <enrollments :course="course" :teachers="teachers" :subjects="subjects"></enrollments> -->
         </md-tab>
-        <md-tab id="tab-schedule" md-label="Lịch học">
-            <!-- <schedules :course="course" :teachers="teachers"></schedules> -->
-        </md-tab>
+        
     </md-tabs>
 </template>
 
@@ -31,7 +32,7 @@ export default {
   name: 'all-courses',
   data () {
       return {
-        course : {},
+        course : null,
         teachers: []
       }
   },

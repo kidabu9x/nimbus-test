@@ -35,8 +35,15 @@
             </md-card-header>
 
             <md-card-content class="md-layout" style="margin-top: 20px;">
-                <div class="md-body-2" style="width: 100%; text-align: center;">{{mainTeacher.first_name}} {{mainTeacher.last_name}}</div>
-                <div class="md-subhead" style="width: 100%; text-align: center;">Giảng viên chính</div>
+                <div class="md-body-2" style="width: 100%; text-align: center;">
+                    {{mainTeacher.first_name}} {{mainTeacher.last_name}}
+                    <span style="cursor: pointer;" @click="mainTeacher = null">
+                        <md-icon style="width: 12px; min-width: 12px; height: 12px; font-size: 12px !important;">edit</md-icon>
+                    </span>
+                </div>
+                <div class="md-subhead" style="width: 100%; text-align: center;">
+                    Giảng viên chính
+                </div>
             </md-card-content>
         </md-card>
     </div>
