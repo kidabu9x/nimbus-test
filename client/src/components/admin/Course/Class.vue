@@ -12,7 +12,7 @@
         >
             {{obj.name}}
         </md-chip>
-        <router-link :to="{path : `${course.handle}/new-class?c=${course._id}`}">
+        <router-link v-if="course" :to="{path : `${course.handle}/new-class?c=${course._id}`}">
             <md-chip md-clickable>
                 <md-icon>add</md-icon>
             </md-chip>

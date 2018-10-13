@@ -21,11 +21,4 @@ export default {
     createNewCourse (newCourse) {
         return Api().post(`${baseUrl}`, newCourse);
     },
-    // fetchLessions (courseId) {
-    //     return Api().get(`${baseUrl}/fetch-lessions`, {
-    //         params : {
-    //             course_id : courseId
-    //         }
-    //     });
-    // }
 }

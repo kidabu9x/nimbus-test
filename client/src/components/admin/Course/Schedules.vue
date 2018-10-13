@@ -49,8 +49,10 @@ export default {
   },
   methods: {
     async fetchLessions () {
-      let response = await CourseApi.fetchLessions(this.course._id);
-      this.lessions = response.data;
+      let response = await CourseApi.fetchClasses({
+        course_id : this.course._id
+      });
+      console.log(response);
     },
     onClickedLession (lession) {
         console.log(lession);
@@ -60,7 +62,7 @@ export default {
         //     className: classOwner.name,
 
         // }
-    }
+    },
   },
   components: {
     FullCalendar,

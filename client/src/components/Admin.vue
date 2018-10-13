@@ -36,30 +36,33 @@
           <md-list-item to="/admin/courses">
             <md-icon>layers</md-icon>
             <span class="md-list-item-text">Tuyển sinh khóa học</span>
-            <md-tooltip v-if="!menuVisible" md-direction="right">Tuyển sinh khóa học</md-tooltip>
+            <md-tooltip v-if="!menuVisible" md-direction="right">Khóa học</md-tooltip>
           </md-list-item>
           <md-list-item>
             <md-icon>assignment_turned_in</md-icon>
             <span class="md-list-item-text">Chấm công giảng viên</span>
             <md-tooltip v-if="!menuVisible" md-direction="right">Chấm công giảng viên</md-tooltip>
           </md-list-item>
-          
-          <md-list-item to="/admin/members">
-            <md-icon>how_to_reg</md-icon>
-            <span class="md-list-item-text">Thành viên</span>
-            <md-tooltip v-if="!menuVisible" md-direction="right">Thành viên</md-tooltip>
-          </md-list-item>
-          <md-list-item to="/admin/questions">
-            <md-icon >help</md-icon>
-            <span class="md-list-item-text">Bộ câu hỏi</span>
-            <md-tooltip v-if="!menuVisible" md-direction="right">Bộ câu hỏi</md-tooltip>
+          <md-list-item>
+            <md-icon>calendar_today</md-icon>
+            <span class="md-list-item-text">Lịch dạy</span>
+            <md-tooltip v-if="!menuVisible" md-direction="right">Lịch dạy</md-tooltip>
           </md-list-item>
           <md-list-item to="/admin/tests">
             <md-icon>assignment</md-icon>
             <span class="md-list-item-text">Code kiểm tra</span>
             <md-tooltip v-if="!menuVisible" md-direction="right">Code kiểm tra</md-tooltip>
           </md-list-item>
-          
+          <md-list-item to="/admin/questions">
+            <md-icon >help</md-icon>
+            <span class="md-list-item-text">Bộ câu hỏi</span>
+            <md-tooltip v-if="!menuVisible" md-direction="right">Bộ câu hỏi</md-tooltip>
+          </md-list-item>
+          <md-list-item to="/admin/members">
+            <md-icon>how_to_reg</md-icon>
+            <span class="md-list-item-text">Thành viên</span>
+            <md-tooltip v-if="!menuVisible" md-direction="right">Thành viên</md-tooltip>
+          </md-list-item>
         </md-list>
       </md-app-drawer>
 

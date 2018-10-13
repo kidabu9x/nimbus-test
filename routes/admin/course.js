@@ -25,27 +25,6 @@ router.get('/:handle', (req, res) => {
         .then(course => res.json(course));
 });
 
-// @route   GET api/admin/course/fetch-lessions
-// @desc    Get all lessions of courses
-// @access  Public
-// router.get('/fetch-lessions', (req, res) => {
-//     Class.find(req.query)
-//         .then(classes => {
-//             let lessions = [];
-//             for (let i = 0; i < classes.length; i++) {
-//                 Lession.find({
-//                     class_id : classes[i]._id
-//                 })
-//                  .then(data => {
-//                     lessions = lessions.concat(data);
-//                     if (i == classes.length - 1) {
-//                         res.json(lessions);
-//                     }
-//                  });
-//             }
-//         });
-// });
-
 // @route   Post api/admin/course
 // @desc    Create new course
 // @access  Public

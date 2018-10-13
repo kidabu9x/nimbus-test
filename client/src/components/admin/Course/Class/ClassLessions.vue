@@ -100,7 +100,7 @@ export default {
             } else if (this.viewing == 'teacher'){
                 if (lession.teacher_id) {
                     let teacher = this.teachers.find(e => e._id == lession.teacher_id);
-                    title = teacher.username ? teacher.username : teacher.last_name;
+                    title = teacher.last_name;
                 } else {
                     title = 'Chưa có GV';
                 }
