@@ -28,6 +28,7 @@ router.use('/lessions', lession);
 // const schedule = require('./admin/scheduleApi');
 // router.use('/schedule', schedule);
 
-
+const room = require('./admin/room');
+router.use('/rooms', room);
 
 module.exports = router;

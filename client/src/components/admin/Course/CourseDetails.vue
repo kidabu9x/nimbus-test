@@ -4,7 +4,7 @@
             <class :course="course" :teachers="teachers"></class>
         </md-tab>
         <md-tab id="tab-schedule" md-label="Lịch học chung">
-            <!-- <schedules v-if="course" :course="course" :teachers="teachers"></schedules> -->
+            <schedules v-if="course" :course="course" :teachers="teachers"></schedules>
         </md-tab>
         <md-tab id="tab-enroll" md-label="Tuyển sinh">
             <!-- <enrollments :course="course" :teachers="teachers" :subjects="subjects"></enrollments> -->
@@ -20,6 +20,7 @@ import ClassApi from '@/api/Admin/Class';
 import LessionApi from '@/api/Admin/Lession';
 import SubjectApi from '@/api/Admin/Subject';
 import MemberApi from '@/api/Admin/Member';
+import RoomApi from '@/api/Admin/Room';
 
 // External functions
 
@@ -31,14 +32,16 @@ import Schedules from '@/components/admin/Course/Schedules';
 export default {
   name: 'all-courses',
   data () {
-      return {
+    return {
         course : null,
-        teachers: []
-      }
+        teachers: [],
+        rooms: []
+    }
   },
   created () {
       this.fetchCourseDetail();
       this.fetchTeachers();
+      this.fetchRooms();
   },
   mounted () {
 
@@ -108,6 +111,10 @@ export default {
     async updateClass (Class) {
         let response = await ClassApi.updateClass(Class);
         Class = response.data;
+    },
+    async fetchRooms () {
+        let response = await RoomApi.fetchRooms();
+        this.rooms = response.data;
     }
   },
   components: {

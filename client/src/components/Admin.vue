@@ -35,15 +35,15 @@
           </md-list-item>
           <md-list-item to="/admin/courses">
             <md-icon>layers</md-icon>
-            <span class="md-list-item-text">Tuyển sinh khóa học</span>
+            <span class="md-list-item-text">Khóa học</span>
             <md-tooltip v-if="!menuVisible" md-direction="right">Khóa học</md-tooltip>
           </md-list-item>
-          <md-list-item>
+          <md-list-item v-if="user && ['general_manager'].indexOf(user.role) > -1">
             <md-icon>assignment_turned_in</md-icon>
             <span class="md-list-item-text">Chấm công giảng viên</span>
             <md-tooltip v-if="!menuVisible" md-direction="right">Chấm công giảng viên</md-tooltip>
           </md-list-item>
-          <md-list-item>
+          <md-list-item v-if="user && ['general_manager', 'teacher'].indexOf(user.role) > -1">
             <md-icon>calendar_today</md-icon>
             <span class="md-list-item-text">Lịch dạy</span>
             <md-tooltip v-if="!menuVisible" md-direction="right">Lịch dạy</md-tooltip>
