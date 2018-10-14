@@ -16,10 +16,6 @@
           <md-card-content>
             <md-list>
               <md-list-item>
-                <span class="md-list-item-text">Giảng viên</span>
-                <span>{{getTeacherName(currentLession.teacher_id)}}</span>
-              </md-list-item>
-              <md-list-item>
                 <span class="md-list-item-text">Phòng học</span>
                 <span>{{getRoom(currentLession.room_id)}}</span>
               </md-list-item>
@@ -39,7 +35,7 @@
 import CourseApi from '@/api/Admin/Course';
 import ClassApi from '@/api/Admin/Class';
 import LessionApi from '@/api/Admin/Lession';
-
+import RoomApi from '@/api/Admin/Room';
 // External functions
 
 // Components
@@ -48,11 +44,11 @@ import 'fullcalendar/dist/fullcalendar.min.css';
 import 'fullcalendar/dist/locale/vi';
 
 export default {
-  name: 'course-schedules',
-  props : ['course', 'teachers', 'rooms'],
+  name: 'teacher-schedules',
   data () {
       return {
-        classes: [],
+        user: null,
+        rooms: [],
         lessions : [],
         events : [],
         config : {
@@ -64,54 +60,25 @@ export default {
       }
   },
   created () {
-    this.fetchClasses();
+    if (localStorage.getItem('member') != null) {
+      this.user = JSON.parse(localStorage.getItem('member'));
+    }
+    this.fetchLessions();
   },
   mounted () {
       
   },
   methods: {
-    async fetchClasses () {
-        this.fetchingClasses = true;
-        let response = await ClassApi.fetchClasses({
-            course_id : this.course._id
-        });
-        this.classes = response.data;
-        this.fetchLessions();
-        this.fetchingClasses = false;
-    },
     async fetchLessions () {
-      let i = this.classes.length;
-      for (let e of this.classes) {
-        i --;
-        let response = await LessionApi.fetchLessions({
-          class_id : e._id
-        });
-        this.lessions = this.lessions.concat(response.data.map(lession => {
-          lession.class_id = e._id;
-          lession.class_name = e.name;
-          return lession;
-        }));
-        if (i == 0) {
-          this.createEvents();
-        }
-      }
-    },
-    createEvents () {
-      for (let lession of this.lessions) {
-        this.events.push({
-          lession_id      : lession._id,
-          title           : lession.class_name,
-          start           : this.$moment(lession.start_hour),
-          end             : this.$moment(lession.end_hour),
-          allDay          : false,
-          textColor       : 'white',
-          backgroundColor : new Date(lession.start_hour).getTime() < new Date().getTime() ? '#dedede' : '#1f7347',
-          borderColor     : new Date(lession.start_hour).getTime() < new Date().getTime() ? '#dedede' : '#1f7347',
-        });
+      let response = await LessionApi.fetchLessions({
+        teacher_id : this.user._id
+      });
+      this.lessions = response.data;
+      if (this.lessions.length > 0) {
+        this.createEvents();
       }
     },
     onClickedLession (lession) {
-      console.log();
       this.currentLession = JSON.parse(JSON.stringify(this.lessions.find(e => e._id == lession.lession_id)));
     },
     getTeacherName (teacherId) {
@@ -121,6 +88,24 @@ export default {
       } else {
         return 'N/A';
       }
+    },
+    createEvents () {
+      for (let lession of this.lessions) {
+        this.events.push({
+          lession_id      : lession._id,
+          title           : lession._id,
+          start           : this.$moment(lession.start_hour),
+          end             : this.$moment(lession.end_hour),
+          allDay          : false,
+          textColor       : 'white',
+          backgroundColor : new Date(lession.start_hour).getTime() < new Date().getTime() ? '#dedede' : '#1f7347',
+          borderColor     : new Date(lession.start_hour).getTime() < new Date().getTime() ? '#dedede' : '#1f7347',
+        });
+      }
+    },
+    async fetchRooms () {
+      let response = await RoomApi.fetchRooms();
+      this.rooms = response.data;
     },
     getRoom (roomId) {
       if (roomId) {

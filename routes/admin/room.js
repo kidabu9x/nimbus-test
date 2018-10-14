@@ -34,7 +34,7 @@ router.put('/:id', (req, res) => {
             doc.size = req.body.size;
             doc.save()
                 .then(e => res.status(200).json(e));
-        })
+        });
 });
 
 module.exports = router;

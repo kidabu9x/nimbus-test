@@ -10,6 +10,9 @@ var LessionSchema = new Schema(
         teacher_id : {
             type: String
         },
+        room_id : {
+            type: String
+        },
         handle: {
             type: String,
             default: shortId.generate()

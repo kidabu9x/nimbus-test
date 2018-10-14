@@ -1,10 +1,10 @@
 <template>
     <md-tabs md-alignment="centered">
         <md-tab id="tab-classes" md-label="Các lớp học">
-            <class :course="course" :teachers="teachers"></class>
+            <class :course="course" :teachers="teachers" :rooms="rooms"></class>
         </md-tab>
         <md-tab id="tab-schedule" md-label="Lịch học chung">
-            <schedules v-if="course" :course="course" :teachers="teachers"></schedules>
+            <schedules v-if="course" :course="course" :teachers="teachers" :rooms="rooms"></schedules>
         </md-tab>
         <md-tab id="tab-enroll" md-label="Tuyển sinh">
             <!-- <enrollments :course="course" :teachers="teachers" :subjects="subjects"></enrollments> -->

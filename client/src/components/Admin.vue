@@ -43,7 +43,7 @@
             <span class="md-list-item-text">Chấm công giảng viên</span>
             <md-tooltip v-if="!menuVisible" md-direction="right">Chấm công giảng viên</md-tooltip>
           </md-list-item>
-          <md-list-item v-if="user && ['general_manager', 'teacher'].indexOf(user.role) > -1">
+          <md-list-item to="/admin/schedules" v-if="user && ['general_manager', 'teacher'].indexOf(user.role) > -1">
             <md-icon>calendar_today</md-icon>
             <span class="md-list-item-text">Lịch dạy</span>
             <md-tooltip v-if="!menuVisible" md-direction="right">Lịch dạy</md-tooltip>

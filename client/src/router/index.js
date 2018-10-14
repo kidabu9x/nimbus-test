@@ -20,6 +20,8 @@ import CourseDetails from '@/components/admin/Course/CourseDetails';
 import Grade from '@/components/admin/Course/Grade';
 import NewClass from '@/components/admin/Course/NewClass';
 import Dev from '@/components/Dev/Dev';
+// --Teachers Schedule
+import TeacherSchedules from '@/components/admin/TeacherSchedules';
 // ---------- end admin component ------------
 
 // ------------- User component --------------
@@ -115,6 +117,10 @@ let router = new Router({
         {
           path: 'courses/:handle/:gradeHandle',
           component: Grade
+        },
+        {
+          path: 'schedules',
+          component: TeacherSchedules
         }
       ]
     }

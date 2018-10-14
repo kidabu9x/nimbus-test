@@ -35,6 +35,10 @@
                                 <span class="md-list-item-text">Mã lớp học</span>
                                 <span>{{currentClass.handle}}</span>
                             </md-list-item>
+                            <md-list-item>
+                                <span class="md-list-item-text">Sĩ số lớp</span>
+                                <span>0</span>
+                            </md-list-item>
                         </md-list>
                     </md-card>
                 </div>
@@ -42,17 +46,12 @@
                     <class-main-teacher :currentClass="currentClass" :teachers="teachers" @update-class="updateClass"></class-main-teacher>
                 </div>
                 <div class="md-layout-item md-size-100" style="margin-top: 20px;">
-                    <md-card>
-                        <md-card-content>
-                            <div class="md-body-1">Sĩ số lớp</div>
-                            <div class="md-display-3" style="width: 100%; text-align: right;">0</div>
-                        </md-card-content>
-                    </md-card>
+                    <class-main-room :currentClass="currentClass" :rooms="rooms" @update-class="updateClass"></class-main-room>
                 </div>
            </div>
            <div class="md-layout-item md-size-70">
                <div class="md-layout-item md-size-100">
-                    <class-lessions ref="lessions" v-if="currentClass" :currentClass="currentClass" :teachers="teachers"></class-lessions>
+                    <class-lessions ref="lessions" v-if="currentClass" :currentClass="currentClass" :teachers="teachers" :rooms="rooms"></class-lessions>
                </div>
                <div class="md-layout-item md-size-100" style="margin-top: 20px;">
                     <!-- <class-enrollments ref="enrollments"  :currentClass="currentClass"></class-enrollments> -->
@@ -77,10 +76,11 @@ import MemberApi from '@/api/Admin/Member';
 import ClassEnrollments from '@/components/admin/Course/Class/ClassEnrollments';
 import ClassLessions from '@/components/admin/Course/Class/ClassLessions';
 import ClassMainTeacher from '@/components/admin/Course/Class/ClassMainTeacher';
+import ClassMainRoom from '@/components/admin/Course/Class/ClassMainRoom';
 
 export default {
   name: 'classes',
-  props: ['course', 'teachers'],
+  props: ['course', 'teachers', 'rooms'],
   data () {
     return {
         fetchingClasses: false,
@@ -117,7 +117,8 @@ export default {
   components: {
       ClassEnrollments,
       ClassLessions,
-      ClassMainTeacher
+      ClassMainTeacher,
+      ClassMainRoom
   },
 }
 </script>

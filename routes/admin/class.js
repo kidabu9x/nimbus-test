@@ -48,16 +48,20 @@ router.post('/', (req, res) => {
 // @desc    update a class
 // @access  Public
 router.put('/', (req, res) => {
+    console.log(req.body);
     Class.findById(req.body._id)
         .then(doc => {
             doc.is_recruit = req.body.is_recruit;
-            if (!doc.main_teacher_id || (doc.main_teacher_id != req.body.main_teacher_id)) {
+            if (!doc.main_teacher_id || (doc.main_teacher_id != req.body.main_teacher_id) || !doc.room_id || (doc.main_teacher_id != req.body.main_teacher_id)) {
                 doc.main_teacher_id = req.body.main_teacher_id;
+                doc.main_room_id = req.body.main_room_id;
+                console.log(doc);
                 Lession.find({
                     class_id : req.body._id
                 }).then(lessions => {
                     lessions.forEach(lession => {
                         lession.teacher_id = req.body.main_teacher_id;
+                        lession.room_id = req.body.main_room_id;
                         lession.save();
                     });
                 });

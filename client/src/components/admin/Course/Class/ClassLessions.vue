@@ -51,7 +51,7 @@ import 'fullcalendar/dist/locale/vi';
 
 export default {
   name: 'course-schedules',
-  props : ['currentClass', 'teachers'],
+  props : ['currentClass', 'teachers', 'rooms'],
   data () {
       return {
         config : {
@@ -105,10 +105,11 @@ export default {
                     title = 'Chưa có GV';
                 }
             } else {
-                if (lession.room) {
-                    title = lession.room;
+                if (lession.room_id) {
+                    let room = this.rooms.find(e => e._id == lession.room_id);
+                    title = room.name;
                 } else {
-                    title = 'Chưa có phòng';
+                    title = 'N/A';
                 }
             }
             this.events.push({

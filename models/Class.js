@@ -17,6 +17,10 @@ var ClassSchema = new Schema(
             type: String,
             default: null
         },
+        main_room_id : {
+            type: String,
+            default: null
+        },
         course_id : {
             type: String
         },

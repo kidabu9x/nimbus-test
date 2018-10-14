@@ -27,4 +27,28 @@ router.post('/', (req, res) => {
         .catch(err => res.status(404).json(null));
 });
 
+// @route   Put api/admin/lessions/:id
+// @desc    Update a lession
+// @access  Public
+router.put('/:id', (req, res) => {
+    Lession.findById(req.params.id)
+        .then(lession => {
+            lession.teacher_id = req.body.teacher_id;
+            lession.room_id = req.body.room_id;
+            lession.start_hour = req.body.start_hour;
+            lession.end_hour = req.body.end_hour;
+            lession.save();
+        });
+});
+
+// @route   Delete api/admin/lessions/:id
+// @desc    Delete a lession
+// @access  Public
+router.delete('/:id', (req, res) => {
+    Lession.remove(req.params.id)
+        .then(lession => {
+            res.json(lession);
+        });
+});
+
 module.exports = router;
