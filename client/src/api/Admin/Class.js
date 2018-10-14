@@ -20,5 +20,8 @@ export default {
     },
     fetchOneClass (classId) {
         return Api().get(`${baseUrl}/fetch-one/${classId}`);
+    },
+    deleteClass (classId) {
+        return Api().delete(`${baseUrl}/${classId}`);
     }
 }

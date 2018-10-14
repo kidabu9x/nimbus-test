@@ -21,7 +21,7 @@
               </md-list-item>
               <md-list-item>
                 <span class="md-list-item-text">Sĩ số lớp</span>
-                <span>20</span>
+                <span>N/A</span>
               </md-list-item>
             </md-list>
           </md-card-content>

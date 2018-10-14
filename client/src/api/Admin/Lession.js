@@ -10,5 +10,8 @@ export default {
     },
     createNewLession (newLession) {
         return Api().post(`${baseUrl}`, newLession);
+    },
+    updateLession (lession) {
+        return Api().put(`${baseUrl}/${lession._id}`, lession);
     }
 }

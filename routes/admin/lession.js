@@ -34,10 +34,11 @@ router.put('/:id', (req, res) => {
     Lession.findById(req.params.id)
         .then(lession => {
             lession.teacher_id = req.body.teacher_id;
+            lession.school_date = req.body.start_hour;
             lession.room_id = req.body.room_id;
             lession.start_hour = req.body.start_hour;
             lession.end_hour = req.body.end_hour;
-            lession.save();
+            lession.save(doc => res.json(doc));
         });
 });
 

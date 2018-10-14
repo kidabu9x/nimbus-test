@@ -48,6 +48,12 @@
                 <div class="md-layout-item md-size-100" style="margin-top: 20px;">
                     <class-main-room :currentClass="currentClass" :rooms="rooms" @update-class="updateClass"></class-main-room>
                 </div>
+                <div class="md-layout-item md-size-100" style="margin-top: 20px;">
+                    <md-button @click="showConfirmDelete = true">
+                        <md-icon>delete</md-icon>
+                        <span>Xoá</span>
+                    </md-button>
+                </div>
            </div>
            <div class="md-layout-item md-size-70">
                <div class="md-layout-item md-size-100">
@@ -58,6 +64,17 @@
                </div>
            </div>
        </div>
+   </div>
+   <div class="md-layout-item md-size-100">
+       <md-dialog-confirm
+        v-if="currentClass"
+        :md-active.sync="showConfirmDelete"
+        :md-title="`Xoá ${currentClass.name} ?`"
+        md-content="Bao gồm toàn bộ lịch học của lớp này."
+        md-confirm-text="Xoá"
+        md-cancel-text="Huỷ"
+        @md-cancel="showConfirmDelete = false"
+        @md-confirm="deleteClass" />
    </div>
   </div>
 </template>
@@ -86,6 +103,7 @@ export default {
         fetchingClasses: false,
         classes: [],
         currentClass : null,
+        showConfirmDelete: false,
     }
   },
   created () {
@@ -113,12 +131,24 @@ export default {
         }
         this.fetchingClasses = false;
     },
+    async deleteClass () {
+        let response = await ClassApi.deleteClass(this.currentClass._id);
+        console.log(response);
+        let index = this.classes.findIndex(e => e._id == this.currentClass._id);
+        console.log(index);
+        this.classes.splice(index, 1);
+        if (this.classes.length > 0) {
+            this.currentClass = this.classes[0];
+        } else {
+            this.currentClass = null;
+        }
+    }
   },
   components: {
-      ClassEnrollments,
-      ClassLessions,
-      ClassMainTeacher,
-      ClassMainRoom
+    ClassEnrollments,
+    ClassLessions,
+    ClassMainTeacher,
+    ClassMainRoom
   },
 }
 </script>
