@@ -6,6 +6,9 @@ import Toasted from 'vue-toasted';
 import VueScrollTo from 'vue-scrollto';
 import VModal from 'vue-js-modal';
 
+import VueMasonry from 'vue-masonry-css'
+ 
+
 const moment = require('moment');
 require('moment/locale/vi');
 moment.locale('vi');
@@ -22,6 +25,7 @@ Vue.use(require('vue-moment'), {
 
 Vue.use(Toasted);
 Vue.use(VueScrollTo);
+Vue.use(VueMasonry);
 
 Vue.use(VueMaterial);
 Vue.use(VModal, {

@@ -49,6 +49,7 @@ export default {
       return {
         user: null,
         rooms: [],
+        classes: [],
         lessions : [],
         events : [],
         config : {
@@ -63,6 +64,7 @@ export default {
     if (localStorage.getItem('member') != null) {
       this.user = JSON.parse(localStorage.getItem('member'));
     }
+    this.fetchRooms();
     this.fetchLessions();
   },
   mounted () {
@@ -75,7 +77,38 @@ export default {
       });
       this.lessions = response.data;
       if (this.lessions.length > 0) {
-        this.createEvents();
+        this.fetchClass();
+      }
+    },
+    async fetchClass () {
+      let i = this.lessions.length;
+      for (let lession of this.lessions) {
+        i --;
+        if (!this.classes.some(e => e._id == lession.class_id)) {
+          let response = await ClassApi.fetchClasses({
+            _id : lession.class_id
+          });
+          if (response.data.length > 0) {
+            this.classes.push(response.data[0]);
+          }
+        }
+        if (i == 0) {
+          this.createEvents();
+        }
+      }
+    },
+    createEvents () {
+      for (let lession of this.lessions) {
+        this.events.push({
+          lession_id      : lession._id,
+          title           : this.classes.find(e => e._id == lession.class_id).name,
+          start           : this.$moment(lession.start_hour),
+          end             : this.$moment(lession.end_hour),
+          allDay          : false,
+          textColor       : 'white',
+          backgroundColor : new Date(lession.start_hour).getTime() < new Date().getTime() ? '#dedede' : '#1f7347',
+          borderColor     : new Date(lession.start_hour).getTime() < new Date().getTime() ? '#dedede' : '#1f7347',
+        });
       }
     },
     onClickedLession (lession) {
@@ -87,20 +120,6 @@ export default {
         return teacher.first_name + ' ' + teacher.last_name;
       } else {
         return 'N/A';
-      }
-    },
-    createEvents () {
-      for (let lession of this.lessions) {
-        this.events.push({
-          lession_id      : lession._id,
-          title           : lession._id,
-          start           : this.$moment(lession.start_hour),
-          end             : this.$moment(lession.end_hour),
-          allDay          : false,
-          textColor       : 'white',
-          backgroundColor : new Date(lession.start_hour).getTime() < new Date().getTime() ? '#dedede' : '#1f7347',
-          borderColor     : new Date(lession.start_hour).getTime() < new Date().getTime() ? '#dedede' : '#1f7347',
-        });
       }
     },
     async fetchRooms () {

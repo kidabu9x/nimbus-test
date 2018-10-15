@@ -5,6 +5,30 @@
             <md-card-content>
               <full-calendar :events="events" :config="config"></full-calendar>
             </md-card-content>
+            <md-card-actions>
+              <span>Hiển thị theo: 
+                  <span v-if="viewing == 'lession'">Tên lớp</span>
+                  <span v-else-if="viewing == 'teacher'">Giảng viên</span>
+                  <span v-else>Phòng học</span>
+              </span>
+              <md-menu md-size="auto" md-direction="top-start">
+                  <md-button class="md-icon-button md-dense" md-menu-trigger>
+                      <md-icon>arrow_drop_down</md-icon>
+                  </md-button>
+                  <md-menu-content>
+                      <md-menu-item @click="viewing = 'lession'">
+                          <span>Tên lớp</span>
+                      </md-menu-item>
+                    <md-menu-item @click="viewing = 'teacher'">
+                          <span>Giảng viên</span>
+                      </md-menu-item>
+                      <md-menu-item @click="viewing = 'room'">
+                          <span>Phòng học</span>
+                      </md-menu-item>
+                  </md-menu-content>
+              </md-menu>
+            </md-card-actions>
+            <md-progress-bar v-if="isFetchingLession" md-mode="indeterminate"/>
         </md-card>
     </div>
     <div class="md-layout-item md-size-30">
@@ -112,12 +136,14 @@ export default {
   data () {
       return {
         classes: [],
+        isFetchingLession: false,
         lessions : [],
         events : [],
         config : {
           defaultView: 'month',
           eventClick: this.onClickedLession
         },
+        viewing : 'lession',
         currentLession: null,
         isEditTeacher : false,
         isEditRoom : false,
@@ -142,17 +168,24 @@ export default {
   mounted () {
     
   },
+  watch: {
+    viewing : function () {
+      this.createEvents();
+    },
+  },
   methods: {
     async fetchClasses () {
-        this.fetchingClasses = true;
-        let response = await ClassApi.fetchClasses({
-            course_id : this.course._id
-        });
-        this.classes = response.data;
-        this.fetchLessions();
-        this.fetchingClasses = false;
+      this.isFetchingLession = true;
+      this.fetchingClasses = true;
+      let response = await ClassApi.fetchClasses({
+          course_id : this.course._id
+      });
+      this.classes = response.data;
+      this.fetchLessions();
+      this.fetchingClasses = false;
     },
     async fetchLessions () {
+      this.isFetchingLession = true;
       let i = this.classes.length;
       for (let e of this.classes) {
         i --;
@@ -165,6 +198,7 @@ export default {
           return lession;
         }));
         if (i == 0) {
+          this.isFetchingLession = false;
           this.createEvents();
         }
       }
@@ -172,9 +206,27 @@ export default {
     createEvents () {
       this.events = [];
       for (let lession of this.lessions) {
+        let title;
+        if (this.viewing == 'lession') {
+            title = lession.class_name;
+        } else if (this.viewing == 'teacher'){
+          if (lession.teacher_id) {
+            let teacher = this.teachers.find(e => e._id == lession.teacher_id);
+            title = teacher.last_name;
+          } else {
+            title = 'N/A';
+          }
+        } else {
+          if (lession.room_id) {
+            let room = this.rooms.find(e => e._id == lession.room_id);
+            title = room.name;
+          } else {
+            title = 'N/A';
+          }
+        }
         this.events.push({
           lession_id      : lession._id,
-          title           : lession.class_name,
+          title           : title,
           start           : this.$moment(lession.start_hour),
           end             : this.$moment(lession.end_hour),
           allDay          : false,

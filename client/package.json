@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@xkeshi/vue-countdown": "^1.0.1",
+    "animated-number-vue": "^0.1.3",
     "autoprefixer": "^7.1.2",
     "axios": "^0.18.0",
     "babel-core": "^6.22.1",
@@ -66,6 +67,7 @@
     "vue-jest": "^1.0.2",
     "vue-js-modal": "^1.3.26",
     "vue-loader": "^13.7.3",
+    "vue-masonry-css": "^1.0.3",
     "vue-material": "^1.0.0-beta-10.2",
     "vue-moment": "^4.0.0",
     "vue-router": "^3.0.1",

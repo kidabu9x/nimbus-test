@@ -6,9 +6,9 @@
         <md-tab id="tab-schedule" md-label="Lịch học chung">
             <schedules v-if="course" :course="course" :teachers="teachers" :rooms="rooms"></schedules>
         </md-tab>
-        <md-tab id="tab-enroll" md-label="Tuyển sinh">
+        <!-- <md-tab id="tab-enroll" md-label="Tuyển sinh"> -->
             <!-- <enrollments :course="course" :teachers="teachers" :subjects="subjects"></enrollments> -->
-        </md-tab>
+        <!-- </md-tab> -->
         
     </md-tabs>
 </template>
@@ -45,6 +45,9 @@ export default {
   },
   mounted () {
 
+  },
+  watch: {
+      
   },
   methods: {
     async fetchCourseDetail () {
