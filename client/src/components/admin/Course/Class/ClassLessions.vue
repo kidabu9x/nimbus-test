@@ -8,7 +8,7 @@
                 <md-progress-spinner class="md-primary" :md-diameter="30" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
             </div>
             <div v-else class="md-layout-item md-size-100">
-                <full-calendar ref="classCalendar" :events="events" :config="config"></full-calendar>
+                <full-calendar :events="events" :config="config"></full-calendar>
             </div>
         </md-card-content>
         <md-card-actions>
@@ -34,7 +34,7 @@
                     </md-menu-item>
                 </md-menu-content>
             </md-menu>
-            <!-- <md-button @click="$refs.classCalendar.fireMethod('removeEvents')">Xóa lịch</md-button> -->
+            <md-button @click="fetchLessions">Hiển thị lịch</md-button>
         </md-card-actions>
     </md-card>
 </template>
@@ -55,14 +55,13 @@ export default {
   data () {
       return {
         config : {
-            defaultView: 'month',
-            eventClick: this.onClickedLession,
-            lazyFetching: true
+            defaultView     : 'month',
+            eventClick      : this.onClickedLession,
         },
-        viewing: 'lession',
-        lessions: [],
-        events : [],
-        fetchingLessions : false
+        viewing             : 'lession',
+        lessions            : [],
+        events              : [],
+        fetchingLessions    : false
       }
   },
   created () {

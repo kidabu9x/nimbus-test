@@ -19,6 +19,6 @@ export default {
 ));
 
 @import "~vue-material/dist/theme/all"; // Apply the theme
-@import "@/assets/css/main.scss";
+@import "./assets/css/main.scss";
 
 </style>

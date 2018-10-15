@@ -10,7 +10,13 @@
             }"
             v-if="obj"
         >
-            {{obj.name}}
+            <span
+                :style="{
+                    color : currentClass && currentClass._id == obj._id ? '#fff' : 'rgba(0,0,0,.5)'
+                }"
+            >
+                {{obj.name}}
+            </span>
         </md-chip>
         <router-link v-if="course" :to="{path : `${course.handle}/new-class?c=${course._id}`}">
             <md-chip md-clickable>
