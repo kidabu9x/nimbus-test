@@ -62,11 +62,11 @@
                 </div>
            </div>
            <div class="md-layout-item md-size-70">
-               <div class="md-layout-item md-size-100">
+               <!-- <div class="md-layout-item md-size-100">
                     <class-lessions ref="lessions" v-if="currentClass" :currentClass="currentClass" :teachers="teachers" :rooms="rooms"></class-lessions>
-               </div>
+               </div> -->
                <div class="md-layout-item md-size-100" style="margin-top: 20px;">
-                    <!-- <class-enrollments ref="enrollments"  :currentClass="currentClass"></class-enrollments> -->
+                    <class-enrollments ref="enrollments"  :currentClass="currentClass"></class-enrollments>
                </div>
            </div>
        </div>

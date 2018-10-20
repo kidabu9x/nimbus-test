@@ -20,11 +20,7 @@
                 <strong class="md-empty-state-label">Chưa có đăng ký</strong>
                 <div class="md-empty-state-description">
                     <md-button class="md-primary" @click="showImportModal">
-                        Nhập File Excel
-                    </md-button>
-                    <span style="line-height: 50px;">hoặc</span>
-                    <md-button class="md-primary">
-                        Tạo 1 đăng ký mới
+                        Tạo đăng ký
                     </md-button>
                 </div>
             </div>
@@ -69,11 +65,11 @@ import ImportEnrollments from '@/components/admin/Course/Class/ImportEnrollments
 
 export default {
   name: 'enrollments',
-  props: ["subjects", "enrollments", "currentClass"],
+  props: ["currentClass"],
   data () {
       return {
         fetchingEnrollments: false,
-        
+        enrollments: []
       }
   },
   created () {

@@ -25,6 +25,9 @@ router.use('/classes', classes);
 const lession = require('./admin/lession');
 router.use('/lessions', lession);
 
+const enrollment = require('./admin/enrollment');
+router.use('/enrollments', enrollment);
+
 // const schedule = require('./admin/scheduleApi');
 // router.use('/schedule', schedule);
 
