@@ -92,7 +92,7 @@ router.delete('/:id', (req, res) => {
 // @route   GET api/admin/member/check-member?email=memberEmail
 // @desc    Check A Member Exist
 // @access  Public
-router.get('/check-member', (req, res) => {
+router.get('/check-admin', (req, res) => {
     Member.findOne({
         email : req.query.email,
         role : {
@@ -107,6 +107,31 @@ router.get('/check-member', (req, res) => {
                     first_name  : member.first_name,
                     last_name   : member.last_name,
                     avatar_url  : member.avatar_url
+                } 
+            });
+        } else {
+            res.json({ is_match: false });
+        }
+    })
+    .catch(err => res.json({ is_match: false }));
+});
+
+// @route   GET api/admin/member/check-member?email=memberEmail
+// @desc    Check A Member Exist
+// @access  Public
+router.get('/check-member', (req, res) => {
+    Member.findOne({
+        email : req.query.email
+    })
+    .then(member => {
+        if (member) {
+            res.json({ 
+                is_match: true,
+                member : {
+                    first_name  : member.first_name,
+                    last_name   : member.last_name,
+                    phone       : member.phone,
+                    email       : member.email
                 } 
             });
         } else {

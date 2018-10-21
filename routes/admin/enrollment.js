@@ -17,6 +17,14 @@ router.get('/', (req, res) => {
         .then(enrolls => res.json(enrolls));
 });
 
+// @route   GET api/admin/enrollments
+// @desc    Get an enrollments
+// @access  Public
+router.get('/count', (req, res) => {
+    Enrollment.countDocuments(req.query)
+        .then(count => res.json(count));
+});
+
 // @route   Post api/admin/enrollments
 // @desc    Create enrollment
 // @access  Public

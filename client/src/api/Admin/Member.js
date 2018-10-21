@@ -25,9 +25,12 @@ export default {
         return Api().get(`${baseUrl}/teachers`);
     },
     checkIsNotStudent(email) {
-        return Api().get(`${baseUrl}/check-member?email=${email}`);
+        return Api().get(`${baseUrl}/check-admin?email=${email}`);
     },
     auth(user) {
         return Api().post(`${baseUrl}/auth`, user);
+    },
+    checkMember (email) {
+        return Api().get(`${baseUrl}/check-member?email=${email}`);
     }
 }

@@ -78,7 +78,9 @@ export default {
   },
   methods: {
     showImportModal () {
-        this.$modal.show(ImportEnrollments,null, {
+        this.$modal.show(ImportEnrollments,{
+            currentClass: this.currentClass
+        }, {
             name: 'import-excel-file',
             resizable: true,
             height: 'auto',
