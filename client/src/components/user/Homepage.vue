@@ -1,5 +1,5 @@
 <template>
-  <div class="md-layout md-gutter">
+    <div class="md-layout" style="margin-bottom: 20px;">
         <div class="md-layout-item md-size-100" style="text-align: center; margin-bottom: 20px; position: relative;height: 300px; width: 100vw;">
             <div style="position: absolute; background-image: url(https://image.ibb.co/jZwJwL/IMG-2772.jpg); height: 300px; width: 100vw; background-position: center; background-size: cover;-webkit-filter: blur(2px); -moz-filter: blur(2px); -o-filter: blur(2px); -ms-filter: blur(2px); filter: blur(2px);" ></div>
             <div class="text-headline" style="position: absolute; width: 100%; margin: auto;">
@@ -11,97 +11,102 @@
                 </p>
             </div>
         </div>
-        <div class="md-layout-item md-size-100" style="margin-bottom: 20px;">
-            <div class="md-layout md-gutter">
-                <div class="md-layout-item md-size-100">
-                    <p class="md-headline uppercase" style="text-align: center;">Phổ điểm</p>
-                </div>
-            </div>
-            <div class="md-layout-item md-size-100">
-                <div class="md-layout">
-                    <div class="md-layout-item">
-                        <div class="md-layout-item md-size-100" style="text-align: center;">
-                            <div class="md-display-4">
-                                <animated-number 
-                                    :value="950" 
-                                    :duration="2000"
-                                    :formatValue="formatToInt"
-                                    style="color: #1f7347;"
-                                />
-                            </div>
+        <div class="md-layout-item md-size-100 width-fluid">
+            <div class="md-layout">
+                <div class="md-layout-item md-size-100" style="margin-bottom: 20px;">
+                    <div class="md-layout md-gutter">
+                        <div class="md-layout-item md-size-100">
+                            <p class="md-headline uppercase" style="text-align: center;">Phổ điểm</p>
                         </div>
-                        <div class="md-layout-item md-size-100" style="text-align: center;">
-                            <div class="md-subheading">
-                                Là điểm MOS tối thiểu
+                    </div>
+                    <div class="md-layout-item md-size-100">
+                        <div class="md-layout">
+                            <div class="md-layout-item">
+                                <div class="md-layout-item md-size-100" style="text-align: center;">
+                                    <div class="md-display-4">
+                                        <animated-number 
+                                            :value="950" 
+                                            :duration="2000"
+                                            :formatValue="formatToInt"
+                                            style="color: #1f7347;"
+                                        />
+                                    </div>
+                                </div>
+                                <div class="md-layout-item md-size-100" style="text-align: center;">
+                                    <div class="md-subheading">
+                                        Là điểm MOS tối thiểu
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="md-layout-item">
+                                <div class="md-layout-item md-size-100" style="text-align: center;">
+                                    <div class="md-display-4">
+                                        <animated-number 
+                                            :value="2330" 
+                                            :duration="2000"
+                                            :formatValue="formatToInt"
+                                            style="color: #1f7347;"
+                                        />
+                                    </div>
+                                </div>
+                                <div class="md-layout-item md-size-100" style="text-align: center;">
+                                    <div class="md-subheading">
+                                        Là điểm IC3 tối thiểu
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="md-layout-item">
-                        <div class="md-layout-item md-size-100" style="text-align: center;">
-                            <div class="md-display-4">
-                                <animated-number 
-                                    :value="2330" 
-                                    :duration="2000"
-                                    :formatValue="formatToInt"
-                                    style="color: #1f7347;"
-                                />
-                            </div>
+                </div>
+                <div class="md-layout-item md-size-100" style="margin-bottom: 20px;">>
+                    <div class="md-layout md-gutter">
+                        <div class="md-layout-item md-size-100">
+                            <p class="md-headline uppercase" style="text-align: center;">Thành tích học viên</p>
+                        </div>
+                    </div>
+                    <div class="md-layout-item md-size-100">
+                        <masonry
+                            :cols="3"
+                            :gutter="30"
+                        >
+                            <div v-for="(img, index) in certi" :key="index" v-html="img" style="padding: 20px; border: 1px solid rgba(0,0,0, 0.4); margin-top: 20px;"></div>
+                        </masonry>
+                    </div>
+                </div>
+                <div class="md-layout-item md-size-100 courses">
+                    <div class="md-layout md-gutter">
+                        <div class="md-layout-item md-size-100">
+                            <p class="md-headline uppercase" style="text-align: center;">Các khoá học</p>
                         </div>
                         <div class="md-layout-item md-size-100" style="text-align: center;">
-                            <div class="md-subheading">
-                                Là điểm IC3 tối thiểu
-                            </div>
+                            <md-card v-for="subject in subjects" :key="subject._id">
+                                <md-card-area>
+                                    <md-card-media>
+                                        <img v-if="subject.handle == 'ic3'" src="../../assets/img/ic3.png" alt="IC3">
+                                        <img v-if="subject.handle == 'mos-word'" src="../../assets/img/mos_word_2013.png" alt="MOS Word">
+                                        <img v-if="subject.handle == 'mos-excel'" src="../../assets/img/mos_excel_2013.png" alt="MOS Excel">
+                                    </md-card-media>
+
+                                    <md-card-header>
+                                        <div class="md-title">{{subject.name}}</div>
+                                        <div class="md-subhead" v-html="formatPrice(subject.original_price)"></div>
+                                    </md-card-header>
+
+                                    <md-card-content>
+                                        Là chứng nhận quốc tế về sử dụng máy tính và Internet cơ bản do Certiport sáng tạo. Bài thi đề cập đến những kiến thức cơ bản, cần thiết nhất về công nghệ số mà ai cũng cần phải biết.
+                                    </md-card-content>
+                                </md-card-area>
+
+                                <md-card-actions md-alignment="right">
+                                    <md-button>Chi tiết</md-button>
+                                </md-card-actions>
+                            </md-card>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="md-layout-item md-size-100" style="margin-bottom: 20px;">>
-            <div class="md-layout md-gutter">
-                <div class="md-layout-item md-size-100">
-                    <p class="md-headline uppercase" style="text-align: center;">Thành tích học viên</p>
-                </div>
-            </div>
-            <div class="md-layout-item md-size-100">
-                <masonry
-                    :cols="3"
-                    :gutter="30"
-                >
-                    <div v-for="(img, index) in certi" :key="index" v-html="img" style="padding: 20px; border: 1px solid rgba(0,0,0, 0.4); margin-top: 20px;"></div>
-                </masonry>
-            </div>
-        </div>
-        <div class="md-layout-item md-size-100 courses">
-            <div class="md-layout md-gutter">
-                <div class="md-layout-item md-size-100">
-                    <p class="md-headline uppercase" style="text-align: center;">Các khoá học</p>
-                </div>
-                <div class="md-layout-item md-size-100" style="text-align: center;">
-                    <md-card v-for="subject in subjects" :key="subject._id">
-                        <md-card-area>
-                            <md-card-media>
-                                <img v-if="subject.handle == 'ic3'" src="../../assets/img/ic3.png" alt="IC3">
-                                <img v-if="subject.handle == 'mos-word'" src="../../assets/img/mos_word_2013.png" alt="MOS Word">
-                                <img v-if="subject.handle == 'mos-excel'" src="../../assets/img/mos_excel_2013.png" alt="MOS Excel">
-                            </md-card-media>
-
-                            <md-card-header>
-                                <div class="md-title">{{subject.name}}</div>
-                                <div class="md-subhead" v-html="formatPrice(subject.original_price)"></div>
-                            </md-card-header>
-
-                            <md-card-content>
-                                Là chứng nhận quốc tế về sử dụng máy tính và Internet cơ bản do Certiport sáng tạo. Bài thi đề cập đến những kiến thức cơ bản, cần thiết nhất về công nghệ số mà ai cũng cần phải biết.
-                            </md-card-content>
-                        </md-card-area>
-
-                        <md-card-actions md-alignment="right">
-                            <md-button>Chi tiết</md-button>
-                        </md-card-actions>
-                    </md-card>
-                </div>
-            </div>
-        </div>
+        
     </div>
 </template>
 

@@ -4,18 +4,17 @@
         <md-app-toolbar md-elevation="1" class="page-navbar">
             <div class="md-toolbar-section-start">
                 <img src="../assets/nimbus_logo.png" width="75px;">
-                <md-button class="no-uppercase">Trang chủ</md-button>
+                <md-button to="/" class="no-uppercase">Trang chủ</md-button>
                 <md-button class="no-uppercase">Các khoá học</md-button>
-                <md-button class="no-uppercase">Test Online</md-button>
-                <md-button class="no-uppercase">Blogs</md-button>
-                <md-button class="no-uppercase">Về Nimbus</md-button>
+                <md-button to="/test" class="no-uppercase">Test Online</md-button>
+                <md-button to="/dang-ki-thi" class="no-uppercase">Đăng ký thi</md-button>
             </div>
             <div class="md-toolbar-section-end">
                 <md-button class="no-uppercase">Đăng nhập</md-button>
             </div>
         </md-app-toolbar>
 
-        <md-app-content class="page-content" style="overflow-x: hidden;">
+        <md-app-content class="page-content" style="overflow-x: hidden;" :style="{overflowY: $route.name == 'ExamRegistration' ? 'hidden' : 'scroll'}">
           <router-view/>
         </md-app-content>
       </md-app>
@@ -52,7 +51,10 @@
 
 <script>
 export default {
-  name: 'User'
+  name: 'User',
+  mounted () {
+      console.log(this.$route);
+  }
 }
 </script>
 
@@ -85,14 +87,18 @@ export default {
     
 }
 .page-content {
-    max-width: 1405px;
     width: 100%;
     margin-right: auto;
     margin-left: auto;
-    padding-left: 15px;
-    padding-right: 15px;
     min-width: 320px;
     border: none;
+    padding: 0;
+}
+
+.width-fluid {
+    max-width: 1405px;
+    padding-left: 30px;
+    padding-right: 30px;
 }
 div {
     color: rgba(0,0,0, 0.5);

@@ -28,6 +28,7 @@ import TeacherSchedules from '@/components/admin/TeacherSchedules';
 import User from '@/components/User';
 import Test from '@/components/user/Test';
 import Homepage from '@/components/user/Homepage';
+import ExamRegistration from '@/components/user/ExamRegistration';
 // ----------- end user component ------------
 
 Vue.use(Router)
@@ -43,6 +44,11 @@ let router = new Router({
           path: '',
           name: 'Homepage',
           component: Homepage
+        },
+        {
+          path: '/dang-ki-thi',
+          name: 'ExamRegistration',
+          component: ExamRegistration
         }
       ]
     },

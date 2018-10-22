@@ -134,33 +134,33 @@ export default {
   name: 'course-schedules',
   props : ['course', 'teachers', 'rooms'],
   data () {
-      return {
-        classes: [],
-        isFetchingLession: false,
-        lessions : [],
-        events : [],
-        config : {
-          defaultView: 'month',
-          eventClick: this.onClickedLession
-        },
-        viewing : 'lession',
-        currentLession: null,
-        isEditTeacher : false,
-        isEditRoom : false,
-        isEditStart: false,
-        isEditEnd: false,
-        fetchingClasses : false,
-        datePickrConfigs :{
-          altFormat: 'l-d/m H:i',
-          altInput: true,
-          dateFormat: 'Y-m-d H:i',
-          locale: Vietnamese,
-          enableTime: true,
-          time_24hr: true
-        },
-        showSnackErr: false,
-        errMsg: null
-      }
+    return {
+      classes: [],
+      isFetchingLession: false,
+      lessions : [],
+      events : [],
+      config : {
+        defaultView: 'month',
+        eventClick: this.onClickedLession
+      },
+      viewing : 'lession',
+      currentLession: null,
+      isEditTeacher : false,
+      isEditRoom : false,
+      isEditStart: false,
+      isEditEnd: false,
+      fetchingClasses : false,
+      datePickrConfigs :{
+        altFormat: 'l-d/m H:i',
+        altInput: true,
+        dateFormat: 'Y-m-d H:i',
+        locale: Vietnamese,
+        enableTime: true,
+        time_24hr: true
+      },
+      showSnackErr: false,
+      errMsg: null
+    }
   },
   created () {
     this.fetchClasses();
