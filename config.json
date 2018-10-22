@@ -1,4 +1,11 @@
 {
     "database": "mongodb://kidabu9x:Dota199x@ds141720.mlab.com:41720/nimbus2",
-    "secret"  : "nimbus-addmin-app"
+    "secret"  : "nimbus-addmin-app",
+    "gmail": {
+        "client_user": "duongnk.nimbus@gmail.com",
+        "client_id": "655905653686-0lki29ocul4kiboultlb1j4qk77l3dht.apps.googleusercontent.com",
+        "client_secret": "6b3Yxtq5rl6shBisIFCXsO39",
+        "refresh_token": "1/dT864FhHX7f9wKXauTlb-PyBbRnJ9DVcEjEcnYFLpt8-1PZOQRxtgrS3RcMLRXby",
+        "access_token": "ya29.Gls-BruFR-bp_uyhIgNp6kZtPycg8rYBmt2DwSPP2CoiNwmgdoFSDLd13HFiH0akQpeBusXrSxl_JxVDMtNqktxpOD1L8Pg72Hy8NSO8Oka6wrMmrwowLb1OkuUr"
+    }
 }

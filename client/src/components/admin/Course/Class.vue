@@ -26,8 +26,47 @@
         
    </div>
    <div v-if="currentClass" class="md-layout-item md-size-100" style="margin-top: 50px;">
-       <div class="md-layout md-gutter">
-           <div class="md-layout-item md-size-30">
+       <div class="md-layout">
+           <div class="md-layout-item md-size-100">
+               <div class="md-layout md-gutter">
+                   <div class="md-layout-item">
+                       <md-card>
+                            <md-list>
+                                <md-subheader>{{currentClass.name}}</md-subheader>
+                                <md-list-item>
+                                    <span class="md-list-item-text">Mở đăng kí</span>
+                                    <md-switch class="md-primary" v-model="currentClass.is_recruit" @change="updateClass">
+                                    </md-switch>
+                                </md-list-item>
+                                <md-list-item>
+                                    <span class="md-list-item-text">Mã lớp học</span>
+                                    <span>{{currentClass.handle}}</span>
+                                </md-list-item>
+                                <md-list-item>
+                                    <span class="md-list-item-text">Sĩ số lớp</span>
+                                    <span>0</span>
+                                </md-list-item>
+                            </md-list>
+                            <md-card-actions>
+                                <md-button @click="showConfirmDelete = true">
+                                    <md-icon>delete</md-icon>
+                                    <span>Xoá</span>
+                                </md-button>
+                            </md-card-actions>
+                        </md-card>
+                   </div>
+                   <div class="md-layout-item">
+                       <class-main-teacher :currentClass="currentClass" :teachers="teachers" @update-class="updateClass"></class-main-teacher>
+                   </div>
+                   <div class="md-layout-item">
+                       <class-main-room :currentClass="currentClass" :rooms="rooms" @update-class="updateClass"></class-main-room>
+                   </div>
+               </div>
+           </div>
+           <div class="md-layout-item md-size-100" style="margin-top: 20px;">
+               <class-enrollments ref="enrollments" :currentClass="currentClass"></class-enrollments>
+           </div>
+           <!-- <div class="md-layout-item md-size-30">
                <div class="md-layout-item md-size-100">
                     <md-card>
                         <md-list>
@@ -62,13 +101,13 @@
                 </div>
            </div>
            <div class="md-layout-item md-size-70">
-               <!-- <div class="md-layout-item md-size-100">
+               <div class="md-layout-item md-size-100">
                     <class-lessions ref="lessions" v-if="currentClass" :currentClass="currentClass" :teachers="teachers" :rooms="rooms"></class-lessions>
-               </div> -->
+               </div>
                <div class="md-layout-item md-size-100" style="margin-top: 20px;">
                     <class-enrollments ref="enrollments"  :currentClass="currentClass"></class-enrollments>
                </div>
-           </div>
+           </div> -->
        </div>
    </div>
    <div class="md-layout-item md-size-100">
@@ -139,9 +178,7 @@ export default {
     },
     async deleteClass () {
         let response = await ClassApi.deleteClass(this.currentClass._id);
-        console.log(response);
         let index = this.classes.findIndex(e => e._id == this.currentClass._id);
-        console.log(index);
         this.classes.splice(index, 1);
         if (this.classes.length > 0) {
             this.currentClass = this.classes[0];

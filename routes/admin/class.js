@@ -4,6 +4,7 @@ const router = express.Router();
 // Course Model
 const Class = require('../../models/Class');
 const Lession = require('../../models/Lession');
+const Enrollment = require('../../models/Enrollment');
 // Test Result Model
 
 // @route   GET api/admin/class/fetch-all/:courseId
@@ -81,9 +82,15 @@ router.delete('/:id', (req, res) => {
                 class_id: req.params.id
             })
                 .then(_ => {
-                    res.status(200).json({
-                        success: true
-                    });
+                    Enrollment.remove({
+                        class_id: req.params.id
+                    })
+                        .then(_ => {
+        
+                            res.status(200).json({
+                                success: true
+                            });
+                        });
                 });
         });
     

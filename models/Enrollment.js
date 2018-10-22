@@ -4,19 +4,21 @@ var Schema = mongoose.Schema;
 var EnrollmentSchema = new Schema(
     {   
         class_id : {
-            type: String
+            type: String,
+            required: true
         },
-        user_id : {
-            type: String
+        member_id : {
+            type: String,
+            required: true
         },
         emailed: {
-            status: {
-                type: Boolean,
-                default: false
-            },
             sender_id: {
                 type: String,
                 default: null
+            },
+            is_sent: {
+                type: Boolean,
+                default: false
             },
             sent_at: {
                 type: String,
@@ -28,7 +30,7 @@ var EnrollmentSchema = new Schema(
             }
         },
         called: {
-            status: {
+            is_called: {
                 type: Boolean,
                 default: false
             },
@@ -46,7 +48,7 @@ var EnrollmentSchema = new Schema(
             }
         },
         paid: {
-            status: {
+            is_collected: {
                 type: Boolean,
                 default: false
             },

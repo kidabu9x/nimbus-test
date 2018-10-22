@@ -2,42 +2,66 @@
     <md-tabs style="padding: 10px 10px 0 10px;">
       <md-tab id="tab-create" md-label="Đăng ký">
           <div class="md-layout">
-              <div class="md-layout-item md-size-100 regular-input-wrapper">
-                  <label class="regular-label">Email</label>
-                  <input type="text" class="regular-input" v-model="newMember.email">
-              </div>
-              <div class="md-layout-item md-size-100" style="margin-top: 10px;">
-                <div class="md-layout md-gutter">
-                    <div class="md-layout-item regular-input-wrapper">
-                        <label class="regular-label">Họ</label>
-                        <input type="text" class="regular-input" v-model="newMember.first_name">
+            <div class="md-layout-item md-size-100 regular-input-wrapper">
+                <label class="regular-label">
+                    <span>Email</span>
+                    <div v-if="validateEmail(newMember.email) && !isCheckedEmail" style="float: right;">
+                        <span v-if="!isCheckingEmail" @click="checkEmail" style="text-decoration: underline;">
+                            Kiểm tra email
+                        </span>
+                        <span v-else-if="isCheckingEmail">
+                            <md-progress-spinner :md-diameter="10" :md-stroke="1" md-mode="indeterminate"></md-progress-spinner>
+                        </span>
                     </div>
-                    <div class="md-layout-item regular-input-wrapper">
-                        <label class="regular-label">Tên</label>
-                        <input type="text" class="regular-input" v-model="newMember.last_name">
+                    <div v-if="validateEmail(newMember.email) && isCheckedEmail" style="float: right;">
+                        <span v-if="!newMember._id">
+                            Thành viên mới
+                        </span>
+                        <span v-else>
+                            Đã là thành viên
+                        </span>
                     </div>
+                </label>
+                <input type="text" class="regular-input" v-model="newMember.email">
+            </div>
+            <div class="md-layout-item md-size-100" style="margin-top: 10px;">
+            <div class="md-layout md-gutter">
+                <div class="md-layout-item regular-input-wrapper">
+                    <label class="regular-label">Họ</label>
+                    <input type="text" class="regular-input" v-model="newMember.first_name">
                 </div>
-              </div>
-              <div class="md-layout-item md-size-100 regular-input-wrapper" style="margin-top: 10px;">
-                  <label class="regular-label">Số điện thoại</label>
-                  <input type="number" class="regular-input" v-model="newMember.phone">
-              </div>
-              <div class="md-layout-item md-size-100" style="padding: 10px;">
+                <div class="md-layout-item regular-input-wrapper">
+                    <label class="regular-label">Tên</label>
+                    <input type="text" class="regular-input" v-model="newMember.last_name">
+                </div>
+            </div>
+            </div>
+            <div class="md-layout-item md-size-100 regular-input-wrapper" style="margin-top: 10px;">
+                <label class="regular-label">Số điện thoại</label>
+                <input type="number" class="regular-input" v-model="newMember.phone">
+            </div>
+            <div class="md-layout-item md-size-100" style="padding: 10px;">
                 <md-divider></md-divider>
-              </div>
-              <div class="md-layout-item md-size-100">
+            </div>
+            <div class="md-layout-item md-size-100">
                 <div class="md-layout">
                     <div class="md-layout-item"></div>
                     <div class="md-layout-item" style="text-align: right;">
                         <md-button @click="$emit('close')">
                             Đóng
                         </md-button>
-                        <md-button class="md-raised md-primary" style="box-shadow: none;">
-                            Kiểm tra email
+                        <md-button class="md-raised md-primary" style="box-shadow: none;" @click="createEnroll">
+                            Tạo đăng ký
                         </md-button>
                     </div>
                 </div>
-              </div>
+            </div>
+            <div class="md-layout-item md-size-100">
+                <md-snackbar :md-position="'left'" :md-duration="4000" :md-active.sync="showCheckingErr" md-persistent>
+                    <span>{{errMsg}}</span>
+                    <md-button class="md-primary" @click="showCheckingErr">Đóng</md-button>
+                </md-snackbar>
+            </div>
           </div>
       </md-tab>
       <md-tab id="tab-import" md-label="Nhập Excel">
@@ -79,11 +103,8 @@
 
 <script>
 // Api
-import CourseApi from '@/api/Admin/Course';
-import ClassApi from '@/api/Admin/Class';
-import LessionApi from '@/api/Admin/Lession';
-import SubjectApi from '@/api/Admin/Subject';
 import MemberApi from '@/api/Admin/Member';
+import EnrollmentApi from '@/api/Admin/Enrollment';
 
 // External functions
 import {saveAs} from 'file-saver';
@@ -99,11 +120,16 @@ export default {
       return {
         registeredFile : null,
         newMember : {
+            id: null,
             email: '',
             first_name: '',
             last_name: '',
             phone: ''
         },
+        isCheckedEmail: false,
+        isCheckingEmail : false,
+        showCheckingErr: false,
+        errMsg: null,
         dropzoneOptions: {
             url: 'https://httpbin.org/post',
             thumbnailWidth: 150,
@@ -121,7 +147,6 @@ export default {
   created () {
   },
   mounted () {
-      console.log(this.currentClass);
   },
   methods: {
     updateFile (file) {
@@ -145,6 +170,54 @@ export default {
     },
     saveSampleFile () {
         window.location.href='/assets/import_samples.xlsx';
+    },
+    async checkEmail () {
+        this.isCheckingEmail = true;
+        let response = await MemberApi.checkMember(this.newMember.email.toLowerCase().trim());
+        if (response.data.is_match) {
+            this.newMember = response.data.member;
+        }
+        this.isCheckingEmail = false;
+        this.isCheckedEmail = true;
+    },
+    validateEmail(email) {
+        var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(email);
+    },
+    async createEnroll () {
+        let err = this.checkMember();
+        if (err) {
+            this.errMsg = err;
+            this.showCheckingErr = true;
+        } else {
+            this.showCheckingErr = false;
+            if (this.newMember._id) {
+                let response = await MemberApi.updateMember(this.newMember);
+                await EnrollmentApi.createEnrollment({
+                    class_id : this.currentClass._id,
+                    member_id: this.newMember._id
+                });
+            } else {
+                let response = await MemberApi.createNewMember(this.newMember);
+                await EnrollmentApi.createEnrollment({
+                    class_id : this.currentClass._id,
+                    member_id: response.data._id
+                });
+            }
+        }
+    },
+    checkMember () {
+        let member = this.newMember;
+        if (!this.validateEmail(member.email)) {
+            return 'Email chưa đúng định dạng';
+        }
+        if (member.phone == '') {
+            return 'Nhập số điện thoại';
+        }
+        if (member.phone.length < 10 || member.phone.length > 11) {
+            return 'Số điện thoại phải bao gồm 10 hoặc 11 chữ số';
+        }
+        return null;
     }
   },
   components: {

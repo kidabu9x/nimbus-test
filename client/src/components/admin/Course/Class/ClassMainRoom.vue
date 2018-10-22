@@ -3,7 +3,7 @@
         <md-card v-if="!mainRoom" class="not-main-room-card">
             <md-card-header>
                 <div class="md-title">Phòng học</div>
-                <div class="md-subhead">Chưa có phòng học chính</div>
+                <div class="md-subhead">Lựa chọn 1 phòng học chính sẽ giúp dễ dàng lên lịch phòng, và có thể cập nhật phòng học theo từng buổi ở tab "Lịch học chung"</div>
             </md-card-header>
 
             <md-card-content class="md-layout">

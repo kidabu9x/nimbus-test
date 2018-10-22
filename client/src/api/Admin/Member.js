@@ -16,7 +16,7 @@ export default {
         return Api().post(`${baseUrl}`, member);
     },
     updateMember (member) {
-        return Api().put(`${baseUrl}`, member);
+        return Api().put(`${baseUrl}/${member._id}`, member);
     },
     deleteMember (memberId) {
         return Api().delete(`${baseUrl}/${memberId}`);

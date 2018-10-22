@@ -52,8 +52,8 @@ router.post('/', (req, res) => {
 // @route   UPDATE api/admin/member
 // @desc    Update A Member
 // @access  Public
-router.put('/', (req, res) => {
-    Member.findById(req.body._id)
+router.put('/:id', (req, res) => {
+    Member.findById(req.params.id)
     .then(member => {
         member.username        = req.body.username,
         member.email           = req.body.email,
@@ -127,12 +127,7 @@ router.get('/check-member', (req, res) => {
         if (member) {
             res.json({ 
                 is_match: true,
-                member : {
-                    first_name  : member.first_name,
-                    last_name   : member.last_name,
-                    phone       : member.phone,
-                    email       : member.email
-                } 
+                member : member
             });
         } else {
             res.json({ is_match: false });

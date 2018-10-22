@@ -6,7 +6,7 @@
             </div>
 
             <div class="md-toolbar-section-end">
-                <md-button>
+                <md-button @click="showImportModal">
                     Tạo đăng ký
                 </md-button>
             </div>
@@ -27,27 +27,10 @@
         </md-table-empty-state>
 
         <md-table-row slot="md-table-row" slot-scope="{ item }">
-            <md-table-cell md-label="Môn học">
-                <span v-if="subjects.length > 0">{{ subjects.find(e => e._id == item.subject_id).name }}</span>
-            </md-table-cell>
-            <md-table-cell md-label="Tên lớp">{{ item.name }}</md-table-cell>
-            <md-table-cell md-label="Ngày khai giảng">
-                <div v-if="item.is_fetching_lession">
-                    <md-progress-spinner :md-diameter="20" :md-stroke="2" md-mode="indeterminate"></md-progress-spinner>
-                </div>
-                <div v-else>
-                    <span>{{item.lessions[0].start_hour | moment('HH:mm')}} - {{item.lessions[0].end_hour | moment('HH:mm')}} {{item.lessions[0].start_hour | moment('dddd, DD/MM')}}</span>
-                </div>
-            </md-table-cell>
-            <md-table-cell md-label="Số lượng đăng kí" md-sort-by="gender">
-                0
-            </md-table-cell>
-            <md-table-cell md-label="Trạng thái">
-                <md-switch class="md-primary" v-model="item.is_recruit" @change="updateClass(item)">
-                    <span v-if="item.is_recruit">Mở đăng ký</span>
-                    <span v-else>Đóng đăng ký</span>
-                </md-switch>
-            </md-table-cell>
+            <md-table-cell md-label="ID">{{item.member_id}}</md-table-cell>
+            <md-table-cell md-label="Email">{{item.member_id}}</md-table-cell>
+            <md-table-cell md-label="Email">{{item.member_id}}</md-table-cell>
+            <md-table-cell md-label="Ngày đ.ki">{{item.createdAt | moment('hh:mm DD/MM/YY')}}</md-table-cell>
         </md-table-row>
     </md-table>
 </template>
@@ -57,6 +40,7 @@
 // Api
 import LessionApi from '@/api/Admin/Lession';
 import MemberApi from '@/api/Admin/Member';
+import EnrollmentApi from '@/api/Admin/Enrollment';
 
 // External functions
 
@@ -75,6 +59,7 @@ export default {
   created () {
   },
   mounted () {
+    this.fetchEnrollments();
   },
   methods: {
     showImportModal () {
@@ -85,8 +70,18 @@ export default {
             resizable: true,
             height: 'auto',
             adaptive: true
-        })
-    }
+        }, {
+            'closed': this.fetchEnrollments
+        });
+    },
+    async fetchEnrollments (event) {
+        this.fetchingEnrollments = true;
+        let response = await EnrollmentApi.fetchEnrollments({
+            class_id: this.currentClass._id
+        });
+        this.enrollments = response.data;
+        this.fetchingEnrollments = false;
+    },
   },
   components: {
   },
