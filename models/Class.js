@@ -36,6 +36,9 @@ var ClassSchema = new Schema(
         },
         school_address : {
             type: String
+        },
+        fb_group_url : {
+            type: String
         }
     },
     {

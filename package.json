@@ -20,9 +20,11 @@
     "cors": "^2.8.4",
     "express": "^4.16.3",
     "jsonwebtoken": "^8.3.0",
+    "moment": "^2.22.2",
     "mongoose": "^5.2.2",
     "morgan": "^1.9.0",
     "nodemailer": "^4.6.8",
+    "nodemailer-express-handlebars": "^3.0.0",
     "nodemon": "^1.17.5",
     "pm2": "^3.1.2",
     "shortid": "^2.2.13"
