@@ -65,6 +65,32 @@ var EnrollmentSchema = new Schema(
                 default: 0
             }
         },
+        tested: {
+            is_collected: {
+                type: Boolean,
+                default: false
+            },
+            collector_id : {
+                type: String,
+                default: null
+            },
+            collected_at: {
+                type: String,
+                default: null
+            },
+            amount: {
+                type: Number,
+                default: 0
+            },
+            tested_at : {
+                type: String,
+                default: null
+            },
+            score: {
+                type: Number,
+                default: null
+            }
+        },
         description: {
             type: String
         },

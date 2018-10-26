@@ -16,7 +16,7 @@ export default {
         return Api().get(`${baseUrl}/${handle}`);  
     },
     updateCourse (course) {
-        return Api().put(`${baseUrl}`, course);  
+        return Api().put(`${baseUrl}/${course._id}`, course);  
     },
     createNewCourse (newCourse) {
         return Api().post(`${baseUrl}`, newCourse);

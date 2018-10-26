@@ -53,8 +53,8 @@ router.post('/', (req, res) => {
 // @route   Put api/admin/course
 // @desc    Update a course
 // @access  Public
-router.put('/', (req, res) => {
-    Course.findById(req.body._id)
+router.put('/:id', (req, res) => {
+    Course.findById(req.params.id)
         .then(course => {
             course.description                  = req.body.description;
             course.is_recruit                   = req.body.is_recruit;

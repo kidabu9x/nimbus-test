@@ -79,9 +79,13 @@ export default {
         let response = await EnrollmentApi.fetchEnrollments({
             class_id: this.currentClass._id
         });
-        this.enrollments = response.data;
+        this.enrollments = response.data.map(e => {
+            e.isFetchingMember = true;
+            return e;
+        });
         this.fetchingEnrollments = false;
     },
+    
   },
   components: {
   },

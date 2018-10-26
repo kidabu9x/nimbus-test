@@ -7,12 +7,16 @@
             <span style="float: right; font-size: 16px;"><b>{{className}}</b></span>
         </li>
         <li style="margin-top: 5px; clear: both;">
-            <span>Khai giảng:</span>
-            <span style="float: right; font-size: 16px;"><b>Ngày 23/10</b></span>
+            <span>Lịch học:</span>
+            <span style="float: right; font-size: 16px;"><b>{{learningHour}} {{learningDays}}</b></span>
         </li>
         <li style="margin-top: 5px; clear: both;">
-            <span>Lịch học:</span>
-            <span style="float: right; font-size: 16px;"><b>18h00-21h00 thứ 3-6</b></span>
+            <span>Thời lượng:</span>
+            <span style="float: right; font-size: 16px;"><b>{{numOfDays}} buổi</b></span>
+        </li>
+        <li style="margin-top: 5px; clear: both;">
+            <span>Khai giảng:</span>
+            <span style="float: right; font-size: 16px;"><b>{{startDate}}</b></span>
         </li>
         <li style="margin-top: 5px; clear: both;">
             <span>Địa điểm:</span>
@@ -30,7 +34,9 @@
 </div>
 
 <div class="nimbus-confirm">
-    <button class="nimbus-confirm-btn">Xác nhận đăng ký học</button>
+    <a href="{{confirmUrl}}" target="_blank">
+        <p class="nimbus-confirm-btn">Xác nhận đăng ký học</p>
+    </a>
 </div>
 
 <div class="nimbus-card">
@@ -39,23 +45,23 @@
         <li style="margin-top: 5px; clear: both;">
             <b>Cam kết đi học đầy đủ.</b>
             <br>
-            Khóa học diễn ra liên tục trong 4 tuần. Nimbus cần các bạn thực hiện nghiêm túc việc đi học cũng như làm bài tập để đạt được kết quả thi tốt nhất.
+            Nimbus cần các bạn thực hiện nghiêm túc việc đi học cũng như làm bài tập để đạt được kết quả thi tốt nhất.
         </li>
         <li style="margin-top: 5px; clear: both;">
             <b>Nộp học phí trong buổi học đầu tiên.</b>
             <br>
-            Với việc thực hiện đầy đủ các ưu đãi đã được thông báo trên Fanpage, học phí các bạn phải đóng chỉ là 700k/khóa . Học phí này sẽ được đóng vào buổi học đầu tiên theo quy định của Nimbus . Ngoài lệ phí trên bên mình không thu thêm bất kỳ khoản phí nào trong quá trình học. Đây là học phí cần thiết để Nimbus có thể duy trì các khóa IC3 GS4 cũng như đảm bảo chất lượng học thi, phát triển các dự án trong tương lai dành cho các bạn tham gia Cộng đồng Nimbus.
+            Với việc thực hiện đầy đủ các ưu đãi đã được thông báo trên Fanpage, học phí các bạn phải đóng chỉ là <b>{{{price}}}</b>/khóa . Học phí này sẽ được đóng vào buổi học đầu tiên theo quy định của Nimbus . Ngoài lệ phí trên bên mình không thu thêm bất kỳ khoản phí nào trong quá trình học. Đây là học phí cần thiết để Nimbus có thể duy trì các khóa {{subjectName}} cũng như đảm bảo chất lượng học thi, phát triển các dự án trong tương lai dành cho các bạn tham gia Cộng đồng Nimbus.
         </li>
         <li style="margin-top: 5px; clear: both;">
             <b>Đăng ký thi.</b>
             <br>
-            Như đã đề cập, các lớp MOS cộng đồng tại Nimbus hỗ trợ cho các bạn có nhu cầu THI CHỨNG CHỈ  MOS. Một điều may mắn là Nimbus được IIG Việt Nam đồng hành trong việc hỗ trợ đăng ký thi để các bạn không lo lắng việc phải đến tận IIG làm thủ tục. Vì vậy,các bạn có thể đăng ký thi qua Nimbus, IIG sẽ hỗ trợ bạn đúng ca rảnh trong ngày mà các bạn muốn. 
+            Như đã đề cập, các lớp {{subjectName}} tại Nimbus hỗ trợ cho các bạn có nhu cầu THI CHỨNG CHỈ {{subjectName}}. Một điều may mắn là Nimbus được  <img src="http://megaceo.com/employer/logo/img000000001258.png" style="width: 25px;"/>  Việt Nam đồng hành trong việc hỗ trợ đăng ký thi để các bạn không lo lắng việc phải đến tận IIG làm thủ tục. Vì vậy,các bạn có thể đăng ký thi qua Nimbus, IIG sẽ hỗ trợ bạn đúng ca rảnh trong ngày mà các bạn muốn. 
         </li>
     </ul>
 
-    <p>Bạn vui lòng đọc kỹ các nội dung trong email và xác nhận tham gia học bằng cách bấm nút ở phía dưới.</p>
+    <p>Bạn vui lòng đọc kỹ các nội dung trong email và xác nhận tham gia học bằng cách bấm nút ở phía trên.</p>
 
-    <p>Mọi thắc mắc về khóa học, bạn có thể liên hệ với số hotline: 0969.849.603 hoặc Facebook group “NIMBUS – Tin học MOS/IC3”.</p>
+    <p>Mọi thắc mắc về khóa học, bạn có thể liên hệ với số hotline: 0969.849.603 hoặc Facebook fanpage “NIMBUS – Tin học MOS/IC3”.</p>
 
     <p>Hẹn gặp lại bạn tại lớp học!</p>
 </div>

@@ -40,6 +40,17 @@
                 <label class="regular-label">Số điện thoại</label>
                 <input type="number" class="regular-input" v-model="newMember.phone">
             </div>
+            <div class="md-layout-item md-size-100" style="margin-top: 10px;">
+                <div class="md-layout md-gutter">
+                    <div class="md-layout-item regular-input-wrapper">
+                        <label class="regular-label">Học phí</label>
+                        <input type="number" class="regular-input" v-model="amount">
+                    </div>
+                    <div class="md-layout-item" style="padding-top: 35px;">
+                        <span v-html="formatPrice(amount)"></span>
+                    </div>
+                </div>
+            </div>
             <div class="md-layout-item md-size-100" style="padding: 10px;">
                 <md-divider></md-divider>
             </div>
@@ -65,7 +76,7 @@
           </div>
       </md-tab>
       <md-tab id="tab-import" md-label="Nhập Excel">
-          <div class="md-layout" >
+          <div class="md-layout">
             <div class="md-layout-item md-size-100" style="text-align: center;">
                 <vue-dropzone ref="myVueDropzone" id="dropzone" @vdropzone-file-added="updateFile" :options="dropzoneOptions" :useCustomSlot=true :duplicateCheck=true>
                     <div class="dropzone-custom-content">
@@ -126,6 +137,7 @@ export default {
             last_name: '',
             phone: ''
         },
+        amount : 0,
         isCheckedEmail: false,
         isCheckingEmail : false,
         showCheckingErr: false,
@@ -195,7 +207,10 @@ export default {
                 let response = await MemberApi.updateMember(this.newMember);
                 await EnrollmentApi.createEnrollment({
                     class_id : this.currentClass._id,
-                    member_id: this.newMember._id
+                    member_id: this.newMember._id,
+                    paid : {
+                        amount : this.amount
+                    }
                 });
             } else {
                 let response = await MemberApi.createNewMember(this.newMember);
@@ -217,7 +232,14 @@ export default {
         if (member.phone.length < 10 || member.phone.length > 11) {
             return 'Số điện thoại phải bao gồm 10 hoặc 11 chữ số';
         }
+        if (member.paid.amount == 0) {
+            return 'Nhập học phí phí';
+        }
         return null;
+    },
+    formatPrice (x) {
+        let val = (x/1).toFixed(2).replace('.', ',');
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".").concat('&#8363;');
     }
   },
   components: {
