@@ -232,7 +232,7 @@ export default {
         if (member.phone.length < 10 || member.phone.length > 11) {
             return 'Số điện thoại phải bao gồm 10 hoặc 11 chữ số';
         }
-        if (member.paid.amount == 0) {
+        if (this.amount == 0) {
             return 'Nhập học phí phí';
         }
         return null;

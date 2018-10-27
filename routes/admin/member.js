@@ -13,7 +13,7 @@ const Member = require('../../models/Member');
 router.get('/', (req, res) => {
     if (req.query.member_id) {
         Member.findById(req.query.member_id)
-            .then(members => res.json(members));
+            .then(member => res.json(member));
     } else {
         Member.find({
             role: {

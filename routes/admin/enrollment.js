@@ -50,7 +50,7 @@ router.post('/', (req, res) => {
 // @desc    Create enrollment
 // @access  Public
 router.post('/send-email', async (req, res) => {
-    let enroll      = await Enrollment.findById(req.body._id);
+    let enroll      = await Enrollment.findById(req.body.enroll_id);
     let member      = await Member.findById(enroll.member_id);
     let cl          = await Classes.findById(enroll.class_id);
     let lessions    = await Lession.find({class_id: cl._id}).sort({'start_hour' : 1});
@@ -112,8 +112,8 @@ router.post('/send-email', async (req, res) => {
     gmailTransporter.use('compile', hbs(options));
     var mailOptions = {
         from: "Nimbus - Computer School <duongnk.nimbus@gmail.com>", // sender address
-        // to: member.email, // list of receivers
-        to : "duongnk.deoco.nimbus.ok@gmail.com",
+        to: member.email, // list of receivers
+        // to : "duongnk.deoco.nimbus.ok@gmail.com",
         subject: `[NIMBUS - TIN HỌC MOS/IC3] XÁC NHẬN ĐĂNG KÍ KHÓA HỌC ${subject.name} ${course.name}`, // Subject line
         template: "email.body",
         context: {
@@ -137,6 +137,7 @@ router.post('/send-email', async (req, res) => {
             enroll.emailed.sent_at = new Date(); 
             enroll.emailed.sender_id = req.body.sender_id ? req.body.sender_id : null;
             enroll.emailed.is_sent = true;
+            enroll.emailed.is_confirmed = false;
             enroll.save().then(doc => res.json({
                 success: true,
                 enroll: doc

@@ -97,7 +97,6 @@ export default {
     },
     async fetchTeachers () {
         let response = await MemberApi.fetchTeachers();
-        console.log(response);
         this.teachers = response.data;
     },
     async updateCourse () {

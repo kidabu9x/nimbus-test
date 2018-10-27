@@ -27,6 +27,10 @@ var EnrollmentSchema = new Schema(
             is_confirmed: {
                 type: Boolean,
                 default: false
+            },
+            confirmed_at : {
+                type: String,
+                default: null
             }
         },
         called: {

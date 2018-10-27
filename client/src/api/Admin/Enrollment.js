@@ -16,5 +16,8 @@ export default {
     },
     deleteEnrollment (enroll) {
         return Api().delete(`${baseUrl}/${enroll._id}`);
+    },
+    sendEmail (data) {
+        return Api().post(`${baseUrl}/send-email`, data);
     }
 }
