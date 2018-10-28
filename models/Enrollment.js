@@ -98,9 +98,19 @@ var EnrollmentSchema = new Schema(
         description: {
             type: String
         },
-        note: {
-            type: String
-        }
+        notes: [
+            {
+                writer_id: {
+                    type: String
+                },
+                content: {
+                    type: String
+                },
+                wrote_at: {
+                    type: String
+                }
+            }
+        ]
     },
     {
         timestamps: {

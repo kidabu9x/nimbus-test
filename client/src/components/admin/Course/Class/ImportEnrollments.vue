@@ -216,9 +216,13 @@ export default {
                 let response = await MemberApi.createNewMember(this.newMember);
                 await EnrollmentApi.createEnrollment({
                     class_id : this.currentClass._id,
-                    member_id: response.data._id
+                    member_id: response.data._id,
+                    paid: {
+                        amount: this.amount
+                    }
                 });
             }
+            this.$emit('close');
         }
     },
     checkMember () {

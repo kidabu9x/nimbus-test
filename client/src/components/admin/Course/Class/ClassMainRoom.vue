@@ -64,11 +64,11 @@ export default {
   },
   watch: {
     currentClass : function (val) {
-        if (this.currentClass.main_teacher_id) {
+        if (this.currentClass.main_room_id) {
             this.mainRoom = this.rooms.find(e => e._id == this.currentClass.main_room_id);
         } else {
             // this.mainTeacher = this.teachers[0];
-            this.mainTeacher = null;
+            this.mainRoom = null;
         }
     }
   },

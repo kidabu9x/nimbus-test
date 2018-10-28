@@ -8,6 +8,11 @@ export default {
             params : query
         });
     },
+    countEnrollments (query) {
+        return Api().get(`${baseUrl}/count`, {
+            params : query
+        });
+    },
     createEnrollment (newEnroll) {
         return Api().post(`${baseUrl}`, newEnroll);
     },
@@ -18,6 +23,15 @@ export default {
         return Api().delete(`${baseUrl}/${enroll._id}`);
     },
     sendEmail (data) {
-        return Api().post(`${baseUrl}/send-email`, data);
+        return Api().post(`${baseUrl}/${data.enroll_id}/send-email`, data);
+    },
+    call (data) {
+        return Api().post(`${baseUrl}/${data.enroll_id}/call`, data);
+    },
+    paid (data) {
+        return Api().post(`${baseUrl}/${data.enroll_id}/paid`, data);
+    },
+    note (data) {
+        return Api().post(`${baseUrl}/${data.enroll_id}/note`, data);
     }
 }

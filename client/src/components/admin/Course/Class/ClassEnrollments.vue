@@ -36,12 +36,12 @@
                         <div v-else>
                             <div v-if="item.member">
                                 <span style="line-height: 32px;">{{item.member.first_name}} {{item.member.last_name}}</span>
-                                <md-button class="md-icon-button" v-if="item.note && item.note != ''">
-                                    <md-icon>notes</md-icon>
+                                <span v-if="item.notes && Array.isArray(item.notes) && item.notes.length > 0">
+                                    <md-icon>note</md-icon>
                                     <md-tooltip>
-                                        {{item.note}}
+                                        Đăng kí này có ghi chú
                                     </md-tooltip>
-                                </md-button>
+                                </span>
                             </div>
                             <p v-else>
                                 N/A
@@ -94,7 +94,7 @@
                     <md-table-cell md-label="Thu h.phí">
                         <div v-if="!item.paid.is_collected">
                             <span style="line-height: 32px;">Chưa thu</span>
-                            <md-button class="md-icon-button md-dense">
+                            <md-button class="md-icon-button md-dense" @click="paidEnroll(item)">
                                 <md-icon>attach_money</md-icon>
                                 <md-tooltip>Thu</md-tooltip>
                             </md-button>
@@ -102,8 +102,8 @@
                         <div v-else>
                             <p>
                                 Đã thu : <span v-html="formatPrice(item.paid.amount)"></span>
-                                <md-tooltip v-if="item.paid.caller_id">{{item.paid.caller_id}} | {{item.paid.called_at | moment('hh:mm DD/MM/YY')}}</md-tooltip>
-                                <md-tooltip v-else>{{item.paid.confirmed_at | moment('hh:mm DD/MM/YY')}}</md-tooltip>
+                                <md-tooltip v-if="item.paid.collector_id">{{item.paid.collector_id}} | {{item.paid.collected_at | moment('hh:mm DD/MM/YY')}}</md-tooltip>
+                                <md-tooltip v-else>{{item.paid.collected_at | moment('hh:mm DD/MM/YY')}}</md-tooltip>
                             </p>
                         </div>
                     </md-table-cell>
@@ -115,7 +115,11 @@
                                     <md-icon>email</md-icon>
                                     <span>Gửi lại mail</span>
                                 </md-menu-item>
-                                <md-menu-item >
+                                <md-menu-item @click="paidEnroll(item)" v-if="item.paid.is_collected">
+                                    <md-icon>attach_money</md-icon>
+                                    <span>Cập nhật học phí</span>
+                                </md-menu-item>
+                                <md-menu-item @click="noteEnroll(item)">
                                     <md-icon>notes</md-icon>
                                     <span>Ghi chú</span>
                                 </md-menu-item>
@@ -150,7 +154,44 @@
                 md-confirm-text="Xác nhận"
                 md-cancel-text="Bỏ qua"
                 @md-cancel="openCallModal = false"
-                @md-confirm="onConfirmDeleteEnroll" />
+                @md-confirm="onConfirmCalled" />
+        </div>
+        <div class="md-layout-item md-size-100">
+            <md-dialog-prompt
+                :md-active.sync="openPaidModal"
+                v-if="currentEnroll"
+                v-model="currentEnroll.paid.amount"
+                md-title="Thu học phí"
+                :md-content="formatPrice(currentEnroll.paid.amount)"
+                md-input-placeholder="Nhập mức phí"
+                md-confirm-text="Xác nhận"
+                md-cancel-text="Bỏ qua"
+                @md-cancel="openPaidModal = false"
+                @md-confirm="onConfirmPaid"  />
+        </div>
+        <div class="md-layout-item md-size-100">
+            <md-dialog v-if="currentEnroll" :md-active.sync="openNoteModal">
+                <md-dialog-title>Ghi chú : {{currentEnroll.member.first_name}} {{currentEnroll.member.last_name}}</md-dialog-title>
+                <md-content class="md-layout" style="padding: 20px; overflow-y: scroll;">
+                    <div class="md-layout-item md-size-100" v-if="currentEnroll.notes && Array.isArray(currentEnroll.notes) && currentEnroll.notes.length > 0">
+                        <div class="md-layout">
+                            <div class="md-layout-item md-size-100" v-for="note of currentEnroll.notes" :key="note.wrote_at">
+                                <p>- {{note.content}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="md-layout-item md-size-100">
+                        <md-field>
+                            <label>Ghi chú</label>
+                            <md-textarea v-model="newNote.content"></md-textarea>
+                        </md-field>
+                    </div>
+                </md-content>
+                <md-dialog-actions>
+                    <md-button class="md-primary" @click="openNoteModal = false">Bỏ qua</md-button>
+                    <md-button class="md-primary" @click="onSaveNote">Lưu ghi chú</md-button>
+                </md-dialog-actions>
+            </md-dialog>
         </div>
     </div>
 </template>
@@ -176,7 +217,12 @@ export default {
         user: null,
         currentEnroll : null,
         openDeleteModal : false,
-        openCallModal: false
+        openCallModal: false,
+        openPaidModal: false,
+        openNoteModal: false,
+        newNote : {
+            content: null,
+        }
     }
   },
   created () {
@@ -185,6 +231,16 @@ export default {
     this.fetchEnrollments();
     if (localStorage.getItem('member') != null) {
       this.user = JSON.parse(localStorage.getItem('member'));
+    }
+  },
+  watch : {
+    currentClass : function () {
+        this.fetchEnrollments();
+    },
+    openNoteModal : function () {
+        this.newNote = {
+            content: null
+        }
     }
   },
   methods: {
@@ -216,16 +272,52 @@ export default {
         this.openDeleteModal = true;
     },
     async onConfirmDeleteEnroll () {
-        let response = await EnrollmentApi.deleteEnrollment(enroll);
-        this.enrollments.splice(this.enrollments.findIndex(e => e._id == enroll._id), 1); 
+        let response = await EnrollmentApi.deleteEnrollment(this.currentEnroll);
+        this.enrollments.splice(this.enrollments.findIndex(e => e._id == this.currentEnroll._id), 1); 
     },
     callEnroll (enroll) {
         this.currentEnroll = enroll;
         this.openCallModal = true;
     },
     async onConfirmCalled () {
-        let response = await EnrollmentApi.deleteEnrollment(enroll);
-        this.enrollments.splice(this.enrollments.findIndex(e => e._id == enroll._id), 1); 
+        let response = await EnrollmentApi.call({
+            enroll_id : this.currentEnroll._id,
+            caller_id : this.user ? this.user._id : null
+        });
+        if (response.data.success) {
+            this.currentEnroll.called = response.data.enroll.called;
+        }
+    },
+    paidEnroll (enroll) {
+        this.currentEnroll = enroll;
+        this.openPaidModal = true;
+    },
+    async onConfirmPaid () {
+        let response = await EnrollmentApi.paid({
+            enroll_id : this.currentEnroll._id,
+            collector_id : this.user ? this.user._id : null,
+            amount : this.currentEnroll.paid.amount
+        });
+        if (response.data.success) {
+            this.currentEnroll.paid = response.data.enroll.paid;
+        }
+    },
+    noteEnroll (enroll) {
+        this.currentEnroll = enroll;
+        this.openNoteModal = true;
+    },
+    async onSaveNote () {
+        let response = await EnrollmentApi.note({
+            enroll_id: this.currentEnroll._id,
+            writer_id : this.user ? this.user._id : null,
+            content : this.newNote.content
+        });
+        if (response.data.success) {
+            this.currentEnroll.notes = response.data.enroll.notes;
+            this.newNote = {
+                content : null
+            }
+        }
     },
     async fetchEnrollments (event) {
         this.fetchingEnrollments = true;

@@ -13,4 +13,7 @@ router.use('/test', test);
 const testResult = require('./user/testResult');
 router.use('/test-results', testResult);
 
+const enrollment = require('./user/enrollment');
+router.use('/enrollments', enrollment);
+
 module.exports = router;

@@ -17,7 +17,7 @@ const Subject = require('../../models/Subject');
 router.get('/', (req, res) => {
     Enrollment.find(req.query)
         .sort({
-            'createAt' : 1
+            'createdAt' : 1
         })
         .then(enrolls => res.json(enrolls));
 });
@@ -38,7 +38,7 @@ router.post('/', (req, res) => {
         class_id: req.body.class_id,
         member_id : req.body.member_id,
         paid: {
-            amount : req.body.amount ? req.body.paid.amount : 0
+            amount : req.body.paid ? req.body.paid.amount : 0
         }
     });
     newEnrollment.save()
@@ -46,11 +46,11 @@ router.post('/', (req, res) => {
         .catch(err => res.status(404).json(null));
 });
 
-// @route   Post api/admin/enrollments
-// @desc    Create enrollment
+// @route   Post api/admin/enrollments/:id/send-email
+// @desc    Send an confirm email to register
 // @access  Public
-router.post('/send-email', async (req, res) => {
-    let enroll      = await Enrollment.findById(req.body.enroll_id);
+router.post('/:id/send-email', async (req, res) => {
+    let enroll      = await Enrollment.findById(req.params.id);
     let member      = await Member.findById(enroll.member_id);
     let cl          = await Classes.findById(enroll.class_id);
     let lessions    = await Lession.find({class_id: cl._id}).sort({'start_hour' : 1});
@@ -124,7 +124,7 @@ router.post('/send-email', async (req, res) => {
             "learningDays" : schedules[0].learning_days,
             "startDate" : startDate,
             "numOfDays" : lessions.length,
-            "confirmUrl" : `http://localhost:8080/confirm?type=$2y$12$9HpgirQURQVcfKxd0Ink3eGVn31F7lMuONGgLks4qY49V2n2zajFi&uid=${member._id}&eid=${enroll._id}&cid=${cl._id}&type=enroll`,
+            "confirmUrl" : `http://localhost:8080/confirm-email?type=$2y$12$9HpgirQURQVcfKxd0Ink3eGVn31F7lMuONGgLks4qY49V2n2zajFi&uid=${member._id}&eid=${enroll._id}&cid=${cl._id}&type=enroll`,
             "subjectName" : subject.name,
             "price" : formatPrice(enroll.paid.amount)
         }
@@ -144,7 +144,81 @@ router.post('/send-email', async (req, res) => {
             }));
         }
     });
+});
+
+// @route   Post api/admin/enrollments/:id/call
+// @desc    Confirm a call
+// @access  Public
+router.post('/:id/call', async (req, res) => {
+    let enroll = await Enrollment.findById(req.params.id);
+    enroll.called.is_called = true;
+    enroll.called.caller_id = req.body.caller_id;
+    enroll.called.called_at = new Date();
+    enroll.save()
+        .then(doc => {
+            res.json({
+                success: true,
+                enroll : doc
+            });
+        }).catch(err => {
+            res.json({
+                success: false
+            });
+        });
+});
+
+// @route   Post api/admin/enrollments/:id/paid
+// @desc    Confirm a paid
+// @access  Public
+router.post('/:id/paid', async (req, res) => {
+    let enroll = await Enrollment.findById(req.params.id);
+    enroll.paid.is_collected = true;
+    enroll.paid.collector_id = req.body.collector_id;
+    enroll.paid.collected_at = new Date();
+    enroll.paid.amount = req.body.amount;
+    enroll.save()
+        .then(doc => {
+            res.json({
+                success: true,
+                enroll : doc
+            });
+        }).catch(err => {
+            res.json({
+                success: false
+            });
+        });
+});
+
+// @route   Post api/admin/enrollments/:id/note
+// @desc    Write a note
+// @access  Public
+router.post('/:id/note', async (req, res) => {
+    let enroll = await Enrollment.findById(req.params.id);
+    if (enroll.notes && Array.isArray(enroll.notes)) {
+        enroll.notes.push({
+            writer_id : req.body.writer_id,
+            content : req.body.content,
+            wrote_at : new Date()
+        });
+    } else {
+        enroll.notes = [{
+            writer_id : req.body.writer_id,
+            content : req.body.content,
+            wrote_at : new Date()
+        }];
+    }
     
+    enroll.save()
+        .then(doc => {
+            res.json({
+                success: true,
+                enroll : doc
+            });
+        }).catch(err => {
+            res.json({
+                success: false
+            });
+        });
 });
 
 // @route   Put api/admin/enrollments/:id
@@ -238,7 +312,7 @@ router.put('/:id', (req, res) => {
 
             // Note
             if (req.body.note) {
-                enroll.note = req.body.note;
+                enroll.notes = req.body.notes;
             }
             
             enroll.save(doc => res.json(doc));

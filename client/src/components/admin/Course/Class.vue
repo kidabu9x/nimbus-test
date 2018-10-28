@@ -33,26 +33,26 @@
                        <md-card>
                             <md-list>
                                 <md-subheader>{{currentClass.name}}</md-subheader>
-                                <md-list-item>
+                                <!-- <md-list-item>
                                     <span class="md-list-item-text">Mở đăng kí</span>
                                     <md-switch class="md-primary" v-model="currentClass.is_recruit" @change="updateClass">
                                     </md-switch>
-                                </md-list-item>
+                                </md-list-item> -->
                                 <md-list-item>
                                     <span class="md-list-item-text">Mã lớp học</span>
                                     <span>{{currentClass.handle}}</span>
                                 </md-list-item>
                                 <md-list-item>
                                     <span class="md-list-item-text">Sĩ số lớp</span>
-                                    <span>0</span>
+                                    <span>{{totalEnrolls}}</span>
                                 </md-list-item>
                             </md-list>
-                            <md-card-actions>
+                            <!-- <md-card-actions>
                                 <md-button @click="showConfirmDelete = true">
                                     <md-icon>delete</md-icon>
                                     <span>Xoá</span>
                                 </md-button>
-                            </md-card-actions>
+                            </md-card-actions> -->
                         </md-card>
                    </div>
                    <div class="md-layout-item">
@@ -121,6 +121,12 @@
         @md-cancel="showConfirmDelete = false"
         @md-confirm="deleteClass" />
    </div>
+   <div class="md-layout-item md-size-100">
+       <md-button @click="showConfirmDelete = true">
+            <md-icon>delete</md-icon>
+            <span>Xoá</span>
+        </md-button>
+   </div>
   </div>
 </template>
 
@@ -131,6 +137,7 @@ import ClassApi from '@/api/Admin/Class';
 import LessionApi from '@/api/Admin/Lession';
 import SubjectApi from '@/api/Admin/Subject';
 import MemberApi from '@/api/Admin/Member';
+import EnrollmentApi from '@/api/Admin/Enrollment';
 
 // External functions
 
@@ -149,6 +156,7 @@ export default {
         classes: [],
         currentClass : null,
         showConfirmDelete: false,
+        totalEnrolls : 0
     }
   },
   created () {
@@ -158,6 +166,14 @@ export default {
   watch : {
     course: function (val) {
         this.fetchClasses();
+    },
+    currentClass : async function (val) {
+        if (val) {
+            let totalResData = await EnrollmentApi.countEnrollments({
+                class_id : this.currentClass._id
+            });
+            this.totalEnrolls = totalResData.data;
+        }
     }
   },
   methods: {

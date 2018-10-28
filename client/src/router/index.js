@@ -29,6 +29,7 @@ import User from '@/components/User';
 import Test from '@/components/user/Test';
 import Homepage from '@/components/user/Homepage';
 import ExamRegistration from '@/components/user/ExamRegistration';
+import ConfirmEmail from '@/components/user/ConfirmEmail';
 // ----------- end user component ------------
 
 Vue.use(Router)
@@ -56,6 +57,11 @@ let router = new Router({
       path: '/test',
       name: 'Test',
       component: Test
+    },
+    {
+      path: '/confirm-email',
+      name: 'ConfirmEmail',
+      component: ConfirmEmail
     },
     {
       path: '/dev',
