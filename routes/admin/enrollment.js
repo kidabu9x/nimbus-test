@@ -128,6 +128,7 @@ router.post('/:id/send-email', async (req, res) => {
     }
     gmailTransporter.sendMail(mailOptions, function(err, response) {
         if (err) {
+            console.log(err);
             res.json({success : false});
         } else {
             gmailTransporter.close();
