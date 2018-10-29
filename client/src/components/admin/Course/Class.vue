@@ -72,17 +72,12 @@
                         <md-list>
                             <md-subheader>{{currentClass.name}}</md-subheader>
                             <md-list-item>
-                                <span class="md-list-item-text">Mở đăng kí</span>
-                                <md-switch class="md-primary" v-model="currentClass.is_recruit" @change="updateClass">
-                                </md-switch>
-                            </md-list-item>
-                            <md-list-item>
                                 <span class="md-list-item-text">Mã lớp học</span>
                                 <span>{{currentClass.handle}}</span>
                             </md-list-item>
                             <md-list-item>
                                 <span class="md-list-item-text">Sĩ số lớp</span>
-                                <span>0</span>
+                                <span>{{totalEnrolls}}</span>
                             </md-list-item>
                         </md-list>
                     </md-card>
@@ -162,6 +157,7 @@ export default {
   created () {
   },
   mounted () {
+    this.fetchClasses();
   },
   watch : {
     course: function (val) {

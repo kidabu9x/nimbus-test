@@ -58,6 +58,10 @@
                                     </div>
                                 </div>
                                 <div class="md-layout-item md-size-100 regular-input-wrapper">
+                                    <p class="regular-label">Link group facebook</p>
+                                    <input v-model="newClass.fb_group_url" class="regular-input" type="text">
+                                </div>
+                                <div class="md-layout-item md-size-100 regular-input-wrapper">
                                     <p class="regular-label">Địa điểm học</p>
                                     <select v-model="newClass.school_address" class="regular-input">
                                         <option value="Số 15/20 Trương Định, Hai Bà Trưng, Hà Nội">Số 15/20 Trương Định, Hai Bà Trưng, Hà Nội</option>
@@ -114,9 +118,9 @@
 
                             <md-table-row slot="md-table-row" slot-scope="{ item }">
                                 <md-table-cell md-label="Ngày học">
-                                    <md-button class="md-dense" @click="duplicateSession(item.handle)">
-                                        {{ item.school_date | moment('dddd, DD/MM') }}
-                                        <md-icon style="min-width: 18px; min-height: 18px; font-size: 18px !important;">file_copy</md-icon>
+                                    {{ item.school_date | moment('dddd, DD/MM') }}
+                                    <md-button class="md-dense md-icon-button" @click="duplicateSession(item.handle)" style="width: 12px; height: 12px;">
+                                        <md-icon style="min-width: 12px; min-height: 12px; width: 12px; height: 12px;font-size: 12px !important;">file_copy</md-icon>
                                         <md-tooltip>Sao chép</md-tooltip>
                                     </md-button>
                                 </md-table-cell>
@@ -266,7 +270,8 @@ export default {
             school_days: [new Date().getDay()],
             number_of_school_days: 8,
             school_address: 'Số 15/20 Trương Định, Hai Bà Trưng, Hà Nội',
-            handle: shortId.generate()
+            handle: shortId.generate(),
+            fb_group_url: null
         },
         estimatedDate : [],
         finalSchedule : [],
@@ -358,7 +363,7 @@ export default {
     duplicateSession (handle) {
         let currentSchedule = this.finalSchedule;
         let currentIndex = this.finalSchedule.findIndex(e => e.handle == handle);
-        let newSession = this.finalSchedule[currentIndex];
+        let newSession = JSON.parse(JSON.stringify(this.finalSchedule[currentIndex]));
         newSession.handle = shortId.generate();
         currentSchedule.splice(currentIndex, 0, newSession);
         this.finalSchedule = currentSchedule;
@@ -374,7 +379,6 @@ export default {
             setTimeout( async ()=> {
                 var response = await ClassApi.createNewClass(grade);
                 this.newClass = response.data;
-                console.log(response);
                 this.creatingMsg = 'Tạo lịch học';
                 for (let i = 0; i < this.finalSchedule.length; i++) {
                     this.finalSchedule[i].class_id = this.newClass._id;
@@ -400,6 +404,9 @@ export default {
         }
         if (newClass.school_days.length == 0) {
             return 'Phải học ít nhất 1 ngày trong tuần';
+        }
+        if (!newClass.fb_group_url || newClass.fb_group_url == '') {
+            return 'Thiếu link tới group facebook';
         }
         if (newClass.start_date == '') {
             return 'Pick ngày khai giảng !';

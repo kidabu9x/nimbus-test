@@ -64,7 +64,7 @@ router.post('/:id/send-email', async (req, res) => {
         let startHour = moment(lession.start_hour).format("HH[h]mm");
         let endHour = moment(lession.end_hour).format("HH[h]mm");
         let day = daysOfWeek[new Date(lession.start_hour).getDay()];
-        day = day != 0 ? ("Thứ " + daysOfWeek[Number(day)]) : daysOfWeek[Number(day)];
+        day = day != "Chủ nhật" ? ("Thứ " + day) : day;
         let index = schedules.findIndex(e => e.learning_hour == `${startHour}-${endHour}`);
         if (index > -1) {
             if (schedules[index].learning_days.indexOf(day) == -1) {
@@ -120,8 +120,8 @@ router.post('/:id/send-email', async (req, res) => {
             "className": cl.name,
             "groupFb": cl.fb_group_url,
             "schedules" : schedules,
-            "learningHour" : schedules[0].learning_hour,
-            "learningDays" : schedules[0].learning_days,
+            // "learningHour" : schedules[0].learning_hour,
+            // "learningDays" : schedules[0].learning_days,
             "startDate" : startDate,
             "numOfDays" : lessions.length,
             "confirmUrl" : `http://localhost:8080/confirm-email?type=$2y$12$9HpgirQURQVcfKxd0Ink3eGVn31F7lMuONGgLks4qY49V2n2zajFi&uid=${member._id}&eid=${enroll._id}&cid=${cl._id}&type=enroll`,

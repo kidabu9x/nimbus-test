@@ -19,7 +19,7 @@
                 </div>
             </md-card-content>
             <md-card-actions>
-                <md-button v-if="currentClass.main_teacher_id">
+                <md-button v-if="currentClass.main_room_id">
                     <span style="color: #fff;" @click="updateClass">
                         Cập nhật
                     </span>
@@ -67,7 +67,6 @@ export default {
         if (this.currentClass.main_room_id) {
             this.mainRoom = this.rooms.find(e => e._id == this.currentClass.main_room_id);
         } else {
-            // this.mainTeacher = this.teachers[0];
             this.mainRoom = null;
         }
     }
