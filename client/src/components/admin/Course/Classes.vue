@@ -131,6 +131,7 @@ import CourseApi from '@/api/Admin/Course';
 import ClassApi from '@/api/Admin/Class';
 import LessionApi from '@/api/Admin/Lession';
 import SubjectApi from '@/api/Admin/Subject';
+import RoomApi from '@/api/Admin/Room';
 import MemberApi from '@/api/Admin/Member';
 import EnrollmentApi from '@/api/Admin/Enrollment';
 
@@ -144,9 +145,11 @@ import ClassMainRoom from '@/components/admin/Course/Class/ClassMainRoom';
 
 export default {
   name: 'classes',
-  props: ['course', 'teachers', 'rooms'],
   data () {
     return {
+        course: null,
+        teachers : [],
+        rooms : [],
         fetchingClasses: false,
         classes: [],
         currentClass : null,
@@ -157,12 +160,14 @@ export default {
   created () {
   },
   mounted () {
-    this.fetchClasses();
+    this.fetchCourseDetail();
+    this.fetchTeachers();
+    this.fetchRooms();
   },
   watch : {
-    course: function (val) {
-        this.fetchClasses();
-    },
+    // course: function (val) {
+    //     this.fetchClasses();
+    // },
     currentClass : async function (val) {
         if (val) {
             let totalResData = await EnrollmentApi.countEnrollments({
@@ -177,6 +182,33 @@ export default {
         let response = await ClassApi.updateClass(this.currentClass);
         this.currentClass = response.data;
     },
+    async deleteClass () {
+        let response = await ClassApi.deleteClass(this.currentClass._id);
+        let index = this.classes.findIndex(e => e._id == this.currentClass._id);
+        this.classes.splice(index, 1);
+        if (this.classes.length > 0) {
+            this.currentClass = this.classes[0];
+        } else {
+            this.currentClass = null;
+        }
+    },
+    async fetchTeachers () {
+        let response = await MemberApi.fetchTeachers();
+        this.teachers = response.data;
+    },
+    async fetchRooms () {
+        let response = await RoomApi.fetchRooms();
+        this.rooms = response.data;
+    },
+    async fetchCourseDetail () {
+      let response = await CourseApi.fetchCourses({
+          handle: this.$route.params.handle
+      });
+      this.course = response.data[0];
+      if (this.course) {
+        this.fetchClasses();
+      }
+    },
     async fetchClasses () {
         this.fetchingClasses = true;
         let response = await ClassApi.fetchClasses({
@@ -187,16 +219,6 @@ export default {
             this.currentClass = JSON.parse(JSON.stringify(this.classes[0]));
         }
         this.fetchingClasses = false;
-    },
-    async deleteClass () {
-        let response = await ClassApi.deleteClass(this.currentClass._id);
-        let index = this.classes.findIndex(e => e._id == this.currentClass._id);
-        this.classes.splice(index, 1);
-        if (this.classes.length > 0) {
-            this.currentClass = this.classes[0];
-        } else {
-            this.currentClass = null;
-        }
     }
   },
   components: {

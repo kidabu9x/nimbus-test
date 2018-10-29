@@ -17,6 +17,8 @@ import Member from '@/components/admin/Members';
 import Courses from '@/components/admin/Courses';
 import NewCourse from '@/components/admin/Course/NewCourse';
 import CourseDetails from '@/components/admin/Course/CourseDetails';
+import CourseSchedules from '@/components/admin/Course/Schedules';
+import CourseClasses from '@/components/admin/Course/Classes';
 import Grade from '@/components/admin/Course/Grade';
 import NewClass from '@/components/admin/Course/NewClass';
 import Dev from '@/components/Dev/Dev';
@@ -119,7 +121,19 @@ let router = new Router({
         {
           path: 'courses/:handle',
           name: 'adminCourseDetails',
-          component: CourseDetails
+          component: CourseDetails,
+          children: [
+            {
+              path: 'schedules',
+              name: 'adminCourseSchedule',
+              component: CourseSchedules
+            },
+            {
+              path: 'classes',
+              name: 'adminCourseClasses',
+              component: CourseClasses
+            }
+          ]
         },
         {
           path: 'courses/:handle/new-class',

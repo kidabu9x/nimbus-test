@@ -4,13 +4,9 @@ let baseUrl = 'courses';
 
 export default {
     fetchCourses (query) {
-        if (query) {
-            return Api().get(`${baseUrl}`, {
-                params: query
-            });
-        } else {
-            return Api().get(`${baseUrl}`);
-        }
+        return Api().get(`${baseUrl}`, {
+            params: query
+        });
     },
     fetchOneCourse (handle) {
         return Api().get(`${baseUrl}/${handle}`);  

@@ -111,20 +111,17 @@ router.post('/:id/send-email', async (req, res) => {
     };
     gmailTransporter.use('compile', hbs(options));
     var mailOptions = {
-        from: "Nimbus - Computer School <duongnk.nimbus@gmail.com>", // sender address
+        from: "Nimbus - Computer School <tinhocmos.nimbuscenter@gmail.com>", // sender address
         to: member.email, // list of receivers
-        // to : "duongnk.deoco.nimbus.ok@gmail.com",
         subject: `[NIMBUS - TIN HỌC MOS/IC3] XÁC NHẬN ĐĂNG KÍ KHÓA HỌC ${subject.name} ${course.name}`, // Subject line
         template: "email.body",
         context: {
             "className": cl.name,
             "groupFb": cl.fb_group_url,
             "schedules" : schedules,
-            // "learningHour" : schedules[0].learning_hour,
-            // "learningDays" : schedules[0].learning_days,
             "startDate" : startDate,
             "numOfDays" : lessions.length,
-            "confirmUrl" : `http://localhost:8080/confirm-email?type=$2y$12$9HpgirQURQVcfKxd0Ink3eGVn31F7lMuONGgLks4qY49V2n2zajFi&uid=${member._id}&eid=${enroll._id}&cid=${cl._id}&type=enroll`,
+            "confirmUrl" : `http://nimbus.edu.vn/confirm-email?type=$2y$12$9HpgirQURQVcfKxd0Ink3eGVn31F7lMuONGgLks4qY49V2n2zajFi&uid=${member._id}&eid=${enroll._id}&cid=${cl._id}&type=enroll`,
             "subjectName" : subject.name,
             "price" : formatPrice(enroll.paid.amount)
         }

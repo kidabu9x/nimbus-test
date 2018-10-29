@@ -3,7 +3,7 @@
     <md-app md-waterfall md-mode="fixed" class="md-scrollbar">
       <md-app-toolbar class="md-primary">
         <div class="md-toolbar-section-start">
-          <md-button class="md-icon-button" @click="menuVisible = !menuVisible" v-if="!menuVisible">
+          <md-button class="md-icon-button" @click="menuVisible = !menuVisible">
             <md-icon>menu</md-icon>
           </md-button>
           <span class="md-title">Admin</span>
@@ -17,74 +17,76 @@
         </div>
       </md-app-toolbar>
 
-      <md-app-drawer :md-active.sync="menuVisible" md-persistent="mini">
-        <md-toolbar class="md-transparent" md-elevation="0">
-          <span>Điều hướng</span>
-          <div class="md-toolbar-section-end">
-            <md-button class="md-icon-button md-dense" @click="menuVisible = !menuVisible">
-              <md-icon>keyboard_arrow_left</md-icon>
-            </md-button>
-          </div>
-        </md-toolbar>
-
+      <md-app-drawer :style="{display: menuVisible ? 'block' : 'none'}" md-permanent="clipped" style="width: 240px; max-width: 240px;">
         <md-list>
           <md-list-item>
-            <md-icon>dashboard</md-icon>
-            <span class="md-list-item-text">Bảng điều khiển</span>
-            <md-tooltip v-if="!menuVisible" md-direction="right">Bảng điều khiển</md-tooltip>
+            <md-icon>home</md-icon>
+            <span class="md-list-item-text">Trang chủ</span>
           </md-list-item>
-          <md-list-item to="/admin/courses">
+          <md-list-item to="/admin/courses" md-expand>
             <md-icon>layers</md-icon>
             <span class="md-list-item-text">Khóa học</span>
-            <md-tooltip v-if="!menuVisible" md-direction="right">Khóa học</md-tooltip>
+            <md-list slot="md-expand">
+              <md-list-item :to="`/admin/courses/${course.handle}/schedules`" v-for="course in courses" :key="course._id" class="md-inset">{{course.name}}</md-list-item>
+            </md-list>
           </md-list-item>
-          <md-list-item v-if="user && ['general_manager'].indexOf(user.role) > -1">
+          <!-- <md-list-item v-if="user && ['general_manager'].indexOf(user.role) > -1">
             <md-icon>assignment_turned_in</md-icon>
-            <span class="md-list-item-text">Chấm công giảng viên</span>
-            <md-tooltip v-if="!menuVisible" md-direction="right">Chấm công giảng viên</md-tooltip>
-          </md-list-item>
+            <span class="md-list-item-text">Chấm công</span>
+          </md-list-item> -->
           <md-list-item to="/admin/schedules" v-if="user && ['general_manager', 'teacher'].indexOf(user.role) > -1">
             <md-icon>calendar_today</md-icon>
             <span class="md-list-item-text">Lịch dạy</span>
-            <md-tooltip v-if="!menuVisible" md-direction="right">Lịch dạy</md-tooltip>
           </md-list-item>
           <md-list-item to="/admin/tests">
             <md-icon>assignment</md-icon>
-            <span class="md-list-item-text">Code kiểm tra</span>
-            <md-tooltip v-if="!menuVisible" md-direction="right">Code kiểm tra</md-tooltip>
+            <span class="md-list-item-text">Code Test</span>
           </md-list-item>
           <md-list-item to="/admin/questions">
             <md-icon >help</md-icon>
             <span class="md-list-item-text">Bộ câu hỏi</span>
-            <md-tooltip v-if="!menuVisible" md-direction="right">Bộ câu hỏi</md-tooltip>
           </md-list-item>
           <md-list-item to="/admin/members">
             <md-icon>how_to_reg</md-icon>
-            <span class="md-list-item-text">Thành viên</span>
-            <md-tooltip v-if="!menuVisible" md-direction="right">Thành viên</md-tooltip>
+            <span class="md-list-item-text">Giảng viên</span>
           </md-list-item>
+          <!-- <md-list-item to="/admin/members">
+            <md-icon>how_to_reg</md-icon>
+            <span class="md-list-item-text">Giảng viên</span>
+            <md-tooltip v-if="!menuVisible" md-direction="right">Thành viên</md-tooltip>
+          </md-list-item> -->
         </md-list>
       </md-app-drawer>
 
       <md-app-content>
-        <router-view/>
+        <router-view :key="$route.fullPath"></router-view>
+        <!-- <router-view/> -->
       </md-app-content>
     </md-app>
   </div>
 </template>
 
 <script>
+import CourseApi from '@/api/Admin/Course';
 export default {
   name: 'Admin',
   data () {
     return {
-      menuVisible : false,
-      user: null
+      menuVisible : true,
+      user: null,
+      courses: []
     }
   },
   mounted () {
     if (localStorage.getItem('member') != null) {
       this.user = JSON.parse(localStorage.getItem('member'));
+    }
+    this.getCourse();
+  },
+  methods : {
+    async getCourse () {
+      let response = await CourseApi.fetchCourses();
+      this.courses = response.data;
     }
   },
   components : {

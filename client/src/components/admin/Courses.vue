@@ -16,7 +16,7 @@
         </md-empty-state>
     </div>
     <div v-else class="md-layout-item md-size-100">
-        <router-link v-for="course in courses" :key="course._id" :to="{path : `courses/${course.handle}`}">
+        <router-link v-for="course in courses" :key="course._id" :to="{path : `courses/${course.handle}/schedules`}">
             <md-card  class="course-card md-elevation-0" md-with-hover>
                 <md-card-content>
                     <p class="md-headline">

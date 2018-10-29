@@ -117,6 +117,8 @@
 import CourseApi from '@/api/Admin/Course';
 import ClassApi from '@/api/Admin/Class';
 import LessionApi from '@/api/Admin/Lession';
+import MemberApi from '@/api/Admin/Member';
+import RoomApi from '@/api/Admin/Room';
 
 // External functions
 
@@ -132,9 +134,11 @@ import {Vietnamese} from 'flatpickr/dist/l10n/vn';
 
 export default {
   name: 'course-schedules',
-  props : ['course', 'teachers', 'rooms'],
   data () {
     return {
+      course : null,
+      teachers: [],
+      rooms: [],
       classes: [],
       isFetchingLession: false,
       lessions : [],
@@ -163,10 +167,11 @@ export default {
     }
   },
   created () {
-    this.fetchClasses();
+    this.fetchCourseDetail();
+    this.fetchTeachers();
+    this.fetchRooms();
   },
   mounted () {
-    
   },
   watch: {
     viewing : function () {
@@ -174,35 +179,6 @@ export default {
     },
   },
   methods: {
-    async fetchClasses () {
-      this.isFetchingLession = true;
-      this.fetchingClasses = true;
-      let response = await ClassApi.fetchClasses({
-          course_id : this.course._id
-      });
-      this.classes = response.data;
-      this.fetchLessions();
-      this.fetchingClasses = false;
-    },
-    async fetchLessions () {
-      this.isFetchingLession = true;
-      let i = this.classes.length;
-      for (let e of this.classes) {
-        i --;
-        let response = await LessionApi.fetchLessions({
-          class_id : e._id
-        });
-        this.lessions = this.lessions.concat(response.data.map(lession => {
-          lession.class_id = e._id;
-          lession.class_name = e.name;
-          return lession;
-        }));
-        if (i == 0) {
-          this.isFetchingLession = false;
-          this.createEvents();
-        }
-      }
-    },
     createEvents () {
       this.events = [];
       for (let lession of this.lessions) {
@@ -279,7 +255,53 @@ export default {
         return 'N/A';
       }
     },
-    
+    async fetchTeachers () {
+        let response = await MemberApi.fetchTeachers();
+        this.teachers = response.data;
+    },
+    async fetchRooms () {
+        let response = await RoomApi.fetchRooms();
+        this.rooms = response.data;
+    },
+    async fetchCourseDetail () {
+      console.log(this.$route);
+      let response = await CourseApi.fetchCourses({
+          handle: this.$route.params.handle
+      });
+      this.course = response.data[0];
+      if (this.course) {
+        this.fetchClasses();
+      }
+    },
+    async fetchClasses () {
+      this.isFetchingLession = true;
+      this.fetchingClasses = true;
+      let response = await ClassApi.fetchClasses({
+          course_id : this.course._id
+      });
+      this.classes = response.data;
+      this.fetchLessions();
+      this.fetchingClasses = false;
+    },
+    async fetchLessions () {
+      this.isFetchingLession = true;
+      let i = this.classes.length;
+      for (let e of this.classes) {
+        i --;
+        let response = await LessionApi.fetchLessions({
+          class_id : e._id
+        });
+        this.lessions = this.lessions.concat(response.data.map(lession => {
+          lession.class_id = e._id;
+          lession.class_name = e.name;
+          return lession;
+        }));
+        if (i == 0) {
+          this.isFetchingLession = false;
+          this.createEvents();
+        }
+      }
+    },
   },
   components: {
     FullCalendar,

@@ -11,15 +11,28 @@ const Enrollment = require('../../models/Enrollment');
 // @desc    Get All Grades of course
 // @access  Public
 router.get('/', (req, res) => {
-    Class.find(req.query)
-        .then(grades => res.json(grades));
+    if (req.query.limit) {
+        Class.find(req.query)
+            .sort({
+                "createdAt" : 1
+            })
+            .limit(req.query.limit)
+            .then(classes => res.json(classes));
+    } else {
+        Class.find(req.query)
+            .sort({
+                "createdAt" : 1
+            })
+            .then(classes => res.json(classes));
+    }
+    
 });
 
 // @route   GET api/admin/class
 // @desc    Count Grade of course
 // @access  Public
 router.get('/:courseId/count', (req, res) => {
-    Grade.countDocuments({
+    Class.countDocuments({
         course_id: req.params.courseId
     })
         .then(count => res.json(count));
