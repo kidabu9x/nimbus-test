@@ -18,12 +18,11 @@
                 {{obj.name}}
             </span>
         </md-chip>
-        <router-link v-if="course" :to="{path : `${course.handle}/new-class?c=${course._id}`}">
+        <router-link v-if="course" :to="{path : `/admin/courses/${course.handle}/new-class?c=${course._id}`}">
             <md-chip md-clickable>
                 <md-icon>add</md-icon>
             </md-chip>
         </router-link>
-        
    </div>
    <div v-if="currentClass" class="md-layout-item md-size-100" style="margin-top: 50px;">
        <div class="md-layout">
@@ -181,6 +180,8 @@ export default {
     async updateClass () {
         let response = await ClassApi.updateClass(this.currentClass);
         this.currentClass = response.data;
+        let index = this.classes.findIndex(e => e._id == this.currentClass._id);
+        this.classes[index] = this.currentClass;
     },
     async deleteClass () {
         let response = await ClassApi.deleteClass(this.currentClass._id);

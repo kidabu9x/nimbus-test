@@ -4,7 +4,7 @@
     <div class="md-layout-item md-size-50 md-small-size-100">
         <div class="md-layout">
             <div class="md-layout-item md-size-100">
-                <router-link :to="{path: `/admin/courses/${$route.params.handle}`}">
+                <router-link :to="{path: `/admin/courses/${$route.params.handle}/schedules`}">
                     <md-button style="color: #637381; text-transform: none;">
                         <md-icon>keyboard_arrow_left</md-icon>
                         Các lớp học
