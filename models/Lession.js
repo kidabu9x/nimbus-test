@@ -18,13 +18,13 @@ var LessionSchema = new Schema(
             default: shortId.generate()
         },
         school_date : {
-            type: String
+            type: Date
         },
         start_hour : {
-            type: String
+            type: Date
         },
         end_hour : {
-            type: String
+            type: Date
         },
         description : {
             type: String

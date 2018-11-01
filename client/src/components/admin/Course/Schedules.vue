@@ -264,9 +264,8 @@ export default {
         this.rooms = response.data;
     },
     async fetchCourseDetail () {
-      console.log(this.$route);
       let response = await CourseApi.fetchCourses({
-          handle: this.$route.params.handle
+        handle: this.$route.params.handle
       });
       this.course = response.data[0];
       if (this.course) {
@@ -284,12 +283,15 @@ export default {
       this.fetchingClasses = false;
     },
     async fetchLessions () {
+      let startFrom = new Date();
+      startFrom.setDate(startFrom.getDate() - 3);
       this.isFetchingLession = true;
       let i = this.classes.length;
       for (let e of this.classes) {
         i --;
         let response = await LessionApi.fetchLessions({
-          class_id : e._id
+          class_id : e._id,
+          start_from: startFrom
         });
         this.lessions = this.lessions.concat(response.data.map(lession => {
           lession.class_id = e._id;

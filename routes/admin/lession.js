@@ -10,6 +10,18 @@ const Lession = require('../../models/Lession');
 // @desc    Get All Lessions of a grade
 // @access  Public
 router.get('/', (req, res) => {
+    if (req.query.start_from) {
+        req.query.start_hour = {
+            $gte : new Date(req.query.start_from)
+        }
+        delete req.query.start_from;
+    }
+    if (req.query.end_at) {
+        req.query.end_hour = {
+            $lte : new Date(req.query.end_at)
+        }
+        delete req.query.end_at;
+    }
     Lession.find(req.query)
         .sort({
             'start_hour' : 1
