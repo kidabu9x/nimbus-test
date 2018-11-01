@@ -89,15 +89,20 @@ router.post('/:id/send-email', async (req, res) => {
     const nodemailer = require("nodemailer");
     var gmailTransporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
-        port: 465,
-        secure: true,
+        port: 587,
+        secure: false,
         auth: {
-            type: 'OAuth2',
-            user: CONFIG.gmail.client_user,
-            clientId: CONFIG.gmail.client_id,
-            clientSecret: CONFIG.gmail.client_secret,
-            refreshToken: CONFIG.gmail.refresh_token,
-            accessToken: CONFIG.gmail.access_token,
+            // type: 'OAuth2',
+            // user: CONFIG.gmail.client_user,
+            // clientId: CONFIG.gmail.client_id,
+            // clientSecret: CONFIG.gmail.client_secret,
+            // refreshToken: CONFIG.gmail.refresh_token,
+            // accessToken: CONFIG.gmail.access_token,
+            user: 'tinhocmos.nimbuscenter@gmail.com',
+            pass: 'quanduongnhat'
+        },
+        tls: {
+            rejectUnauthorized: false
         }
     });
     const hbs = require('nodemailer-express-handlebars');
@@ -130,7 +135,6 @@ router.post('/:id/send-email', async (req, res) => {
     }
     gmailTransporter.sendMail(mailOptions, function(err, response) {
         if (err) {
-            console.log(err);
             res.json({success : false});
         } else {
             gmailTransporter.close();
