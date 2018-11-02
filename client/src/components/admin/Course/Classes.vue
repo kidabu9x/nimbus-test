@@ -65,43 +65,6 @@
            <div class="md-layout-item md-size-100" style="margin-top: 20px;">
                <class-enrollments ref="enrollments" :currentClass="currentClass"></class-enrollments>
            </div>
-           <!-- <div class="md-layout-item md-size-30">
-               <div class="md-layout-item md-size-100">
-                    <md-card>
-                        <md-list>
-                            <md-subheader>{{currentClass.name}}</md-subheader>
-                            <md-list-item>
-                                <span class="md-list-item-text">Mã lớp học</span>
-                                <span>{{currentClass.handle}}</span>
-                            </md-list-item>
-                            <md-list-item>
-                                <span class="md-list-item-text">Sĩ số lớp</span>
-                                <span>{{totalEnrolls}}</span>
-                            </md-list-item>
-                        </md-list>
-                    </md-card>
-                </div>
-                <div class="md-layout-item md-size-100" style="margin-top: 20px;">
-                    <class-main-teacher :currentClass="currentClass" :teachers="teachers" @update-class="updateClass"></class-main-teacher>
-                </div>
-                <div class="md-layout-item md-size-100" style="margin-top: 20px;">
-                    <class-main-room :currentClass="currentClass" :rooms="rooms" @update-class="updateClass"></class-main-room>
-                </div>
-                <div class="md-layout-item md-size-100" style="margin-top: 20px;">
-                    <md-button @click="showConfirmDelete = true">
-                        <md-icon>delete</md-icon>
-                        <span>Xoá</span>
-                    </md-button>
-                </div>
-           </div>
-           <div class="md-layout-item md-size-70">
-               <div class="md-layout-item md-size-100">
-                    <class-lessions ref="lessions" v-if="currentClass" :currentClass="currentClass" :teachers="teachers" :rooms="rooms"></class-lessions>
-               </div>
-               <div class="md-layout-item md-size-100" style="margin-top: 20px;">
-                    <class-enrollments ref="enrollments"  :currentClass="currentClass"></class-enrollments>
-               </div>
-           </div> -->
        </div>
    </div>
    <div class="md-layout-item md-size-100">

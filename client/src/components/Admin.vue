@@ -27,7 +27,7 @@
             <md-icon>layers</md-icon>
             <span class="md-list-item-text">Khóa học</span>
             <md-list slot="md-expand">
-              <md-list-item :to="`/admin/courses/${course.handle}/schedules`" v-for="course in courses" :key="course._id" class="md-inset">{{course.name}}</md-list-item>
+              <md-list-item :to="`/admin/courses/${course.handle}/schedules`" replace v-for="course in courses" :key="course._id" class="md-inset">{{course.name}}</md-list-item>
             </md-list>
           </md-list-item>
           <!-- <md-list-item v-if="user && ['general_manager'].indexOf(user.role) > -1">
@@ -59,7 +59,10 @@
       </md-app-drawer>
 
       <md-app-content>
-        <router-view :key="$route.fullPath"></router-view>
+        <keep-alive>
+          <router-view></router-view>
+        </keep-alive>
+        <!-- <router-view :key="$route.fullPath"></router-view> -->
         <!-- <router-view/> -->
       </md-app-content>
     </md-app>

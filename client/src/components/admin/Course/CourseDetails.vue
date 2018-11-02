@@ -7,15 +7,24 @@
         <div class="md-layout-item md-size-100">
             <md-tabs md-sync-route>
                 <md-tab id="tab-schedules" md-label="Lịch học" :to="`/admin/courses/${course.handle}/schedules`">
-                    <router-view/>
+                    <keep-alive>
+                        <router-view :key="$route.fullPath"></router-view>
+                    </keep-alive>
                 </md-tab>
                 <md-tab id="tab-classes" md-label="Lớp học" :to="`/admin/courses/${course.handle}/classes`">
-                    <router-view/>
+                    <keep-alive>
+                        <router-view :key="$route.fullPath"></router-view>
+                    </keep-alive>
+                </md-tab>
+                <md-tab id="tab-home" md-label="Trang chủ">
+                    <p>Updating...</p>
+                </md-tab>
+                <md-tab id="tab-enrollments" md-label="Đăng ký">
+                    <p>Updating...</p>
                 </md-tab>
             </md-tabs>
         </div>
     </div>
-    
 </template>
 
 <script>
@@ -42,7 +51,12 @@ export default {
     this.fetchCourseDetail();
   },
   watch: {
-      
+  // when redirect to new category_name, this will be callback
+    '$route': function (current, old) {
+        if (current.params.handle !== old.params.handle) {
+            this.fetchCourseDetail();
+        }
+    }
   },
   methods: {
     async fetchCourseDetail () {

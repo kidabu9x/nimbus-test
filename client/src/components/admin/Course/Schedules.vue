@@ -1,113 +1,113 @@
 <template>
   <div class="md-layout">
-    <div class="md-layout-item md-size-70">
+    <div class="md-layout-item md-size-100">
         <md-card>
-            <md-card-content>
-              <full-calendar :events="events" :config="config"></full-calendar>
-            </md-card-content>
-            <md-card-actions>
-              <span>Hiển thị theo: 
-                  <span v-if="viewing == 'lession'">Tên lớp</span>
-                  <span v-else-if="viewing == 'teacher'">Giảng viên</span>
-                  <span v-else>Phòng học</span>
-              </span>
-              <md-menu md-size="auto" md-direction="top-start">
-                  <md-button class="md-icon-button md-dense" md-menu-trigger>
-                      <md-icon>arrow_drop_down</md-icon>
-                  </md-button>
-                  <md-menu-content>
-                      <md-menu-item @click="viewing = 'lession'">
-                          <span>Tên lớp</span>
-                      </md-menu-item>
-                    <md-menu-item @click="viewing = 'teacher'">
-                          <span>Giảng viên</span>
-                      </md-menu-item>
-                      <md-menu-item @click="viewing = 'room'">
-                          <span>Phòng học</span>
-                      </md-menu-item>
-                  </md-menu-content>
-              </md-menu>
-            </md-card-actions>
-            <md-progress-bar v-if="isFetchingLession" md-mode="indeterminate"/>
-        </md-card>
-    </div>
-    <div class="md-layout-item md-size-30">
-        <md-card v-if="currentLession">
-          <md-card-header>
-            <div class="md-title">{{classes.find(e => e._id == currentLession.class_id).name}}</div>
-            <div class="md-subheading">{{new Date(currentLession.end_hour) | moment('dddd, DD/MM')}}</div>
-          </md-card-header>
           <md-card-content>
-            <md-list>
-              <md-list-item>
-                <span class="md-list-item-text">Giảng viên</span>
-                <span v-if="!isEditTeacher">
-                  {{getTeacherName(currentLession.teacher_id)}}
-                  <span style="cursor: pointer;" @click="isEditTeacher = true">
-                    <md-icon style="width: 12px; min-width: 12px; height: 12px; font-size: 12px !important;">edit</md-icon>
-                  </span>
-                </span>
-                <div v-else class="regular-input-wrapper">
-                    <select class="regular-input" v-model="currentLession.teacher_id">
-                      <option v-for="teacher in teachers" :key="teacher._id" :value="teacher._id">{{teacher.first_name}} {{teacher.last_name}}</option>
-                    </select>
-                </div>
-              </md-list-item>
-              <md-list-item>
-                <span class="md-list-item-text">Phòng học</span>
-                <span v-if="!isEditRoom">
-                  {{getRoom(currentLession.room_id)}}
-                  <span style="cursor: pointer;" @click="isEditRoom = true">
-                    <md-icon style="width: 12px; min-width: 12px; height: 12px; font-size: 12px !important;">edit</md-icon>
-                  </span>
-                </span>
-                <div v-else class="regular-input-wrapper">
-                  <select class="regular-input" v-model="currentLession.room_id">
-                    <option v-for="room in rooms" :key="room._id" :value="room._id">{{room.name}} ({{room.size}} người)</option>
-                  </select>
-                </div>
-              </md-list-item>
-              <md-list-item>
-                <span class="md-list-item-text">Bắt đầu</span>
-                <span v-if="!isEditStart">
-                  {{new Date(currentLession.start_hour) | moment('HH:mm')}}
-                  <span style="cursor: pointer;" @click="isEditStart = true">
-                    <md-icon style="width: 12px; min-width: 12px; height: 12px; font-size: 12px !important;">edit</md-icon>
-                  </span>
-                </span>
-                <div v-else class="regular-input-wrapper">
-                  <flat-pickr ref="startHour" class="regular-input" :config="datePickrConfigs" v-model="currentLession.start_hour"></flat-pickr>
-                </div>
-              </md-list-item>
-              <md-list-item>
-                <span class="md-list-item-text">Kết thúc</span>
-                <span v-if="!isEditEnd">
-                  {{new Date(currentLession.end_hour) | moment('HH:mm')}}
-                  <span style="cursor: pointer;" @click="isEditEnd = true">
-                    <md-icon style="width: 12px; min-width: 12px; height: 12px; font-size: 12px !important;">edit</md-icon>
-                  </span>
-                </span>
-                <div v-else class="regular-input-wrapper">
-                  <flat-pickr ref="endHour" class="regular-input" :config="datePickrConfigs" v-model="currentLession.end_hour"></flat-pickr>
-                </div>
-              </md-list-item>
-              <md-list-item>
-                <span class="md-list-item-text">Sĩ số lớp</span>
-                <span>N/A</span>
-              </md-list-item>
-            </md-list>
+            <full-calendar :events="events" :config="config"></full-calendar>
           </md-card-content>
           <md-card-actions>
-            <md-button @click="updateLession">
-              Cập nhật
-            </md-button>
+            <span>Hiển thị theo: 
+              <span v-if="viewing == 'lession'">Tên lớp</span>
+              <span v-else-if="viewing == 'teacher'">Giảng viên</span>
+              <span v-else>Phòng học</span>
+            </span>
+            <md-menu md-size="auto" md-direction="top-start">
+              <md-button class="md-icon-button md-dense" md-menu-trigger>
+                <md-icon>arrow_drop_down</md-icon>
+              </md-button>
+              <md-menu-content>
+                <md-menu-item @click="viewing = 'lession'">
+                  <span>Tên lớp</span>
+                </md-menu-item>
+                <md-menu-item @click="viewing = 'teacher'">
+                  <span>Giảng viên</span>
+                </md-menu-item>
+                <md-menu-item @click="viewing = 'room'">
+                  <span>Phòng học</span>
+                </md-menu-item>
+              </md-menu-content>
+            </md-menu>
           </md-card-actions>
+          <md-progress-bar v-if="isFetchingLession" md-mode="indeterminate"/>
         </md-card>
-        <div class="md-layout-item md-size-100">
-          <md-snackbar md-position="left" :md-duration="4000" :md-active.sync="showSnackErr">
-            <span>{{errMsg}}</span>
-          </md-snackbar>
-        </div>
+    </div>
+    <div class="md-layout-item md-size-100">
+      <md-card v-if="currentLession">
+        <md-card-header>
+          <div class="md-title">{{classes.find(e => e._id == currentLession.class_id).name}}</div>
+          <div class="md-subheading">{{new Date(currentLession.end_hour) | moment('dddd, DD/MM')}}</div>
+        </md-card-header>
+        <md-card-content>
+          <md-list>
+            <md-list-item>
+              <span class="md-list-item-text">Giảng viên</span>
+              <span v-if="!isEditTeacher">
+                {{getTeacherName(currentLession.teacher_id)}}
+                <span style="cursor: pointer;" @click="isEditTeacher = true">
+                  <md-icon style="width: 12px; min-width: 12px; height: 12px; font-size: 12px !important;">edit</md-icon>
+                </span>
+              </span>
+              <div v-else class="regular-input-wrapper">
+                  <select class="regular-input" v-model="currentLession.teacher_id">
+                    <option v-for="teacher in teachers" :key="teacher._id" :value="teacher._id">{{teacher.first_name}} {{teacher.last_name}}</option>
+                  </select>
+              </div>
+            </md-list-item>
+            <md-list-item>
+              <span class="md-list-item-text">Phòng học</span>
+              <span v-if="!isEditRoom">
+                {{getRoom(currentLession.room_id)}}
+                <span style="cursor: pointer;" @click="isEditRoom = true">
+                  <md-icon style="width: 12px; min-width: 12px; height: 12px; font-size: 12px !important;">edit</md-icon>
+                </span>
+              </span>
+              <div v-else class="regular-input-wrapper">
+                <select class="regular-input" v-model="currentLession.room_id">
+                  <option v-for="room in rooms" :key="room._id" :value="room._id">{{room.name}} ({{room.size}} người)</option>
+                </select>
+              </div>
+            </md-list-item>
+            <md-list-item>
+              <span class="md-list-item-text">Bắt đầu</span>
+              <span v-if="!isEditStart">
+                {{new Date(currentLession.start_hour) | moment('HH:mm')}}
+                <span style="cursor: pointer;" @click="isEditStart = true">
+                  <md-icon style="width: 12px; min-width: 12px; height: 12px; font-size: 12px !important;">edit</md-icon>
+                </span>
+              </span>
+              <div v-else class="regular-input-wrapper">
+                <flat-pickr ref="startHour" class="regular-input" :config="datePickrConfigs" v-model="currentLession.start_hour"></flat-pickr>
+              </div>
+            </md-list-item>
+            <md-list-item>
+              <span class="md-list-item-text">Kết thúc</span>
+              <span v-if="!isEditEnd">
+                {{new Date(currentLession.end_hour) | moment('HH:mm')}}
+                <span style="cursor: pointer;" @click="isEditEnd = true">
+                  <md-icon style="width: 12px; min-width: 12px; height: 12px; font-size: 12px !important;">edit</md-icon>
+                </span>
+              </span>
+              <div v-else class="regular-input-wrapper">
+                <flat-pickr ref="endHour" class="regular-input" :config="datePickrConfigs" v-model="currentLession.end_hour"></flat-pickr>
+              </div>
+            </md-list-item>
+            <md-list-item>
+              <span class="md-list-item-text">Sĩ số lớp</span>
+              <span>N/A</span>
+            </md-list-item>
+          </md-list>
+        </md-card-content>
+        <md-card-actions>
+          <md-button @click="updateLession">
+            Cập nhật
+          </md-button>
+        </md-card-actions>
+      </md-card>
+      <div class="md-layout-item md-size-100">
+        <md-snackbar md-position="left" :md-duration="4000" :md-active.sync="showSnackErr">
+          <span>{{errMsg}}</span>
+        </md-snackbar>
+      </div>
     </div>
   </div>
 </template>
