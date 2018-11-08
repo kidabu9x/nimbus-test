@@ -29,6 +29,7 @@ import TeacherSchedules from '@/components/admin/TeacherSchedules';
 // ------------- User component --------------
 import User from '@/components/User';
 import Test from '@/components/user/Test';
+import TestMos from '@/components/user/TestMos';
 import Homepage from '@/components/user/Homepage';
 import ExamRegistration from '@/components/user/ExamRegistration';
 import ConfirmEmail from '@/components/user/ConfirmEmail';
@@ -59,6 +60,11 @@ let router = new Router({
       path: '/test',
       name: 'Test',
       component: Test
+    },
+    {
+      path: '/test-mos',
+      name: 'TestMos',
+      component: TestMos
     },
     {
       path: '/confirm-email',
