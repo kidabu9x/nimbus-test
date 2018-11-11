@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const RouterCommand = require('../models/Command/RouterCommand');
 
 const question = require('./admin/question');
 router.use('/questions', question);
@@ -27,6 +28,9 @@ router.use('/lessions', lession);
 
 const enrollment = require('./admin/enrollment');
 router.use('/enrollments', enrollment);
+
+const readExcel = require('./admin/readExcel');
+router.use(`/${RouterCommand.READ_EXCEL}`, readExcel);
 
 // const schedule = require('./admin/scheduleApi');
 // router.use('/schedule', schedule);

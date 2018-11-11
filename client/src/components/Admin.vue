@@ -1,3 +1,4 @@
+
 <template>
   <div class="page-container">
     <md-app md-waterfall md-mode="fixed" class="md-scrollbar">
@@ -49,6 +50,11 @@
           <md-list-item to="/admin/members">
             <md-icon>how_to_reg</md-icon>
             <span class="md-list-item-text">Giảng viên</span>
+          </md-list-item>
+          <!-- new category of navbar "Nhập Excel" -->
+          <md-list-item to="/admin/readExel">
+            <md-icon>how_to_reg</md-icon>
+            <span class="md-list-item-text">Nhập Excel</span>
           </md-list-item>
           <!-- <md-list-item to="/admin/members">
             <md-icon>how_to_reg</md-icon>
