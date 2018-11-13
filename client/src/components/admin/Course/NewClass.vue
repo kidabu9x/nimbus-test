@@ -1,7 +1,7 @@
 <template>
   <div class="md-layout">
     <div class="md-layout-item md-size-25"></div>
-    <div class="md-layout-item md-size-50 md-small-size-100">
+    <div class="md-layout-item md-size-50 md-small-size-100 md-medium-size-100">
         <div class="md-layout">
             <div class="md-layout-item md-size-100">
                 <router-link :to="{path: `/admin/courses/${$route.params.handle}/schedules`}">
@@ -21,17 +21,30 @@
                             <md-card-content>
                                 <div class="md-layout-item md-size-100">
                                     <div class="md-layout md-gutter">
-                                        <div class="md-layout-item regular-input-wrapper">
-                                            <p class="regular-label" style="margin-top: 0;">Môn học</p>
-                                            <select class="regular-input" v-model="newClass.subject_id" placeholder="IC3/MOS x.x">
-                                                <option v-for="subject in subjects" :key="subject._id" :value="subject._id">{{subject.name}}</option>
-                                            </select>
+                                        <div class="md-layout-item">
+                                            <md-field>
+                                                <label for="subject">Môn học</label>
+                                                <md-select v-model="newClass.subject_id" id="subject">
+                                                    <md-option v-for="subject in subjects" :key="subject._id" :value="subject._id">{{subject.name}}</md-option>
+                                                </md-select>
+                                            </md-field>
                                         </div>
-                                        <div class="md-layout-item regular-input-wrapper">
-                                            <p class="regular-label" style="margin-top: 0;">Tên lớp</p>
-                                            <input class="regular-input" type="text" v-model="newClass.name" placeholder="IC3/MOS x.x">
+                                        <div class="md-layout-item">
+                                            <md-field>
+                                                <label for="name">Tên lớp</label>
+                                                <md-input type="text" id="name" v-model="newClass.name" placeholder="IC3/MOS x.x"></md-input>
+                                            </md-field>
                                         </div>
                                     </div>
+                                </div>
+                                <div class="md-layout-item md-size-100">
+                                    <div class="md-layout-item md-size-50">
+                                        <md-field>
+                                            <md-icon>event</md-icon>
+                                            <flat-pickr class="regular-input" :config="datePickrConfigs.basic" v-model="newClass.start_date"></flat-pickr>
+                                        </md-field>
+                                    </div>
+                                    
                                 </div>
                                 <div class="md-layout-item md-size-100">
                                     <p style="margin-bottom: 0;">Ngày học</p>
@@ -47,25 +60,26 @@
                                 </div>
                                 <div class="md-layout-item md-size-100">
                                     <div class="md-layout md-gutter">
-                                        <div class="md-layout-item regular-input-wrapper">
-                                            <p class="regular-label">Ngày khai giảng</p>
-                                            <flat-pickr class="regular-input" :config="datePickrConfigs.basic" v-model="newClass.start_date"></flat-pickr>
+                                        <div class="md-layout-item">
+                                            <md-field>
+                                                <label for="learningDays">Số ngày học</label>
+                                                <md-input type="number" min=0 id="learningDays" v-model="newClass.number_of_school_days" placeholder="Số ngày học"></md-input>
+                                            </md-field>
                                         </div>
-                                        <div class="md-layout-item regular-input-wrapper">
-                                            <p class="regular-label">Số ngày học</p>
-                                            <input v-model="newClass.number_of_school_days" class="regular-input" type="number" min=0>
+                                        <div class="md-layout-item">
+                                            <md-field>
+                                                <label for="duration">Thời lượng mỗi buổi</label>
+                                                <md-input type="text" id="duration" v-model="newClass.duration"></md-input>
+                                                <span class="md-helper-text">Ex: 30m, 1h15m, 2h30m,...</span>
+                                            </md-field>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="md-layout-item md-size-100 regular-input-wrapper">
-                                    <p class="regular-label">Link group facebook</p>
-                                    <input v-model="newClass.fb_group_url" class="regular-input" type="text">
-                                </div>
-                                <div class="md-layout-item md-size-100 regular-input-wrapper">
-                                    <p class="regular-label">Địa điểm học</p>
-                                    <select v-model="newClass.school_address" class="regular-input">
-                                        <option value="Số 15/20 Trương Định, Hai Bà Trưng, Hà Nội">Số 15/20 Trương Định, Hai Bà Trưng, Hà Nội</option>
-                                    </select>
+                                <div class="md-layout-item md-size-100">
+                                    <md-field>
+                                        <label for="groupFbUrl">Link group facebook</label>
+                                        <md-input type="text" id="groupFbUrl" v-model="newClass.fb_group_url" placeholder="https://www.facebook.com/groups/542957009479054/"></md-input>
+                                    </md-field>
                                 </div>
                             </md-card-content>
                         </md-card>
@@ -271,7 +285,8 @@ export default {
             number_of_school_days: 8,
             school_address: 'Số 15/20 Trương Định, Hai Bà Trưng, Hà Nội',
             handle: shortId.generate(),
-            fb_group_url: null
+            fb_group_url: null,
+            duration : '2h'
         },
         estimatedDate : [],
         finalSchedule : [],
@@ -283,7 +298,8 @@ export default {
             dateFormat: 'Y-m-d H:i',
             locale: Vietnamese,
             enableTime: true,
-            time_24hr: true
+            time_24hr: true,
+            altInputClass: 'md-input'
           },
           multiDate : {
             dateFormat: 'Y-m-d',
@@ -344,6 +360,22 @@ export default {
             });
         }
         if (this.estimatedDate.length > 0) {
+            console.log(this.newClass.duration);
+            let duration = this.newClass.duration.split('');
+            let hourDuration = '';
+            let minuteDuration = '';
+            let tempDuration = '';
+            for (let character of duration) {
+                if (character == 'h') {
+                    hourDuration = tempDuration;
+                    tempDuration = '';
+                } else if (character == 'm') {
+                    minuteDuration = tempDuration;
+                    tempDuration = '';
+                } else {
+                    tempDuration += character;
+                }
+            }
             for (let schoolDate of this.estimatedDate) {
                 let currentDate = new Date(schoolDate);
                 this.finalSchedule.push({
