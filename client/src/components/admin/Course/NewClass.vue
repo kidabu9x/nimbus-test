@@ -342,10 +342,10 @@ export default {
             this.estimatedDate = [];
             this.finalSchedule = [];
             let currentDate = new Date(this.newClass.start_date);
-            this.estimatedDate.push(new Date(currentDate));
+            this.estimatedDate.push(currentDate);
             while (this.estimatedDate.length < this.newClass.number_of_school_days) {
-                currentDate = increaseDateTimeByDays(currentDate, 1);
-                if (this.newClass.school_days.indexOf(currentDate.getDay()) > -1) {
+                currentDate = this.$moment(currentDate).add(1, 'days').format('YYYY-MM-DD hh:mm:ss');
+                if (this.newClass.school_days.indexOf(new Date(currentDate).getDay()) > -1) {
                     this.estimatedDate.push(new Date(currentDate));
                 }
             }
@@ -356,14 +356,14 @@ export default {
         if (typeof this.estimatedDate == 'string') {
             this.estimatedDate = this.estimatedDate.split(',').map(d => {
                 d = new Date(d);
+                console.log(d);
                 return d;
             });
         }
         if (this.estimatedDate.length > 0) {
-            console.log(this.newClass.duration);
             let duration = this.newClass.duration.split('');
-            let hourDuration = '';
-            let minuteDuration = '';
+            let hourDuration = 0;
+            let minuteDuration = 0;
             let tempDuration = '';
             for (let character of duration) {
                 if (character == 'h') {
@@ -382,8 +382,8 @@ export default {
                     class_id    : '',
                     handle      : shortId.generate(),
                     school_date : currentDate,
-                    start_hour  : new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), new Date(this.newClass.start_date).getHours(), new Date(this.newClass.start_date).getMinutes(), 0),
-                    end_hour    : new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), new Date(this.newClass.start_date).getHours() + 2, new Date(this.newClass.start_date).getMinutes(), 0)
+                    start_hour  : this.$moment(currentDate).format('YYYY-MM-DD hh:mm:ss'),
+                    end_hour    : this.$moment(currentDate).add(hourDuration, 'hours').add(minuteDuration, 'minutes').format('YYYY-MM-DD hh:mm:ss')
                 })
             }
         }
