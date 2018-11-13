@@ -53,7 +53,7 @@
           </md-list-item>
           <!-- new category of navbar "Nhập Excel" -->
           <md-list-item to="/admin/readExel">
-            <md-icon>how_to_reg</md-icon>
+            <md-icon>help</md-icon>
             <span class="md-list-item-text">Nhập Excel</span>
           </md-list-item>
           <!-- <md-list-item to="/admin/members">
