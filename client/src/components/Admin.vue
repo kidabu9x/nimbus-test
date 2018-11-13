@@ -52,9 +52,9 @@
             <span class="md-list-item-text">Giảng viên</span>
           </md-list-item>
           <!-- new category of navbar "Nhập Excel" -->
-          <md-list-item to="/admin/readExel">
+          <md-list-item to="/admin/readExcel">
             <md-icon>help</md-icon>
-            <span class="md-list-item-text">Nhập Excel</span>
+            <span class="md-list-item-text">Nhập Excel đăng ký</span>
           </md-list-item>
           <!-- <md-list-item to="/admin/members">
             <md-icon>how_to_reg</md-icon>

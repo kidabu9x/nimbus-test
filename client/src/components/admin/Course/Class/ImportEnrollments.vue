@@ -116,13 +116,13 @@
 // Api
 import MemberApi from '@/api/Admin/Member';
 import EnrollmentApi from '@/api/Admin/Enrollment';
-
 // External functions
 import {saveAs} from 'file-saver';
 
 // Components
 import vue2Dropzone from 'vue2-dropzone';
 import 'vue2-dropzone/dist/vue2Dropzone.min.css'
+import ExcelEnrollmentsVue from '../../ReadExcel/ExcelEnrollments.vue';
 
 export default {
   name: 'classes',
@@ -247,7 +247,8 @@ export default {
     }
   },
   components: {
-    vueDropzone: vue2Dropzone
+    vueDropzone: vue2Dropzone,
+    excelEnrollments: ExcelEnrollmentsVue
   },
 }
 </script>

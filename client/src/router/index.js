@@ -24,6 +24,8 @@ import NewClass from '@/components/admin/Course/NewClass';
 import Dev from '@/components/Dev/Dev';
 // --Teachers Schedule
 import TeacherSchedules from '@/components/admin/TeacherSchedules';
+// --ReadExcel
+import ReadExcel from '@/components/admin/ReadExcel';
 // ---------- end admin component ------------
 
 // ------------- User component --------------
@@ -153,6 +155,11 @@ let router = new Router({
         {
           path: 'schedules',
           component: TeacherSchedules
+        },
+        {
+          path: 'readExcel',
+          name: 'readExcel',
+          component: ReadExcel
         }
       ]
     }
