@@ -29,7 +29,7 @@ import NavButtonVue from './items/NavButton.vue';
 
 export default {
   name: "classes",
-  props: ["currentClass", "classes"],
+  props: [],
   data() {
     return {
       registeredFile: null,
