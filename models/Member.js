@@ -28,7 +28,7 @@ var MemberSchema = new Schema(
         date_of_birth: {
             type: Date,
             default: Date.now()
-        },
+        }, 
         address: {
             type: String
         },
