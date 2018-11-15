@@ -17,7 +17,7 @@ const Subject = require('../../models/Subject');
 router.get('/', (req, res) => {
     Enrollment.find(req.query)
         .sort({
-            'createdAt' : 1
+            'createdAt': 1
         })
         .then(enrolls => res.json(enrolls));
 });
@@ -36,9 +36,9 @@ router.get('/count', (req, res) => {
 router.post('/', (req, res) => {
     let newEnrollment = new Enrollment({
         class_id: req.body.class_id,
-        member_id : req.body.member_id,
+        member_id: req.body.member_id,
         paid: {
-            amount : req.body.paid ? req.body.paid.amount : 0
+            amount: req.body.paid ? req.body.paid.amount : 0
         }
     });
     newEnrollment.save()
@@ -50,12 +50,12 @@ router.post('/', (req, res) => {
 // @desc    Send an confirm email to register
 // @access  Public
 router.post('/:id/send-email', async (req, res) => {
-    let enroll      = await Enrollment.findById(req.params.id);
-    let member      = await Member.findById(enroll.member_id);
-    let cl          = await Classes.findById(enroll.class_id);
-    let lessions    = await Lession.find({class_id: cl._id}).sort({'start_hour' : 1});
-    let subject     = await Subject.findById(cl.subject_id);
-    let course      = await Course.findById(cl.course_id);
+    let enroll = await Enrollment.findById(req.params.id);
+    let member = await Member.findById(enroll.member_id);
+    let cl = await Classes.findById(enroll.class_id);
+    let lessions = await Lession.find({ class_id: cl._id }).sort({ 'start_hour': 1 });
+    let subject = await Subject.findById(cl.subject_id);
+    let course = await Course.findById(cl.course_id);
 
     const moment = require("moment");
     const daysOfWeek = ["Chủ nhật", "2", "3", "4", "5", "6", "7"];
@@ -72,8 +72,8 @@ router.post('/:id/send-email', async (req, res) => {
             }
         } else {
             schedules.push({
-                learning_hour : `${startHour}-${endHour}`,
-                learning_days  : [day]
+                learning_hour: `${startHour}-${endHour}`,
+                learning_days: [day]
             });
         }
     });
@@ -110,8 +110,8 @@ router.post('/:id/send-email', async (req, res) => {
         viewEngine: {
             extname: '.hbs',
             layoutsDir: 'views/email/',
-            defaultLayout : 'template',
-            partialsDir : 'views/partials/'
+            defaultLayout: 'template',
+            partialsDir: 'views/partials/'
         },
         viewPath: 'views/email/',
         extName: '.hbs'
@@ -125,20 +125,20 @@ router.post('/:id/send-email', async (req, res) => {
         context: {
             "className": cl.name,
             "groupFb": cl.fb_group_url,
-            "schedules" : schedules,
-            "startDate" : startDate,
-            "numOfDays" : lessions.length,
-            "confirmUrl" : `http://nimbus.edu.vn/confirm-email?type=$2y$12$9HpgirQURQVcfKxd0Ink3eGVn31F7lMuONGgLks4qY49V2n2zajFi&uid=${member._id}&eid=${enroll._id}&cid=${cl._id}&type=enroll`,
-            "subjectName" : subject.name,
-            "price" : formatPrice(enroll.paid.amount)
+            "schedules": schedules,
+            "startDate": startDate,
+            "numOfDays": lessions.length,
+            "confirmUrl": `http://nimbus.edu.vn/confirm-email?type=$2y$12$9HpgirQURQVcfKxd0Ink3eGVn31F7lMuONGgLks4qY49V2n2zajFi&uid=${member._id}&eid=${enroll._id}&cid=${cl._id}&type=enroll`,
+            "subjectName": subject.name,
+            "price": formatPrice(enroll.paid.amount)
         }
     }
-    gmailTransporter.sendMail(mailOptions, function(err, response) {
+    gmailTransporter.sendMail(mailOptions, function (err, response) {
         if (err) {
-            res.json({success : false});
+            res.json({ success: false });
         } else {
             gmailTransporter.close();
-            enroll.emailed.sent_at = new Date(); 
+            enroll.emailed.sent_at = new Date();
             enroll.emailed.sender_id = req.body.sender_id ? req.body.sender_id : null;
             enroll.emailed.is_sent = true;
             enroll.emailed.is_confirmed = false;
@@ -162,7 +162,7 @@ router.post('/:id/call', async (req, res) => {
         .then(doc => {
             res.json({
                 success: true,
-                enroll : doc
+                enroll: doc
             });
         }).catch(err => {
             res.json({
@@ -184,7 +184,7 @@ router.post('/:id/paid', async (req, res) => {
         .then(doc => {
             res.json({
                 success: true,
-                enroll : doc
+                enroll: doc
             });
         }).catch(err => {
             res.json({
@@ -200,23 +200,23 @@ router.post('/:id/note', async (req, res) => {
     let enroll = await Enrollment.findById(req.params.id);
     if (enroll.notes && Array.isArray(enroll.notes)) {
         enroll.notes.push({
-            writer_id : req.body.writer_id,
-            content : req.body.content,
-            wrote_at : new Date()
+            writer_id: req.body.writer_id,
+            content: req.body.content,
+            wrote_at: new Date()
         });
     } else {
         enroll.notes = [{
-            writer_id : req.body.writer_id,
-            content : req.body.content,
-            wrote_at : new Date()
+            writer_id: req.body.writer_id,
+            content: req.body.content,
+            wrote_at: new Date()
         }];
     }
-    
+
     enroll.save()
         .then(doc => {
             res.json({
                 success: true,
-                enroll : doc
+                enroll: doc
             });
         }).catch(err => {
             res.json({
@@ -241,29 +241,29 @@ router.put('/:id', (req, res) => {
             // Email
             if (req.body.email) {
                 if (req.body.emailed.is_sent) {
-                    enroll.emailed.is_sent       = req.body.emailed.is_sent;
+                    enroll.emailed.is_sent = req.body.emailed.is_sent;
                 }
                 if (req.body.emailed.sender_id) {
-                    enroll.emailed.sender_id    = req.body.emailed.sender_id;
+                    enroll.emailed.sender_id = req.body.emailed.sender_id;
                 }
                 if (req.body.emailed.sent_at) {
-                    enroll.emailed.sent_at    = req.body.emailed.sent_at;
+                    enroll.emailed.sent_at = req.body.emailed.sent_at;
                 }
                 if (req.body.emailed.is_confirmed) {
-                    enroll.emailed.is_confirmed    = req.body.emailed.is_confirmed;
+                    enroll.emailed.is_confirmed = req.body.emailed.is_confirmed;
                 }
             }
 
             // Called
             if (req.body.called) {
                 if (req.body.called.is_called) {
-                    enroll.called.is_called    = req.body.called.is_called;
+                    enroll.called.is_called = req.body.called.is_called;
                 }
                 if (req.body.called.caller_id) {
-                    enroll.called.caller_id    = req.body.called.caller_id;
+                    enroll.called.caller_id = req.body.called.caller_id;
                 }
                 if (req.body.called.called_at) {
-                    enroll.called.called_at    = req.body.called.called_at;
+                    enroll.called.called_at = req.body.called.called_at;
                 }
                 if (req.body.called.is_confirmed) {
                     enroll.called.is_confirmed = req.body.called.is_confirmed;
@@ -285,7 +285,7 @@ router.put('/:id', (req, res) => {
                     enroll.paid.amount = req.body.paid.amount;
                 }
             }
-            
+
 
             // Test data
             if (req.body.tested) {
@@ -308,7 +308,7 @@ router.put('/:id', (req, res) => {
                     enroll.tested.score = req.body.tested.score;
                 }
             }
-            
+
             // Description
             if (req.body.description) {
                 enroll.description = req.body.description;
@@ -318,7 +318,7 @@ router.put('/:id', (req, res) => {
             if (req.body.note) {
                 enroll.notes = req.body.notes;
             }
-            
+
             enroll.save(doc => res.json(doc));
         });
 });
@@ -328,14 +328,14 @@ router.put('/:id', (req, res) => {
 // @access  Public
 router.delete('/:id', (req, res) => {
     Enrollment.findOneAndRemove({
-        _id : req.params.id
+        _id: req.params.id
     })
         .then(lession => {
             res.json(lession);
         });
 });
 
-function formatPrice (x) {
+function formatPrice(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".").concat('&#8363;');
 }
 

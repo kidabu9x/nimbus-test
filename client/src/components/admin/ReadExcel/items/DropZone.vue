@@ -1,6 +1,6 @@
 <template>
     <div class="md-layout-item md-size-100" style="text-align: center;">
-        <vue-dropzone ref="myVueDropzone" id="dropzone" @vdropzone-file-added="updateFile" :options="dropzoneOptions" :useCustomSlot=true :duplicateCheck=true>
+        <vue-dropzone ref="myVueDropzone" id="dropzone" @vdropzone-file-added="updateFile" @vdropzone-success= "fileSuccess" :options="dropzoneOptions" :useCustomSlot=true :duplicateCheck=true>
             <div class="dropzone-custom-content">
                 <h3 class="dropzone-custom-title">Click hoặc kéo thả file</h3>
                 <div class="dropzone-custom-subtitle">Chỉ nhận file Excel đuôi .xlsx</div>
@@ -14,7 +14,7 @@
 import vue2Dropzone from "vue2-dropzone";
 //
 export default {
-  name: "DropZone",
+  name: "dropzone",
   data() {
     return {
       dropzoneOptions: {
@@ -31,6 +31,19 @@ export default {
         dictMaxFilesExceeded: "Chỉ được áp dụng với 1 File *.xlsx"
       }
     };
+  },
+  created() {},
+  methods: {
+    updateFile(file) {
+      console.log("updateFile");
+    },
+    fileSuccess(file, response) {
+      this.file = file;
+    },
+    submitFile() {
+      // console.log(this.file);
+      this.$emit("fileGen", this.file);
+    }
   },
   components: {
     vueDropzone: vue2Dropzone

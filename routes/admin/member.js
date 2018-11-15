@@ -29,7 +29,7 @@ router.get('/', (req, res) => {
 // @access  Public
 router.get('/teachers', (req, res) => {
     Member.find({
-        role : {
+        role: {
             $in: ['general_manager', 'teacher']
         }
     })
@@ -40,13 +40,13 @@ router.get('/teachers', (req, res) => {
 // @desc    Create new Member
 // @access  Public
 router.post('/', (req, res) => {
-  const newMember = new Member({
-    email           : req.body.email,
-    password        : req.body.password ? req.body.password : 'nimbus123',
-    first_name      : req.body.first_name,
-    last_name       : req.body.last_name
-  });
-  newMember.save().then(member => res.json(member));
+    const newMember = new Member({
+        email: req.body.email,
+        password: req.body.password ? req.body.password : 'nimbus123',
+        first_name: req.body.first_name,
+        last_name: req.body.last_name
+    });
+    newMember.save().then(member => res.json(member));
 });
 
 // @route   UPDATE api/admin/member
@@ -54,30 +54,30 @@ router.post('/', (req, res) => {
 // @access  Public
 router.put('/:id', (req, res) => {
     Member.findById(req.params.id)
-    .then(member => {
-        member.username        = req.body.username,
-        member.email           = req.body.email,
-        member.password        = req.body.password ? req.body.password : 'nimbus123',
-        member.phone           = req.body.phone,
-        member.identity        = req.body.identity,
-        member.first_name      = req.body.first_name,
-        member.last_name       = req.body.last_name,
-        member.date_of_birth   = req.body.date_of_birth,
-        member.address         = req.body.address,
-        member.university      = req.body.university,
-        member.role            = req.body.role,
-        member.facebook_url    = req.body.facebook_url,
-        member.avatar_url      = req.body.avatar_url,
-        member.alias           = req.body.alias,
-        member.gender          = req.body.gender,
-        member.extra_info      = req.body.extra_info
-      member.save()
-        .then(() => res.json({success: true}))
-        .catch(err => {
-            res.json({success: false})
+        .then(member => {
+            member.username = req.body.username,
+                member.email = req.body.email,
+                member.password = req.body.password ? req.body.password : 'nimbus123',
+                member.phone = req.body.phone,
+                member.identity = req.body.identity,
+                member.first_name = req.body.first_name,
+                member.last_name = req.body.last_name,
+                member.date_of_birth = req.body.date_of_birth,
+                member.address = req.body.address,
+                member.university = req.body.university,
+                member.role = req.body.role,
+                member.facebook_url = req.body.facebook_url,
+                member.avatar_url = req.body.avatar_url,
+                member.alias = req.body.alias,
+                member.gender = req.body.gender,
+                member.extra_info = req.body.extra_info
+            member.save()
+                .then(() => res.json({ success: true }))
+                .catch(err => {
+                    res.json({ success: false })
+                })
         })
-    })
-    .catch(err => res.status(404).json({ success: false }));
+        .catch(err => res.status(404).json({ success: false }));
 });
 
 // @route   DELETE api/admin/member/:id
@@ -85,8 +85,8 @@ router.put('/:id', (req, res) => {
 // @access  Public
 router.delete('/:id', (req, res) => {
     Member.findById(req.params.id)
-    .then(member => member.remove().then(() => res.json({ success: true })))
-    .catch(err => res.status(404).json({ success: false }));
+        .then(member => member.remove().then(() => res.json({ success: true })))
+        .catch(err => res.status(404).json({ success: false }));
 });
 
 // @route   GET api/admin/member/check-member?email=memberEmail
@@ -94,26 +94,26 @@ router.delete('/:id', (req, res) => {
 // @access  Public
 router.get('/check-admin', (req, res) => {
     Member.findOne({
-        email : req.query.email,
-        role : {
+        email: req.query.email,
+        role: {
             $nin: ['student']
         }
     })
-    .then(member => {
-        if (member) {
-            res.json({ 
-                is_match: true,
-                member : {
-                    first_name  : member.first_name,
-                    last_name   : member.last_name,
-                    avatar_url  : member.avatar_url
-                } 
-            });
-        } else {
-            res.json({ is_match: false });
-        }
-    })
-    .catch(err => res.json({ is_match: false }));
+        .then(member => {
+            if (member) {
+                res.json({
+                    is_match: true,
+                    member: {
+                        first_name: member.first_name,
+                        last_name: member.last_name,
+                        avatar_url: member.avatar_url
+                    }
+                });
+            } else {
+                res.json({ is_match: false });
+            }
+        })
+        .catch(err => res.json({ is_match: false }));
 });
 
 // @route   GET api/admin/member/check-member?email=memberEmail
@@ -121,19 +121,19 @@ router.get('/check-admin', (req, res) => {
 // @access  Public
 router.get('/check-member', (req, res) => {
     Member.findOne({
-        email : req.query.email
+        email: req.query.email
     })
-    .then(member => {
-        if (member) {
-            res.json({ 
-                is_match: true,
-                member : member
-            });
-        } else {
-            res.json({ is_match: false });
-        }
-    })
-    .catch(err => res.json({ is_match: false }));
+        .then(member => {
+            if (member) {
+                res.json({
+                    is_match: true,
+                    member: member
+                });
+            } else {
+                res.json({ is_match: false });
+            }
+        })
+        .catch(err => res.json({ is_match: false }));
 });
 
 // @route   GET api/admin/member/auth
@@ -143,16 +143,16 @@ router.post('/auth', (req, res) => {
     Member.findOne({
         email: (req.body.email).toLowerCase(),
         password: req.body.password,
-        role : {
+        role: {
             $nin: ['student']
         }
     })
         .then(member => {
             if (member) {
-                let token = jwt.sign({ id: member._id }, secret, {expiresIn: 86400});
+                let token = jwt.sign({ id: member._id }, secret, { expiresIn: 86400 });
                 res.status(200).send({ auth: true, token: token, member: member })
             } else {
-                res.json({auth : false});
+                res.json({ auth: false });
             }
         });
 });

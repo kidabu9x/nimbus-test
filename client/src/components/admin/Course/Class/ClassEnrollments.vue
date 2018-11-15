@@ -198,156 +198,165 @@
 
 <script>
 // Api
-import LessionApi from '@/api/Admin/Lession';
-import MemberApi from '@/api/Admin/Member';
-import EnrollmentApi from '@/api/Admin/Enrollment';
+import LessionApi from "@/api/Admin/Lession";
+import MemberApi from "@/api/Admin/Member";
+import EnrollmentApi from "@/api/Admin/Enrollment";
 
 // External functions
 
 // Components
-import ImportEnrollments from '@/components/admin/Course/Class/ImportEnrollments';
+import ImportEnrollments from "@/components/admin/Course/Class/ImportEnrollments";
 
 export default {
-  name: 'enrollments',
+  name: "enrollments",
   props: ["currentClass"],
-  data () {
+  data() {
     return {
-        fetchingEnrollments: false,
-        enrollments: [],
-        user: null,
-        currentEnroll : null,
-        openDeleteModal : false,
-        openCallModal: false,
-        openPaidModal: false,
-        openNoteModal: false,
-        newNote : {
-            content: null,
-        }
-    }
+      fetchingEnrollments: false,
+      enrollments: [],
+      user: null,
+      currentEnroll: null,
+      openDeleteModal: false,
+      openCallModal: false,
+      openPaidModal: false,
+      openNoteModal: false,
+      newNote: {
+        content: null
+      }
+    };
   },
-  created () {
-  },
-  mounted () {
+  created() {},
+  mounted() {
     this.fetchEnrollments();
-    if (localStorage.getItem('member') != null) {
-      this.user = JSON.parse(localStorage.getItem('member'));
+    if (localStorage.getItem("member") != null) {
+      this.user = JSON.parse(localStorage.getItem("member"));
     }
   },
-  watch : {
-    currentClass : function () {
-        this.fetchEnrollments();
+  watch: {
+    currentClass: function() {
+      this.fetchEnrollments();
     },
-    openNoteModal : function () {
-        this.newNote = {
-            content: null
-        }
+    openNoteModal: function() {
+      this.newNote = {
+        content: null
+      };
     }
   },
   methods: {
-    showImportModal () {
-        this.$modal.show(ImportEnrollments,{
-            currentClass: this.currentClass
-        }, {
-            name: 'import-excel-file',
-            resizable: true,
-            height: 'auto',
-            adaptive: true
-        }, {
-            'closed': this.fetchEnrollments
-        });
-    },
-    async sendEmail (enroll) {
-        enroll.isUpdateEmailed = true;
-        let response = await EnrollmentApi.sendEmail({
-            enroll_id : enroll._id,
-            sender_id : this.user ? this.user._id : null
-        });
-        if (response.data.success) {
-            enroll.emailed = response.data.enroll.emailed;
+    showImportModal() {
+      this.$modal.show(
+        ImportEnrollments,
+        {
+          currentClass: this.currentClass
+        },
+        {
+          name: "import-excel-file",
+          resizable: true,
+          height: "auto",
+          adaptive: true
+        },
+        {
+          closed: this.fetchEnrollments
         }
-        enroll.isUpdateEmailed = false;
+      );
     },
-    deleteEnroll (enroll) {
-        this.currentEnroll = enroll;
-        this.openDeleteModal = true;
+    async sendEmail(enroll) {
+      enroll.isUpdateEmailed = true;
+      let response = await EnrollmentApi.sendEmail({
+        enroll_id: enroll._id,
+        sender_id: this.user ? this.user._id : null
+      });
+      if (response.data.success) {
+        enroll.emailed = response.data.enroll.emailed;
+      }
+      enroll.isUpdateEmailed = false;
     },
-    async onConfirmDeleteEnroll () {
-        let response = await EnrollmentApi.deleteEnrollment(this.currentEnroll);
-        this.enrollments.splice(this.enrollments.findIndex(e => e._id == this.currentEnroll._id), 1); 
+    deleteEnroll(enroll) {
+      this.currentEnroll = enroll;
+      this.openDeleteModal = true;
     },
-    callEnroll (enroll) {
-        this.currentEnroll = enroll;
-        this.openCallModal = true;
+    async onConfirmDeleteEnroll() {
+      let response = await EnrollmentApi.deleteEnrollment(this.currentEnroll);
+      this.enrollments.splice(
+        this.enrollments.findIndex(e => e._id == this.currentEnroll._id),
+        1
+      );
     },
-    async onConfirmCalled () {
-        let response = await EnrollmentApi.call({
-            enroll_id : this.currentEnroll._id,
-            caller_id : this.user ? this.user._id : null
-        });
-        if (response.data.success) {
-            this.currentEnroll.called = response.data.enroll.called;
-        }
+    callEnroll(enroll) {
+      this.currentEnroll = enroll;
+      this.openCallModal = true;
     },
-    paidEnroll (enroll) {
-        this.currentEnroll = enroll;
-        this.openPaidModal = true;
+    async onConfirmCalled() {
+      let response = await EnrollmentApi.call({
+        enroll_id: this.currentEnroll._id,
+        caller_id: this.user ? this.user._id : null
+      });
+      if (response.data.success) {
+        this.currentEnroll.called = response.data.enroll.called;
+      }
     },
-    async onConfirmPaid () {
-        let response = await EnrollmentApi.paid({
-            enroll_id : this.currentEnroll._id,
-            collector_id : this.user ? this.user._id : null,
-            amount : this.currentEnroll.paid.amount
-        });
-        if (response.data.success) {
-            this.currentEnroll.paid = response.data.enroll.paid;
-        }
+    paidEnroll(enroll) {
+      this.currentEnroll = enroll;
+      this.openPaidModal = true;
     },
-    noteEnroll (enroll) {
-        this.currentEnroll = enroll;
-        this.openNoteModal = true;
+    async onConfirmPaid() {
+      let response = await EnrollmentApi.paid({
+        enroll_id: this.currentEnroll._id,
+        collector_id: this.user ? this.user._id : null,
+        amount: this.currentEnroll.paid.amount
+      });
+      if (response.data.success) {
+        this.currentEnroll.paid = response.data.enroll.paid;
+      }
     },
-    async onSaveNote () {
-        let response = await EnrollmentApi.note({
-            enroll_id: this.currentEnroll._id,
-            writer_id : this.user ? this.user._id : null,
-            content : this.newNote.content
-        });
-        if (response.data.success) {
-            this.currentEnroll.notes = response.data.enroll.notes;
-            this.newNote = {
-                content : null
-            }
-        }
+    noteEnroll(enroll) {
+      this.currentEnroll = enroll;
+      this.openNoteModal = true;
     },
-    async fetchEnrollments (event) {
-        this.fetchingEnrollments = true;
-        let response = await EnrollmentApi.fetchEnrollments({
-            class_id: this.currentClass._id
-        });
-        this.enrollments = response.data.map(e => {
-            e.isFetchingMember = true;
-            e.isUpdateEmailed = false;
-            e.isUpdateCalled = false;
-            e.isUpdatePaid = false;
-            return e;
-        });
-        
-        this.fetchMembers();
-        this.fetchingEnrollments = false;
+    async onSaveNote() {
+      let response = await EnrollmentApi.note({
+        enroll_id: this.currentEnroll._id,
+        writer_id: this.user ? this.user._id : null,
+        content: this.newNote.content
+      });
+      if (response.data.success) {
+        this.currentEnroll.notes = response.data.enroll.notes;
+        this.newNote = {
+          content: null
+        };
+      }
     },
-    async fetchMembers () {
-        for (let enroll of this.enrollments) {
-            let response = await MemberApi.getMemberInfo(enroll.member_id);
-            enroll.member = response.data;
-            enroll.isFetchingMember =  false;
-        }
+    async fetchEnrollments(event) {
+      this.fetchingEnrollments = true;
+      let response = await EnrollmentApi.fetchEnrollments({
+        class_id: this.currentClass._id
+      });
+      this.enrollments = response.data.map(e => {
+        e.isFetchingMember = true;
+        e.isUpdateEmailed = false;
+        e.isUpdateCalled = false;
+        e.isUpdatePaid = false;
+        return e;
+      });
+
+      this.fetchMembers();
+      this.fetchingEnrollments = false;
     },
-    formatPrice (x) {
-        let val = (x/1).toFixed(2).replace('.', ',');
-        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".").concat('&#8363;');
+    async fetchMembers() {
+      for (let enroll of this.enrollments) {
+        let response = await MemberApi.getMemberInfo(enroll.member_id);
+        enroll.member = response.data;
+        enroll.isFetchingMember = false;
+      }
+    },
+    formatPrice(x) {
+      let val = (x / 1).toFixed(2).replace(".", ",");
+      return x
+        .toString()
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+        .concat("&#8363;");
     }
   },
-  components: {
-  },
-}
+  components: {}
+};
 </script>

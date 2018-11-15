@@ -5,8 +5,15 @@ const router = express.Router();
 // @desc    Get All Obj in Excel
 // @access  Public
 router.get('/', (req, res) => {
-    res.send('this is excel read file router');
-    res.send(req);
+    console.log('readExcel');
+});
+
+// @route   GET api/admin/readExcel/
+// @desc    Get All Obj in Excel
+// @access  Public
+router.post('/getFile', (req, res) => {
+    console.log('getFile');
+    console.log(req);
 });
 
 

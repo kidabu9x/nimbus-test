@@ -103,57 +103,61 @@ import { Container, Draggable } from "vue-smooth-dnd";
 import getUrls from "get-urls";
 
 export default {
-  name: 'Dev',
-  data () {
+  name: "Dev",
+  data() {
     return {
-      questions : [],
-      currentQuest : null
-    }
+      questions: [],
+      currentQuest: null
+    };
   },
-  mounted () {
+  mounted() {
     this.fetchQuest();
   },
-  methods : {
-      async fetchQuest () {
-        let response = await QuestApi.createExam(1);
-        this.questions = response.data;
-        this.currentQuest = this.questions[0];
-        console.log(this.currentQuest);
-      },
-      getPayload (i) {
-        return this.currentQuest.answers[0][i];
-      },
-      replaceAnswer (result) {
-        if (result.addedIndex != null && result.payload && this.currentQuest.answers[1].length > result.addedIndex) {
-          this.currentQuest.answers[1][result.addedIndex].id = result.payload.id;
-          this.currentQuest.answers[1][result.addedIndex].content = result.payload.content;
-        }
-      },
-      handleContent (content) {
-        let matches = getUrls(content);
-          if (matches.size > 0) {
-            matches.forEach(url => {
-            content = content.replace(url, `<img src="${url}"/>`)
-          });
-        }
-        return content;
-      },
-      submitResult () {
-        checkQuest(this.currentQuest);
-        async function checkQuest(quest) {
-          let response = await QuestApi.checkQuest(quest);
-          console.log(response);
-          quest.is_match = response.data.is_match;
-          quest.answers = response.data.answers;
-        }
+  methods: {
+    async fetchQuest() {
+      let response = await QuestApi.createExam(1);
+      this.questions = response.data;
+      this.currentQuest = this.questions[0];
+      console.log(this.currentQuest);
+    },
+    getPayload(i) {
+      return this.currentQuest.answers[0][i];
+    },
+    replaceAnswer(result) {
+      if (
+        result.addedIndex != null &&
+        result.payload &&
+        this.currentQuest.answers[1].length > result.addedIndex
+      ) {
+        this.currentQuest.answers[1][result.addedIndex].id = result.payload.id;
+        this.currentQuest.answers[1][result.addedIndex].content =
+          result.payload.content;
       }
+    },
+    handleContent(content) {
+      let matches = getUrls(content);
+      if (matches.size > 0) {
+        matches.forEach(url => {
+          content = content.replace(url, `<img src="${url}"/>`);
+        });
+      }
+      return content;
+    },
+    submitResult() {
+      checkQuest(this.currentQuest);
+      async function checkQuest(quest) {
+        let response = await QuestApi.checkQuest(quest);
+        console.log(response);
+        quest.is_match = response.data.is_match;
+        quest.answers = response.data.answers;
+      }
+    }
   },
   components: {
-      Container,
-      Draggable
+    Container,
+    Draggable
   }
-  
-}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -177,9 +181,9 @@ export default {
   height: auto;
 }
 .md-course-card {
-    width: 320px;
-    margin: 4px;
-    display: inline-block;
-    vertical-align: top;
-  }
+  width: 320px;
+  margin: 4px;
+  display: inline-block;
+  vertical-align: top;
+}
 </style>

@@ -4,21 +4,21 @@ let baseUrl = 'members';
 
 export default {
     // --------------For Admin--------------
-    fetchMembers (query) {
+    fetchMembers(query) {
         return Api().get(`${baseUrl}`, {
-            params : query
+            params: query
         });
     },
-    getMemberInfo (memberId) {
+    getMemberInfo(memberId) {
         return Api().get(`${baseUrl}?member_id=${memberId}`);
     },
-    createNewMember (member) {
+    createNewMember(member) {
         return Api().post(`${baseUrl}`, member);
     },
-    updateMember (member) {
+    updateMember(member) {
         return Api().put(`${baseUrl}/${member._id}`, member);
     },
-    deleteMember (memberId) {
+    deleteMember(memberId) {
         return Api().delete(`${baseUrl}/${memberId}`);
     },
     fetchTeachers() {
@@ -30,7 +30,7 @@ export default {
     auth(user) {
         return Api().post(`${baseUrl}/auth`, user);
     },
-    checkMember (email) {
+    checkMember(email) {
         return Api().get(`${baseUrl}/check-member?email=${email}`);
     }
 }

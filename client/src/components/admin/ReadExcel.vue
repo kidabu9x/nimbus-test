@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1 v-bind:class="{header_read:transparentText}">
+        <h1 :class="{header_read:transparentText}">
             Đọc Excel
         </h1>
         <div v-if="isImport == true">
@@ -10,7 +10,7 @@
 </template>
 //
 <script>
-import ImportCommand from "@/Command/ImportCommand.js";
+import ImportCommand from "@/Common/ImportCommand.js";
 import ExcelEnrollments from "@/components/admin/ReadExcel/ExcelEnrollments";
 import ExcelEnrollmentsVue from "./ReadExcel/ExcelEnrollments.vue";
 
@@ -22,9 +22,7 @@ export default {
       isImport: true
     };
   },
-  methods: {
-      
-  },
+  methods: {},
   components: {
     ExcelEnrollments: ExcelEnrollmentsVue
   }

@@ -3,35 +3,35 @@ import Api from '@/api/Admin';
 let baseUrl = 'enrollments';
 
 export default {
-    fetchEnrollments (query) {
+    fetchEnrollments(query) {
         return Api().get(`${baseUrl}`, {
-            params : query
+            params: query
         });
     },
-    countEnrollments (query) {
+    countEnrollments(query) {
         return Api().get(`${baseUrl}/count`, {
-            params : query
+            params: query
         });
     },
-    createEnrollment (newEnroll) {
+    createEnrollment(newEnroll) {
         return Api().post(`${baseUrl}`, newEnroll);
     },
-    updateEnrollment (enroll) {
+    updateEnrollment(enroll) {
         return Api().put(`${baseUrl}/${enroll._id}`, enroll);
     },
-    deleteEnrollment (enroll) {
+    deleteEnrollment(enroll) {
         return Api().delete(`${baseUrl}/${enroll._id}`);
     },
-    sendEmail (data) {
+    sendEmail(data) {
         return Api().post(`${baseUrl}/${data.enroll_id}/send-email`, data);
     },
-    call (data) {
+    call(data) {
         return Api().post(`${baseUrl}/${data.enroll_id}/call`, data);
     },
-    paid (data) {
+    paid(data) {
         return Api().post(`${baseUrl}/${data.enroll_id}/paid`, data);
     },
-    note (data) {
+    note(data) {
         return Api().post(`${baseUrl}/${data.enroll_id}/note`, data);
     }
 }

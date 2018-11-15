@@ -53,7 +53,7 @@
           </md-list-item>
           <!-- new category of navbar "Nhập Excel" -->
           <md-list-item to="/admin/readExcel">
-            <md-icon>help</md-icon>
+            <md-icon>assignment</md-icon>
             <span class="md-list-item-text">Nhập Excel đăng ký</span>
           </md-list-item>
           <!-- <md-list-item to="/admin/members">
@@ -76,31 +76,30 @@
 </template>
 
 <script>
-import CourseApi from '@/api/Admin/Course';
+import CourseApi from "@/api/Admin/Course";
 export default {
-  name: 'Admin',
-  data () {
+  name: "Admin",
+  data() {
     return {
-      menuVisible : true,
+      menuVisible: true,
       user: null,
       courses: []
-    }
+    };
   },
-  mounted () {
-    if (localStorage.getItem('member') != null) {
-      this.user = JSON.parse(localStorage.getItem('member'));
+  mounted() {
+    if (localStorage.getItem("member") != null) {
+      this.user = JSON.parse(localStorage.getItem("member"));
     }
     this.getCourse();
   },
-  methods : {
-    async getCourse () {
+  methods: {
+    async getCourse() {
       let response = await CourseApi.fetchCourses();
       this.courses = response.data;
     }
   },
-  components : {
-  }
-}
+  components: {}
+};
 </script>
 
 <style lang="scss">

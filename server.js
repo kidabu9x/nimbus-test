@@ -14,7 +14,7 @@ app.use(cors());
 
 // Connect to Mongo
 mongoose
-  .connect(process.env.DATABASE, {useNewUrlParser : true, useCreateIndex: true})
+  .connect(process.env.DATABASE, { useNewUrlParser: true, useCreateIndex: true })
   .then(() => console.log('MongoDB Connected...'))
   .catch(err => console.log(err));
 
