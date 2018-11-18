@@ -8,7 +8,7 @@ router.get('/', (req, res) => {
     console.log('readExcel');
 });
 
-// @route   GET api/admin/readExcel/
+// @route   GET api/admin/readExcel/getFile
 // @desc    Get All Obj in Excel
 // @access  Public
 router.post('/getFile', (req, res) => {
