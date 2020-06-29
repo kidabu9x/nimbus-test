@@ -14,7 +14,7 @@ app.use(cors());
 
 // Connect to Mongo
 mongoose
-  .connect(process.env.DATABASE, {useNewUrlParser : true, useCreateIndex: true})
+  .connect(process.env.DATABASE, { useNewUrlParser: true, useCreateIndex: true })
   .then(() => console.log('MongoDB Connected...'))
   .catch(err => console.log(err));
 
@@ -23,6 +23,7 @@ const Api = require('./routes/api');
 app.use('/api', Api);
 
 // Serve static assets if in production
+console.log(process.env.NODE_ENV);
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static('client/dist'));
   app.get('*', (req, res) => {
