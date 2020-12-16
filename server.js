@@ -23,7 +23,6 @@ const Api = require('./routes/api');
 app.use('/api', Api);
 
 // Serve static assets if in production
-console.log(process.env.NODE_ENV);
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static('client/dist'));
   app.get('*', (req, res) => {

@@ -1,6 +1,6 @@
 {
-    "database": "mongodb://kidabu9x:Dota199x@ds141720.mlab.com:41720/nimbus2",
-    "secret"  : "nimbus-addmin-app",
+    "database": "mongodb+srv://kidabu9x:Dota199x@nimbus2.as4vl.mongodb.net/nimbus2?retryWrites=true&w=majority",
+    "secret": "nimbus-addmin-app",
     "gmail": {
         "client_user": "tinhocmos.nimbuscenter@gmail.com",
         "client_id": "819134378182-n44mu7910gp1emmpbe3631v476a3f3er.apps.googleusercontent.com",
@@ -8,5 +8,5 @@
         "refresh_token": "1/7ElpF4PiRHtvgJ9ClFtAFGgtIF_BNvMc9VFvoq_LTWs",
         "access_token": "ya29.GltFBghBl8ddhcRz88Bd0rmPcutpGR_E_hfTTe7ekL7vmaRAtAswvdwFe20USe5QvBp3HyKazbg_Tezf4fGX72IJMkawC_JX_Qlj1obaOYLUK1ZtuaypHo4xPEby"
     },
-    "sg_api_key" : "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"
+    "sg_api_key": "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"
 }
